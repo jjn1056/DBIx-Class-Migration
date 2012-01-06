@@ -1,0 +1,5 @@
+$HASH1 = {
+           cd      => 2,
+           title   => 'Dirty Diana',
+           trackid => 7
+         };

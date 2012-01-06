@@ -1,0 +1,5 @@
+$HASH1 = {
+           artist => 3,
+           cdid   => 4,
+           title  => 'My Cool New Album'
+         };

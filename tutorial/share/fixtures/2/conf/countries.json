@@ -1,0 +1,8 @@
+{
+   "sets" : [
+      {
+         "quantity" : "all",
+         "class" : "Country"
+      }
+   ],
+}

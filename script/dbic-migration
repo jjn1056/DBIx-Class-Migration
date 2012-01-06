@@ -1,0 +1,5 @@
+#!/usr/bin/env perl
+
+use App::DBIx::Class::Migration;
+App::DBIx::Class::Migration
+  ->new_with_options->run;

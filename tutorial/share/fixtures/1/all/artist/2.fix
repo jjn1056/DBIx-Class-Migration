@@ -1,0 +1,4 @@
+$HASH1 = {
+           artistid => 2,
+           name     => 'Eminem'
+         };
