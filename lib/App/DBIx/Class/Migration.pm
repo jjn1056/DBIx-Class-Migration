@@ -127,17 +127,21 @@ sub cmd_prepare {
   my $v = $self->_dh->schema_version || die "Your Schema has no version!";
   my $dbic_fix_conf_dir = File::Spec->catdir($self->home_dir, 'fixtures', $v, 'conf');
   mkpath($dbic_fix_conf_dir) unless -d $dbic_fix_conf_dir;
-  
+
   if ($v > 1) {
     if($self->_dh->version_storage_is_installed) {
-    $self->_dh->prepare_upgrade;
-    $self->_dh->prepare_downgrade;
+      if($self->_dh->database_version < $v) {
+        $self->_dh->prepare_upgrade;
+        $self->_dh->prepare_downgrade;
+      } else {
+        print "Your Database version must be lower than than your schema version in order to prepare upgrades / downgrades\n";
+      }
     } else {
-      print "There is not current database deployed, so I can't prepare upgrades or downgrades";
+      print "There is not current database deployed, so I can't prepare upgrades or downgrades\n";
     }
     my $previous = File::Spec->catdir($self->home_dir, 'fixtures', $v-1, 'conf');
     my @files = <$previous/*>;
-    (cp($_, $dbic_fix_conf_dir) 
+    (cp($_, $dbic_fix_conf_dir)
       || die "Could not copy $_: $!") for @files;
   }
 
@@ -177,6 +181,17 @@ sub cmd_drop_tables {
   });
 }
 
+sub cmd_delete_table_rows {
+  my $schema = (my $self = shift)->_dh->deploy_method->schema_provider->schema_for_run_files;  # TODO loopback with frew
+  $schema->storage->with_deferred_fk_checks(sub {
+    my $txn = $schema->txn_scope_guard;
+    foreach my $source ($schema->sources) {
+      next if $source eq 'DbixClassDeploymenthandlerVersion';
+      $schema->resultset($source)->delete;
+    }
+    $txn->commit;
+  });
+}
 sub cmd_dump {
   my $self = shift;
   my $db_version = $self->_dh->database_version;
@@ -226,7 +241,7 @@ sub _import_libs {
 sub run {
   my ($self) = @_;
   my ($cmd, @extra_argv) = @{$self->extra_argv};
-  
+
   $self->_import_libs(@{$self->includes})
     if $self->has_includes;
 
@@ -262,7 +277,7 @@ L<DBIx::Class::DeploymentHandler> is a state of the art solution to the problem
 of creating sane workflows for versioning L<DBIx::Class> managed database
 projects.  However, since it is more of a toolkit for building custom versioning
 and migration workflows than an expression of a particular migration practice,
-it might not always be the most approachable tool.  If you are starting a new 
+it might not always be the most approachable tool.  If you are starting a new
 L<DBIx::Class> project and you don't have a particular custom workflow need,
 you might prefer to simple be given a reasonable clear and standard practice,
 rather than a toolkit with a set of example scripts.
@@ -289,7 +304,7 @@ various internals.
 
 This class defines the following attributes.
 
-=head2 includes 
+=head2 includes
 
 Accepts ArrayRef. Not required.
 
@@ -310,7 +325,7 @@ of L<DBIx::Class::Schema>.  For example C<MyApp::Schema>.
 If you don't prove this, we will try to guess it by looking for a C<::Schema>
 class in the parent namespace.  This will only work if you create a custom
 subclass of L<App::DBIx::Class::Migration> for your project.  For example, if
-you have a class C<MyApp::Schema::Migration> which is a subclass of 
+you have a class C<MyApp::Schema::Migration> which is a subclass of
 L<App::DBIx::Class::Migration>, we will assume C<MyApp::Schema> is a subclass
 of L<DBIx::Class::Schema> and assume that is the name of the L</schema_class>
 you wish to use.
@@ -328,7 +343,7 @@ Although you can specify the directory, if you leave it undefined, we will use
 L<File::ShareDir::ProjectDistDir> to locate the C<share> directory for your
 project and place the files there.  This is the recommended approach, and is
 considered a community practice in regards to where to store your distribution
-non code files.  Please see L<File::ShareDir::ProjectDistDir> as well as 
+non code files.  Please see L<File::ShareDir::ProjectDistDir> as well as
 L<File::ShareDir> for more information.
 
 =head2 username
@@ -457,7 +472,7 @@ used as lazy builders.
 This is an optional method you may define in a subclass.  If it exists, it will
 be used to prepopulate initial arguments.
 
-=head2 
+=head2
 
 =head1 COMMANDS
 
@@ -565,7 +580,7 @@ Aliases: D
 Value: Str (default: Current VERSION of Schema)
 
     dbic_migration install --to_version 5
-    
+
 Used to specify which version we are going to deploy.  Defaults to whatever
 is the most current version you've prepared.
 
@@ -656,7 +671,7 @@ schema version, or stop at an intermediate version specified via L</to_version>
 
 =head2 downgrade
 
-Run down files to bring the database down to the version specified via 
+Run down files to bring the database down to the version specified via
 L</to_version>
 
 =head2 dump
@@ -668,6 +683,22 @@ the current schema version)
 
 Given listed L<fixture_sets>, populate a database with fixtures for the matching
 version (matches database version to fixtures, not the schema version)
+
+=head2 drop_tables
+
+Drops all the tables in the connected database with no backup or recovery.  For
+real! (Make sure you are not connected to Prod, for example)
+
+=head2 delete_table_rows
+
+does a C<delete> on each table in the database, which clears out all your data
+but preserves tables.  For Real!  You might want this if you need to load
+and unload fixture sets during testing, or perhaps to get rid of data that
+accumulated in the database while running an app in development, before dumping
+fixtures.
+
+Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
+deployment info (this is different from L</drop_tables> which does delete it.)
 
 =head1 THANKS
 
@@ -717,8 +748,10 @@ delete fixture/migration version
 list-fixture-sets
 ?? From version? ??
 add ENV support for instantiation
-Dzil and module install plugins 
+Dzil and module install plugins
 patch DBIC-deploymenthander for autoversions
 ?? patch DH to abstract the filesysteem storage and get methods for 'last/next version'
 shell version
 path DBIC-Fixtures to inflate-deflate
+dump all existing fixture sets
+

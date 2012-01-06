@@ -1,0 +1,4 @@
+$HASH1 = {
+           artistfk => 3,
+           cdfk     => 4
+         };

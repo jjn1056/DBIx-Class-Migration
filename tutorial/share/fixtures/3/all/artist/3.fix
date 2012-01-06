@@ -1,0 +1,5 @@
+$HASH1 = {
+           artistid  => 3,
+           countryfk => 3,
+           name      => 'JoJo'
+         };
