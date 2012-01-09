@@ -11,7 +11,7 @@ __PACKAGE__->add_columns(
     size => '96',
   });
 
-__PACKAGE__->set_primary_key('cdid');
+__PACKAGE__->set_primary_key('cd_id');
 __PACKAGE__->has_many('tracks' => "Local::Schema::Result::Track");
 
 __PACKAGE__->has_many(
