@@ -1,0 +1,23 @@
+package Local::Schema::Result::Cd;
+use base qw/DBIx::Class::Core/;
+
+__PACKAGE__->table('cd');
+__PACKAGE__->add_columns(
+  'cd_id' => {
+    data_type => 'integer',
+  },
+  'title' => {
+    data_type => 'varchar',
+    size => '96',
+  });
+
+__PACKAGE__->set_primary_key('cdid');
+__PACKAGE__->has_many('tracks' => "Local::Schema::Result::Track");
+
+__PACKAGE__->has_many(
+  'artist_cd_rs' => 'Local::Schema::Result::ArtistCd',
+  {'foreign.cd_fk'=>'self.cd_id'});
+
+__PACKAGE__->many_to_many(artists_cd => artist_cd_rs => 'artist');
+
+1;

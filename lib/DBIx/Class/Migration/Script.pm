@@ -2,7 +2,6 @@ package DBIx::Class::Migration::Script;
 
 our $VERSION = "0.001";
 
-use Devel::Dwarn;
 
 use Moose;
 use JSON::XS;
