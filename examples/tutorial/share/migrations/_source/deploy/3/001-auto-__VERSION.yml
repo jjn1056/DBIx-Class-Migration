@@ -1,0 +1,364 @@
+---
+schema:
+  procedures: {}
+  tables:
+    dbix_class_deploymenthandler_versions:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - version
+          match_type: ''
+          name: dbix_class_deploymenthandler_versions_version
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        ddl:
+          data_type: text
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: ddl
+          order: 3
+          size:
+            - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: id
+          order: 1
+          size:
+            - 0
+        upgrade_sql:
+          data_type: text
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: upgrade_sql
+          order: 4
+          size:
+            - 0
+        version:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: version
+          order: 2
+          size:
+            - 50
+      indices: []
+      name: dbix_class_deploymenthandler_versions
+      options: []
+      order: 1
+  triggers: {}
+  views: {}
+translator:
+  add_drop_table: 0
+  filename: ~
+  no_comments: 0
+  parser_args:
+    package: &1 !!perl/hash:Local::Schema
+      class_mappings:
+        DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResult: __VERSION
+        Local::SchemaV3b::Result::Artist: Artist
+        Local::SchemaV3b::Result::ArtistCd: ArtistCd
+        Local::SchemaV3b::Result::Cd: Cd
+        Local::SchemaV3b::Result::Country: Country
+        Local::SchemaV3b::Result::Track: Track
+      source_registrations:
+        Artist: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            artistid:
+              data_type: integer
+            countryfk:
+              data_type: integer
+              default_value: 1
+              is_foreign_key: 1
+            name:
+              data_type: varchar
+              size: 96
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - artistid
+            - countryfk
+            - name
+          _primaries: &2
+            - artistid
+          _relationships:
+            artist_cd_rs:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: Local::SchemaV3b::Result::ArtistCd
+              cond:
+                foreign.artistfk: self.artistid
+              source: Local::SchemaV3b::Result::ArtistCd
+            has_country:
+              attrs:
+                accessor: single
+                fk_columns:
+                  countryfk: 1
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: Local::SchemaV3b::Result::Country
+              cond:
+                foreign.countryid: self.countryfk
+              source: Local::SchemaV3b::Result::Country
+          _unique_constraints:
+            primary: *2
+          name: artist
+          result_class: Local::SchemaV3b::Result::Artist
+          resultset_attributes: {}
+          resultset_class: Local::SchemaV3b::ResultSet::Artist
+          schema: *1
+          source_name: Artist
+        ArtistCd: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            artistfk:
+              data_type: integer
+              is_foreign_key: 1
+            cdfk:
+              data_type: integer
+              is_foreign_key: 1
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - artistfk
+            - cdfk
+          _primaries: &3
+            - artistfk
+            - cdfk
+          _relationships:
+            artist:
+              attrs:
+                accessor: single
+                fk_columns:
+                  artistfk: 1
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: Local::SchemaV3b::Result::Artist
+              cond:
+                foreign.artistid: self.artistfk
+              source: Local::SchemaV3b::Result::Artist
+            cd:
+              attrs:
+                accessor: single
+                fk_columns:
+                  cdfk: 1
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: Local::SchemaV3b::Result::Cd
+              cond:
+                foreign.cdid: self.cdfk
+              source: Local::SchemaV3b::Result::Cd
+          _unique_constraints:
+            primary: *3
+          name: artist_cd
+          result_class: Local::SchemaV3b::Result::ArtistCd
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: ArtistCd
+        Cd: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            cdid:
+              data_type: integer
+            title:
+              data_type: varchar
+              size: 96
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - cdid
+            - title
+          _primaries: &4
+            - cdid
+          _relationships:
+            artist_cd_rs:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: Local::SchemaV3b::Result::ArtistCd
+              cond:
+                foreign.cdfk: self.cdid
+              source: Local::SchemaV3b::Result::ArtistCd
+            tracks:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: Local::SchemaV3b::Result::Track
+              cond:
+                foreign.cd: self.cdid
+              source: Local::SchemaV3b::Result::Track
+          _unique_constraints:
+            primary: *4
+          name: cd
+          result_class: Local::SchemaV3b::Result::Cd
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: Cd
+        Country: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            code:
+              data_type: char
+              size: 3
+            countryid:
+              data_type: integer
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - countryid
+            - code
+          _primaries: &5
+            - countryid
+          _relationships:
+            artists:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: Local::SchemaV3b::Result::Artist
+              cond:
+                foreign.countryfk: self.countryid
+              source: Local::SchemaV3b::Result::Artist
+          _unique_constraints:
+            country_code:
+              - code
+            primary: *5
+          name: country
+          result_class: Local::SchemaV3b::Result::Country
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: Country
+        Track: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            cd:
+              _inflate_info:
+                deflate: !!perl/code '{ "DUMMY" }'
+                inflate: !!perl/code '{ "DUMMY" }'
+              data_type: integer
+            title:
+              data_type: varchar
+              size: 96
+            trackid:
+              data_type: integer
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - trackid
+            - cd
+            - title
+          _primaries: &6
+            - trackid
+          _relationships:
+            cd:
+              attrs:
+                accessor: filter
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: Local::SchemaV3b::Result::Cd
+              cond:
+                foreign.cdid: self.cd
+              source: Local::SchemaV3b::Result::Cd
+          _unique_constraints:
+            primary: *6
+          name: track
+          result_class: Local::SchemaV3b::Result::Track
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: Track
+        __VERSION: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            ddl:
+              data_type: text
+              is_nullable: 1
+            id:
+              data_type: int
+              is_auto_increment: 1
+            upgrade_sql:
+              data_type: text
+              is_nullable: 1
+            version:
+              data_type: varchar
+              size: 50
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - id
+            - version
+            - ddl
+            - upgrade_sql
+          _primaries: &7
+            - id
+          _relationships: {}
+          _unique_constraints:
+            dbix_class_deploymenthandler_versions_version:
+              - version
+            primary: *7
+          name: dbix_class_deploymenthandler_versions
+          result_class: DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResult
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResultSet
+          schema: *1
+          source_name: __VERSION
+      storage: !!perl/hash:DBIx::Class::Storage::DBI
+        _connect_info:
+          - DBI:SQLite:/Users/johnn/Desktop/App-DBIx-Class-Migration/tutorial/share/local-schema.db
+          - ''
+          - ''
+        _dbh_details: {}
+        _dbh_gen: 0
+        _dbi_connect_info:
+          - DBI:SQLite:/Users/johnn/Desktop/App-DBIx-Class-Migration/tutorial/share/local-schema.db
+          - ''
+          - ''
+          - &8
+            AutoCommit: 1
+            PrintError: 0
+            RaiseError: 1
+            ShowErrorStatement: 1
+        _dbic_connect_attributes: *8
+        _in_do_block: 0
+        _sql_maker: ~
+        _sql_maker_opts: {}
+        debug: 1
+        savepoints: []
+        schema: *1
+        transaction_depth: 0
+    sources:
+      - __VERSION
+  parser_type: SQL::Translator::Parser::DBIx::Class
+  producer_args: {}
+  producer_type: SQL::Translator::Producer::YAML
+  show_warnings: 0
+  trace: 0
+  version: 0.11010

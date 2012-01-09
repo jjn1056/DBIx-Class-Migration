@@ -1,4 +1,4 @@
-package App::DBIx::Class::Migration;
+package DBIx::Class::Migration::Script;
 
 our $VERSION = "0.001";
 
