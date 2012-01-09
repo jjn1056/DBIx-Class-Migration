@@ -81,6 +81,13 @@ has schema_loader_class => (
   isa => LoadableClass,
   coerce=>1);
 
+has schema_loader => (is=>'ro', lazy_build=>1);
+
+  sub _build_schema_loader {
+    my $self = shift;
+    $self->schema_loader_class->new(schema=>$self->schema);
+  }
+
 has dbic_fixture_class => (
   is => 'ro',
   default => 'DBIx::Class::Fixtures',
@@ -97,7 +104,7 @@ has deployment_handler_class => (
     my $storage = shift->storage;
     $storage->ensure_connected;
     my $storage_specific_class = ref($storage);
-    return ($storage =~m/DBI::(.+)$/)[0] || 'SQLite';
+    return ($storage =~m/DBI::(.+)\=/)[0] || 'SQLite';
   }
 
   sub _build_dbic_dh {
@@ -193,7 +200,7 @@ sub prepare {
     $self->target_dir, $schema_version);
 
   my @sources = _filter_private_sources($self->schema->sources);
-  _create_all_fixture_set( catfile($fixture_conf_dir,'all_tables'), @sources);
+  _create_all_fixture_set( catfile($fixture_conf_dir,'all_tables.json'), @sources);
 
   if(my $previous = _has_previous_version($schema_version)) {
     if($self->dbic_dh->version_storage_is_installed) {
@@ -216,12 +223,8 @@ sub prepare {
   }
 }
 
-sub load_and_connect_from_schema {
-  $_[0]->schema_loader_class->load_and_connect_from($_[0]->schema);
-}
-
 sub drop_tables {
-  my $schema = shift->load_and_connect_from_schema;
+  my $schema = shift->schema_loader->schema_from_database;
   $schema->storage->with_deferred_fk_checks(sub {
     my $txn = $schema->txn_scope_guard;
     foreach my $source ($schema->sources) {
@@ -234,7 +237,7 @@ sub drop_tables {
 }
 
 sub delete_table_rows {
-  my $schema = shift->load_and_connect_from_schema;
+  my $schema = shift->schema_loader->schema_from_database;
   $schema->storage->with_deferred_fk_checks(sub {
     my $txn = $schema->txn_scope_guard;
     foreach my $source ($schema->sources) {
@@ -256,7 +259,7 @@ sub _prepare_fixture_data_dir {
 
 sub build_dbic_fixtures {
     my $self = shift;
-    my $dbic_fixtures = $self->dbic_fixtures_class;
+    my $dbic_fixtures = $self->dbic_fixture_class;
     my $conf_dir = _prepare_fixture_conf_dir($self->target_dir,
       $self->dbic_dh->database_version);
 
@@ -274,6 +277,7 @@ sub dump_named_sets {
     configs => [map { "$_.json" } @_],
     directory_template => sub {
       my ($fixture, $params, $set) = @_;
+      $set =~s/\.json//;
       _prepare_fixture_data_dir($self->target_dir,
         $self->dbic_dh->database_version, $set);
     },
@@ -288,6 +292,7 @@ sub dump_all_sets {
     schema => $self->schema,
     directory_template => sub {
       my ($fixture, $params, $set) = @_;
+      $set =~s/\.json//;
       _prepare_fixture_data_dir($self->target_dir,
         $self->dbic_dh->database_version, $set);
     },
@@ -461,6 +466,11 @@ and clear tables.
 Defaults to L<DBIx::Class::Migration::SchemaLoader>.  You'll probably only
 need to change this if your database is crazy and you need to massage the
 init arguments to L<DBIx::Class::Schema::Loader>.
+
+=head2 schema_loader
+
+This is a factory that provider autoloaded schema based on the current schema's
+database.
 
 =head2 dbic_fixture_class
 

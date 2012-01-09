@@ -1,4 +1,20 @@
 package DBIx::Class::Migration::SchemaLoader;
+
+use Moose;
+
+has schema => (is=>'ro', required=>1);
+
+our $generated;
+sub schema_from_database {
+  my $schema = shift->schema->clone;
+  $generated ||= DBIx::Class::Migration::SchemaLoader::_loader
+    ->connect({
+        dbh_maker => sub { $schema->storage->dbh },
+    });
+}
+
+package ## Hide from PAUSE
+  DBIx::Class::Migration::SchemaLoader::_loader;
  
 use strict;
 use warnings;
@@ -9,10 +25,4 @@ __PACKAGE__->naming({ ALL => 'v7'});
 __PACKAGE__->use_namespaces(1);
 __PACKAGE__->loader_options( );
 
-sub load_and_connect_from {
-  my ($class, $schema) = @_;
-  $class->connect(sub { $schema->storage->dbh });
-}
-
 1;
-
