@@ -1,17 +1,13 @@
 package DBIx::Class::Migration::Script;
 
-our $VERSION = "0.001";
-
-
 use Moose;
-use JSON::XS;
-use Class::Load 'load_class';
-use File::Spec;
-use File::Copy 'cp';
-use File::Path 'mkpath', 'remove_tree';
-use File::ShareDir::ProjectDistDir ();
+use DBIx::Class::Migration;
 
 with 'MooseX::Getopt';
+
+has migration => (
+  is => 'ro',
+  lazy_build => 1);
 
 has includes => (
   traits => ['Getopt'],
@@ -20,88 +16,16 @@ has includes => (
   predicate => 'has_includes',
   cmd_aliases => ['I', 'libs']);
 
-has schema_class => (is => 'ro', isa => 'Str', lazy_build => 1);
-
-  sub _build_schema_class {
-    my $schema = ((ref shift) =~ m/(^.*)\:\:\w+?$/)[0];
-    load_class $schema;
-    return $schema;
-  }
-
-has home_dir => (traits => [ 'Getopt' ], is => 'ro', lazy_build=>1, cmd_aliases => 'D');
-
-  sub _build_home_dir {
-    my $self = shift;
-    load_class(my $class = $self->has_schema ? ref($self->_schema) : $self->schema_class);
-
-    my $file_name = $class;
-    $file_name =~s/::/\//g;
-
-    File::ShareDir::ProjectDistDir->import('dist_dir', filename => $INC{$file_name.".pm"});
-    $class =~s/::/-/g;
-    dist_dir($class);
-  }
-
+has schema_class => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str', predicate=>'has_schema_class', cmd_aliases => 'S');
+has target_dir => (traits => [ 'Getopt' ], is => 'ro', isa=> 'Str', cmd_aliases => 'dir');
 has username => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str', default => '', , cmd_aliases => 'U');
 has password => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str', default => '', cmd_aliases => 'P');
-has dsn => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str', lazy_build => 1);
+has dsn => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str');
+has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool', default => 0, cmd_aliases => 'O');
+has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int', predicate=>'has_to_version', cmd_aliases => 'V');
 
-  sub _generate_filename_for_default_db {
-    my ($self, $schema_class) = @_;
-    $schema_class =~ s/::/-/g;
-    return lc($schema_class);
-  }
-
-  sub _build_dsn {
-    my $self = shift;
-    my $filename = $self->_generate_filename_for_default_db($self->schema_class);
-    'DBI:SQLite:'. File::Spec->catfile($self->home_dir, "$filename.db");
-  }
-
-has _schema => (is => 'ro', predicate=>'has_schema', lazy_build => 1 );
-
-  sub _build__schema {
-    load_class($_[0]->schema_class);
-    $_[0]->schema_class->connect(
-      $_[0]->dsn,
-      $_[0]->username,
-      $_[0]->password);
-  }
-
-has deployment_handler_class => (is => 'ro', default => 'DBIx::Class::DeploymentHandler');
-has overwrite_migrations => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool', default => 0, cmd_aliases => 'O');
-has drop_tables => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool', default => 0, cmd_aliases => 'D');
-has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int', cmd_aliases => 'V');
-has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef', lazy_build => 1, cmd_aliases => 'database');
-
-  sub _build_databases { [ (shift->dsn) =~ m/^DBI:(.+)?:/ ] }
-
-has _dh => (is => 'ro', lazy_build => 1);
-
-  sub _build__dh {
-    load_class(my $dh = $_[0]->deployment_handler_class);
-    $dh->new({
-      schema => $_[0]->_schema,
-      force_overwrite => $_[0]->overwrite_migrations,
-      script_directory => File::Spec->catdir($_[0]->home_dir, 'migrations'),
-      sql_translator_args => { add_drop_table => $_[0]->drop_tables },
-      databases => $_[0]->databases,
-      ($_[0]->to_version ? (to_version=>$_[0]->to_version) : ()),
-    })
-  }
-
-has dbic_fixtures_class => (is => 'ro', default => 'DBIx::Class::Fixtures');
-has overwrite_fixtures => (is => 'ro', isa => 'Bool', default => 0);
-
-  sub _build__dbic_fixtures {
-    my $db_version = $_[0]->_dh->database_version;
-    my $conf_dir = File::Spec->catdir($_[0]->home_dir, 'fixtures', $db_version, 'conf');
-    load_class(my $dbic_fixtures = $_[0]->dbic_fixtures_class);
-    print "Reading configurations from $conf_dir\n";
-    $dbic_fixtures->new({
-      config_dir => $conf_dir,
-    });
-  }
+has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef', 
+  lazy_build => 1, predicate=>'has_databases', cmd_aliases => 'database');
 
 has fixture_sets => (
   traits => [ 'Getopt' ],
@@ -110,136 +34,49 @@ has fixture_sets => (
   default => sub { +['all'] },
   cmd_aliases => 'fixture_set');
 
-sub cmd_version { print "Application version is $VERSION\n" }
+has migration => (
+  is => 'ro',
+  lazy_build => 1,
+  handles=>{
+    cmd_version=>'version',
+    cmd_status=>'status',
+    cmd_prepare=>'prepare',
+    cmd_install=>'install',
+    cmd_upgrade=>'upgrade',
+    cmd_downgrade=>'downgrade',
+    cmd_drop_tables=>'drop_tables',
+    cmd_delete_table_rows=>'delete_table_rows',
+    cmd_dump_all_sets=>'dump_all_sets'});
 
-sub cmd_status {
-
-          $_[0]->_schema->storage->ensure_connected;
-          my $class = ref $_[0]->_schema->storage;
-          warn( $class =~m/DBI::(.+)$/ );
-
-  print "Schema is ${\$_[0]->_dh->schema_version}\n";
-  if($_[0]->_dh->version_storage_is_installed) {
-    print "Deployed database is ${\$_[0]->_dh->database_version}\n";
-  } else {
-    print "Database is not currently installed\n";
-  }
-
-
-
-
-}
-
-sub cmd_prepare {
-  (my $self = shift)->_dh->prepare_install;
-  my $v = $self->_dh->schema_version || die "Your Schema has no version!";
-  my $dbic_fix_conf_dir = File::Spec->catdir($self->home_dir, 'fixtures', $v, 'conf');
-  mkpath($dbic_fix_conf_dir) unless -d $dbic_fix_conf_dir;
-
-  if ($v > 1) {
-    if($self->_dh->version_storage_is_installed) {
-      if($self->_dh->database_version < $v) {
-        $self->_dh->prepare_upgrade;
-        $self->_dh->prepare_downgrade;
-      } else {
-        print "Your Database version must be lower than than your schema version in order to prepare upgrades / downgrades\n";
-      }
-    } else {
-      print "There is not current database deployed, so I can't prepare upgrades or downgrades\n";
-    }
-    my $previous = File::Spec->catdir($self->home_dir, 'fixtures', $v-1, 'conf');
-    my @files = <$previous/*>;
-    (cp($_, $dbic_fix_conf_dir)
-      || die "Could not copy $_: $!") for @files;
-  }
-
-  ## We just build a new 'all.json' and blow away the copied one
-  open(my $all_fh, '>', File::Spec->catfile($dbic_fix_conf_dir, 'all.json'))
-    || die "Can't open all.json; $!";
-
-  my $json = JSON::XS->new->pretty(1)->encode({
-    "belongs_to" => { "fetch" => 0 },
-    "has_many" => { "fetch" => 0 },
-    "might_have" => { "fetch" => 0 },
-    "sets" => [
-      map { +{ class=>$_, "quantity" => "all"} }
-      grep {$_!~/^__/}
-      $self->_schema->sources,
-    ],
-  });
-
-  print $all_fh $json;
-  close $all_fh;
-}
-
-sub cmd_install { shift->_dh->install }
-sub cmd_upgrade { shift->_dh->upgrade }
-sub cmd_downgrade { shift->_dh->downgrade }
-
-sub cmd_drop_tables {
-  my $schema = (my $self = shift)->_dh->deploy_method->schema_provider->schema_for_run_files;  # TODO loopback with frew
-  $schema->storage->with_deferred_fk_checks(sub {
-    my $txn = $schema->txn_scope_guard;
-    foreach my $source ($schema->sources) {
-      my $table = $schema->source($source)->name;
-      print "Dropping table $table\n";
-      $schema->storage->dbh->do("drop table $table");
-    }
-    $txn->commit;
-  });
-}
-
-sub cmd_delete_table_rows {
-  my $schema = (my $self = shift)->_dh->deploy_method->schema_provider->schema_for_run_files;  # TODO loopback with frew
-  $schema->storage->with_deferred_fk_checks(sub {
-    my $txn = $schema->txn_scope_guard;
-    foreach my $source ($schema->sources) {
-      next if $source eq 'DbixClassDeploymenthandlerVersion';
-      next if $source =~ m/^__/;
-      $schema->resultset($source)->delete;
-    }
-    $txn->commit;
-  });
-}
-
-sub cmd_dump {
+sub _build_migration {
   my $self = shift;
-  my $db_version = $self->_dh->database_version;
-  foreach my $set( @{$self->fixture_sets}) {
-    my $target_dir = File::Spec->catdir($self->home_dir, 'fixtures', $db_version, $set);
-    if(-e $target_dir) {
-      unless($self->overwrite_fixtures) {
-        print "There is already fixture for ${\$set} at $target_dir.  Set --overwrite_fixtures to overwrite";
-        next;
-      }
-      remove_tree $target_dir;
-    }
-    $self->_build__dbic_fixtures->dump({
-      config => $set . '.json',
-      schema => $self->_dh->schema->clone,
-      directory => $target_dir,
-    });
-    print "Dumped set $set to $target_dir\n";
+  my @schema_args;
+  if($self->dsn) {
+    push @schema_args, $self->dsn;
+    push @schema_args, $self->username;
+    push @schema_args, $self->password;
   }
+
+  return DBIx::Class::Migration->new(
+    schema_class => $self->schema_class,
+    (@schema_args ? (schema_args=>\@schema_args) : ()),
+    dbic_dh_args => {
+      force_overwrite => $self->force_overwrite,
+      ($self->has_target_dir ? (script_directory=>$self->target_dir) : ()),
+      ($self->has_to_version ? (to_version=>$self->to_version) : ()),
+      ($self->has_databases ? (databases=>$self->databases) : ()),
+    }
+  );
+}
+
+sub cmd_dump_named_sets {
+  my $self = shift;
+  $self->migration->dump_named_sets(@{$self->fixture_sets});
 }
 
 sub cmd_populate {
-  my ($self) = @_;
-  my $db_version = $self->_dh->database_version;
-  foreach my $set( @{$self->fixture_sets}) {
-    my $target_dir = File::Spec->catdir($self->home_dir, 'fixtures', $db_version, $set);
-    $self->_build__dbic_fixtures->populate({
-      no_deploy => 1,
-      schema => $self->_dh->schema,
-      directory => $target_dir,
-    });
-    print "Restored set $set to database\n";
-  }
-}
-
-sub _defaults {
-  my $class = shift;
-  $class->can('defaults') ? $class->defaults : ();
+  my $self = shift;
+  $self->migration->cmd_populate(@{$self->fixture_sets});
 }
 
 sub _import_libs {
@@ -264,7 +101,7 @@ sub run {
 
 sub run_if_script {
   my $class = shift;
-  caller(1) ? 1 : $class->new_with_options($class->_defaults)->run;
+  caller(1) ? 1 : $class->new_with_options()->run;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -272,7 +109,7 @@ __PACKAGE__->run_if_script;
 
 =head1 NAME
 
-App::DBIx::Class::Migration - Tools to manage database Migrations
+DBIx::Class::Migration::Script - Tools to manage database Migrations
 
 =head1 SYNOPSIS
 
@@ -283,32 +120,16 @@ App::DBIx::Class::Migration - Tools to manage database Migrations
 
 =head1 DESCRIPTION
 
-L<DBIx::Class::DeploymentHandler> is a state of the art solution to the problem
-of creating sane workflows for versioning L<DBIx::Class> managed database
-projects.  However, since it is more of a toolkit for building custom versioning
-and migration workflows than an expression of a particular migration practice,
-it might not always be the most approachable tool.  If you are starting a new
-L<DBIx::Class> project and you don't have a particular custom workflow need,
-you might prefer to simple be given a reasonable clear and standard practice,
-rather than a toolkit with a set of example scripts.
+This is a class which is provider interface mapping between the commandline
+script L<dbic-migration> and the back end code that does the heavy lifting,
+L<DBIx::Class::Migration>.  This class has very little of it's own
+functionality, since it basically acts as processing glue between that
+commandline application and the code which does all the work.
 
-L<App::DBIx::Class::Migration> defines some logic which combines both
-L<DBIx::Class::DeploymentHandler> and L<DBIx::Class::Fixtures>, along with
-a standard tutorial, to give you a simple and straightforward approach to
-solving the problem of how to best create database versions, migrations and
-testing data.  It offers code and advice based on my experience of using
-L<DBIx::Class> for several years, which hopefully can help you bootstrap out of
-the void.  The solutions given should work for you if you want to use L<DBIx::Class>
-and have database migrations, but don't really know what to do next.  These
-solutions should scale upward from a small project to a medium project involving
-many developers and more than one target environment (DEV -> QA -> Production.)
-If you have very complex database versioning requirements, huge teams and
-difficult architectual issues, you might be better off building something on
-top of L<DBIx::Class::DeploymentHandler> directly.
-
-Please see L<App::DBIx::Class::Migration::Tutorial> for more approachable
-documentation.  The remainder of this POD is API level documentation on the
-various internals.
+You should look at L<DBIx::Class::Migration> and the tutorial over at
+L<DBIx::Class::Migration::Tutorial> to get started.  This is basically
+API level docs and a command summary which is likely to be useful as a
+reference when you are familiar with the system.
 
 =head1 ATTRIBUTES
 
@@ -342,7 +163,7 @@ you wish to use.
 
 If the L</schema_class> cannot be loaded, a hard exception will be thrown.
 
-=head2 home_dir
+=head2 target_dir
 
 Accepts Str.  Required.
 
@@ -385,9 +206,9 @@ Please take care where you point this (like production :) )
 If you don't provide a value, we will automatically create a SQLite based
 database connection with the following DSN:
 
-    DBD:SQLite:[path to home_dir]/[db_file_name].db
+    DBD:SQLite:[path to target_dir]/[db_file_name].db
 
-Where c<[path to home_dir]> is L</home_dir> and [db_file_name] is a converted
+Where c<[path to target_dir]> is L</target_dir> and [db_file_name] is a converted
 version of L</schema_class>.  For example if you set L<schema_class> to:
 
     MyApp::Schema
@@ -507,12 +328,12 @@ Used to specify the L<DBIx::Class::Schema> subclass which is the core of your
 L<DBIx::Class> based ORM managed system.  This is required and the application
 cannot function without one.
 
-=head3 home_dir
+=head3 target_dir
 
 Aliases: D
 Value: Str
 
-    dbic_migration prepare --schema_class MyApp::Schema --home_dir /opt/share
+    dbic_migration prepare --schema_class MyApp::Schema --target_dir /opt/share
 
 We need a directory path that is used to store your fixtures and migration
 files.  By default this will be the C<share> directory for the application
@@ -540,7 +361,7 @@ Value: String
 These three commandline flags describe how to connect to a target, physical
 database, where we will deploy migrations and fixtures.  If you don't provide
 them, we will automatically deploy to a L<DBD::SQLite> managed database located
-at L</home_dir>.
+at L</target_dir>.
 
     dbic_migration install --username myuser --password mypass --dsn DBI:SQLite:mydb.db
 
@@ -653,7 +474,7 @@ of the current C<schema>
 
 =head2 prepare
 
-Creates a C<fixtures> and C<migrations> directory under L</home_dir> (if they
+Creates a C<fixtures> and C<migrations> directory under L</target_dir> (if they
 don't already exist) and makes deployment files for the current schema.  If
 deployment files exist, will fail unless you L</overwrite_migrations> and
 L</overwrite_fixtures>.
@@ -749,12 +570,12 @@ list-fixture-sets
 ?? From version? ??
 add ENV support for instantiation
 Dzil and module install plugins
-patch DBIC-deploymenthander for autoversions
-?? patch DH to abstract the filesysteem storage and get methods for 'last/next version'
 shell version
 path DBIC-Fixtures to inflate-deflate
-dump all existing fixture sets
-
 something to make testing easier
 catalyst example
+
+?? patch DH to abstract the filesysteem storage and get methods for 'last/next version'
+?? patch DBIC-deploymenthander for autoversions
+
 
