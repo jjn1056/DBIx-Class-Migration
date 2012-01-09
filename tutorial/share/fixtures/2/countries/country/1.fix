@@ -1,4 +1,0 @@
-$HASH1 = {
-           countryid => 1,
-           name      => 'Canada'
-         };

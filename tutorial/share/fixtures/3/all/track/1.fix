@@ -1,5 +1,0 @@
-$HASH1 = {
-           cd      => 3,
-           title   => 'The Way I Am',
-           trackid => 1
-         };

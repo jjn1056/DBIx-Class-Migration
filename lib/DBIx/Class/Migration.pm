@@ -56,9 +56,24 @@ has target_dir => (is=>'ro', lazy_build=>1);
     File::ShareDir::ProjectDistDir->import('dist_dir',
       filename => $INC{$file_name.".pm"});
 
-    $class =~s/::/-/g; 
-    dist_dir($class);
+    $class =~s/::/-/g;
+    my $target_dir = dist_dir($class);
+    mkpath $target_dir unless -d $target_dir;
+    return $target_dir;
   }
+
+has dbic_dh_args => (is=>'ro', isa=>'HashRef', default=>sub { +{} });
+has dbic_dh => (
+  is => 'ro',
+  init_arg =>  undef,
+  lazy_build => 1,
+  handles => [qw/
+    prepare_install
+    prepare_upgrade
+    prepare_downgrade
+    install
+    upgrade
+    downgrade/]);
 
 has schema_loader_class => (
   is => 'ro',
@@ -77,19 +92,6 @@ has deployment_handler_class => (
   default => 'DBIx::Class::DeploymentHandler',
   isa => LoadableClass,
   coerce=>1);
-
-has dbic_dh_args => (is=>'ro', isa=>'HashRef', default=>sub { +{} });
-has dbic_dh => (
-  is => 'ro',
-  init_arg =>  undef,
-  lazy_build => 1,
-  handles => [qw/
-    prepare_installmy
-    prepare_upgrade
-    prepare_downgrade
-    install
-    upgrade
-    downgrade/]);
 
   sub _infer_database_from_schema {
     my $storage = shift->storage;
@@ -513,11 +515,146 @@ following defaults:
 
 =head1 METHODS
 
-This class defines the following methods.
+This class defines the following methods for public use
 
-=head1 SUBROUTINUES
+=head2 new
 
-This class defines the following subroutinues.
+Used to create an new instance of L<DBIx::Class::Migration>.  There's a couple
+of paths to creating this instance.
+
+=head3 Specify a schema_class and optionally schema_args
+
+    use DBIx::Class::Migration;
+    my $migration = DBIx::Class::Migration->new(
+      schema_class => 'MyApp::Schema',
+      schema_args => [@connect_info],
+    );
+
+This is probably the most general approach, and is recommended unless you
+already have a connected instance of your L<DBIx::Class::Schema> subclass.
+
+L</schema_args> would be anything you'd pass to L<DBIx::Class::Schema/connect>.
+see L</schema_args> for how we construct default connect information if you
+choose to leave this undefined.
+
+=head3 Specify a schema
+
+There may be some cases when you already have a schema object constructed and
+woudl prefer to just use that.  For example, you may be using L<Catalyst> and
+wish to build custom scripts using the built-in dependency and service lookup:
+
+    use MyCatalyst::App;
+    use DBIx::Class::Migration;
+
+    my $migration = DBIx::Class::Migration->new(
+      schema => MyCatalyst::App->model('Schema')->schema,
+      %{MyCatalyst::App->config->{extra_migration_init_args}};
+    );
+
+Be care of potential locking issues when using some databases like SQLite.
+
+=head3 OPTIONAL: Specify a target_dir
+
+Optionally, you can specify your migrations target directory (where your
+migrations get created, in your init arguments.  This option can be combined
+with either approach listed above.
+
+    use DBIx::Class::Migration;
+    my $migration = DBIx::Class::Migration->new(
+      schema_class => 'MyApp::Schema',
+      schema_args => [@connect_info],
+      target_dir => '/opt/database-migrations',
+    );
+
+If you leave this undefined we default to using the C<share> directory in your
+distribution root.  This is generally the community supported place for non
+code data, but if you have huge fixture sets you might wish to place them in
+an alternative location.
+
+=head3 OPTIONAL: Specify dbic_dh_args
+
+Optionally, you can specify additional arguments to the constructor for the
+L</dbic_dh> attribute.  Useful arguments might include additional C<databases>
+we should build fixtures for, C<to_version> and C<force_overwrite>.
+
+See L<DBIx::Class::DeploymentHandler/> for more information on supported init
+arguments.  See L</dbic_dh> for how we merge default arguments with your custom
+arguments.
+
+=head3 Other Initial Arguments
+
+For normal usage the remaining init args are probably not particularly useful
+and reflect a desire for long term code flexibility and clean design.
+
+=head2 version
+
+Prints to STDOUT a message regarding the current application $VERSION
+
+=head2 status
+
+Returns the state of the deployed database (if it is deployed) and the state
+of the current C<schema> version.  Sends this as a string to STDOUT
+
+=head2 prepare
+
+Creates a C<fixtures> and C<migrations> directory under L</target_dir> (if they
+don't already exist) and makes deployment files for the current schema.  If
+deployment files exist, will fail unless you L</overwrite_migrations> and
+L</overwrite_fixtures>.
+
+The C<migrations> directory reflects a directory structure as documented in
+L<DBIx::Class::DeploymentHandler>.
+
+If this is the first version, we create directories and initial DLL, etc.  For
+versions greater than 1, we will also generate diffs and copy any fixture
+configs etc (as well as generating a fresh 'all_table.json' fixture config). For
+safety reasons, we never overwrite any fixture configs.
+
+=head2 install
+
+Installs either the current schema version (if already prepared) or the target
+version specified via any C<to_version> flags sent as an L<dbic_dh_args> to the
+database which is connected via L</schema>
+
+=head2 upgrade
+
+Run upgrade files to bring the database into sync with the current schema
+version.
+
+=head2 downgrade
+
+Run down files to bring the database down to the previous version from what is
+installed to the database
+
+=head2 drop_tables
+
+Drops all the tables in the connected database with no backup or recovery.  For
+real! (Make sure you are not connected to Prod, for example)
+
+=head2 delete_table_rows
+
+does a C<delete> on each table in the database, which clears out all your data
+but preserves tables.  For Real!  You might want this if you need to load
+and unload fixture sets during testing, or perhaps to get rid of data that
+accumulated in the database while running an app in development, before dumping
+fixtures.
+
+=head2 dump_named_sets
+
+Given an array of set names, dump them for the current database version
+
+=head2 dump_all_sets
+
+Takes no arguments just dumps all the sets we can find for the current database
+version
+
+=head2 populate
+
+Given an array of fixture set names, populate the current database version with
+the matching sets for that version.
+
+Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
+deployment info (this is different from L</drop_tables> which does delete it.)
 
 =head1 THANKS
 
