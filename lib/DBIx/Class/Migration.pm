@@ -703,3 +703,23 @@ This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
 
 =cut
+
+__END__
+
+TODO
+
+list-fixture-history
+list-migration-history
+delete fixture/migration version
+list-fixture-sets
+?? From version? ??
+add ENV support for instantiation
+Dzil and module install plugins
+shell version
+path DBIC-Fixtures to inflate-deflate
+something to make testing easier
+catalyst example
+
+?? patch DH to abstract the filesysteem storage and get methods for 'last/next version'
+?? patch DBIC-deploymenthander for autoversions
+
