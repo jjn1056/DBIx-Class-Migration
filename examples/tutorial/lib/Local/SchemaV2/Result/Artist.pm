@@ -3,21 +3,26 @@ use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('artist');
 __PACKAGE__->add_columns(
-  'artistid' => {
+  'artist_id' => {
     data_type => 'integer',
   },
-  countryfk => {
+  country_fk => {
     data_type => 'integer',
-    default_value => '1',
-    is_foreign_key => 1,
   },
   'name' => {
     data_type => 'varchar',
     size => '96',
   });
 
-__PACKAGE__->set_primary_key('artistid');
-__PACKAGE__->has_many('cds' => "Local::SchemaV2::Result::Cd");
-__PACKAGE__->belongs_to('has_country' => 'Local::SchemaV2::Result::Country', {'foreign.countryid'=>'self.countryfk'});
+__PACKAGE__->set_primary_key('artist_id');
+
+__PACKAGE__->has_many(
+  'cd_rs' => 'Local::SchemaV2::Result::Cd',
+  {'foreign.artist_fk'=>'self.artist_id'});
+
+__PACKAGE__->belongs_to(
+  'has_country' => 'Local::SchemaV2::Result::Country',
+  {'foreign.country_id'=>'self.country_fk'});
+
 
 1;

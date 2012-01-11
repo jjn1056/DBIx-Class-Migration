@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Thu Jan  5 11:56:50 2012
+-- Created on Wed Jan 11 10:40:10 2012
 -- 
 
 ;
@@ -9,27 +9,27 @@ BEGIN TRANSACTION;
 -- Table: artist
 --
 CREATE TABLE artist (
-  artistid INTEGER PRIMARY KEY NOT NULL,
+  artist_id INTEGER PRIMARY KEY NOT NULL,
   name varchar(96) NOT NULL
 );
 --
 -- Table: cd
 --
 CREATE TABLE cd (
-  cdid INTEGER PRIMARY KEY NOT NULL,
-  artist integer NOT NULL,
+  cd_id INTEGER PRIMARY KEY NOT NULL,
+  artist_fk integer NOT NULL,
   title varchar(96) NOT NULL,
-  FOREIGN KEY(artist) REFERENCES artist(artistid)
+  FOREIGN KEY(artist_fk) REFERENCES artist(artist_id)
 );
-CREATE INDEX cd_idx_artist ON cd (artist);
+CREATE INDEX cd_idx_artist_fk ON cd (artist_fk);
 --
 -- Table: track
 --
 CREATE TABLE track (
-  trackid INTEGER PRIMARY KEY NOT NULL,
-  cd integer NOT NULL,
+  track_id INTEGER PRIMARY KEY NOT NULL,
+  cd_fk integer NOT NULL,
   title varchar(96) NOT NULL,
-  FOREIGN KEY(cd) REFERENCES cd(cdid)
+  FOREIGN KEY(cd_fk) REFERENCES cd(cd_id)
 );
-CREATE INDEX track_idx_cd ON track (cd);
+CREATE INDEX track_idx_cd_fk ON track (cd_fk);
 COMMIT

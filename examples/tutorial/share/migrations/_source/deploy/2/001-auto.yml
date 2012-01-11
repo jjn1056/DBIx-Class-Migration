@@ -7,7 +7,7 @@ schema:
         - deferrable: 1
           expression: ''
           fields:
-            - artistid
+            - artist_id
           match_type: ''
           name: ''
           on_delete: ''
@@ -19,34 +19,34 @@ schema:
         - deferrable: 1
           expression: ''
           fields:
-            - countryfk
+            - country_fk
           match_type: ''
-          name: artist_fk_countryfk
+          name: artist_fk_country_fk
           on_delete: CASCADE
           on_update: CASCADE
           options: []
           reference_fields:
-            - countryid
+            - country_id
           reference_table: country
           type: FOREIGN KEY
       fields:
-        artistid:
+        artist_id:
           data_type: integer
           default_value: ~
           is_nullable: 0
           is_primary_key: 1
           is_unique: 0
-          name: artistid
+          name: artist_id
           order: 1
           size:
             - 0
-        countryfk:
+        country_fk:
           data_type: integer
-          default_value: 1
+          default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: countryfk
+          name: country_fk
           order: 2
           size:
             - 0
@@ -62,8 +62,8 @@ schema:
             - 96
       indices:
         - fields:
-            - countryfk
-          name: artist_idx_countryfk
+            - country_fk
+          name: artist_idx_country_fk
           options: []
           type: NORMAL
       name: artist
@@ -74,7 +74,7 @@ schema:
         - deferrable: 1
           expression: ''
           fields:
-            - cdid
+            - cd_id
           match_type: ''
           name: ''
           on_delete: ''
@@ -86,34 +86,34 @@ schema:
         - deferrable: 1
           expression: ''
           fields:
-            - artist
+            - artist_fk
           match_type: ''
-          name: cd_fk_artist
+          name: cd_fk_artist_fk
           on_delete: CASCADE
           on_update: CASCADE
           options: []
           reference_fields:
-            - artistid
+            - artist_id
           reference_table: artist
           type: FOREIGN KEY
       fields:
-        artist:
+        artist_fk:
           data_type: integer
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: artist
+          name: artist_fk
           order: 2
           size:
             - 0
-        cdid:
+        cd_id:
           data_type: integer
           default_value: ~
           is_nullable: 0
           is_primary_key: 1
           is_unique: 0
-          name: cdid
+          name: cd_id
           order: 1
           size:
             - 0
@@ -129,8 +129,8 @@ schema:
             - 96
       indices:
         - fields:
-            - artist
-          name: cd_idx_artist
+            - artist_fk
+          name: cd_idx_artist_fk
           options: []
           type: NORMAL
       name: cd
@@ -141,7 +141,7 @@ schema:
         - deferrable: 1
           expression: ''
           fields:
-            - countryid
+            - country_id
           match_type: ''
           name: ''
           on_delete: ''
@@ -151,13 +151,13 @@ schema:
           reference_table: ''
           type: PRIMARY KEY
       fields:
-        countryid:
+        country_id:
           data_type: integer
           default_value: ~
           is_nullable: 0
           is_primary_key: 1
           is_unique: 0
-          name: countryid
+          name: country_id
           order: 1
           size:
             - 0
@@ -180,7 +180,7 @@ schema:
         - deferrable: 1
           expression: ''
           fields:
-            - trackid
+            - track_id
           match_type: ''
           name: ''
           on_delete: ''
@@ -192,24 +192,24 @@ schema:
         - deferrable: 1
           expression: ''
           fields:
-            - cd
+            - cd_fk
           match_type: ''
-          name: track_fk_cd
-          on_delete: CASCADE
-          on_update: CASCADE
+          name: track_fk_cd_fk
+          on_delete: ''
+          on_update: ''
           options: []
           reference_fields:
-            - cdid
+            - cd_id
           reference_table: cd
           type: FOREIGN KEY
       fields:
-        cd:
+        cd_fk:
           data_type: integer
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: cd
+          name: cd_fk
           order: 2
           size:
             - 0
@@ -223,20 +223,20 @@ schema:
           order: 3
           size:
             - 96
-        trackid:
+        track_id:
           data_type: integer
           default_value: ~
           is_nullable: 0
           is_primary_key: 1
           is_unique: 0
-          name: trackid
+          name: track_id
           order: 1
           size:
             - 0
       indices:
         - fields:
-            - cd
-          name: track_idx_cd
+            - cd_fk
+          name: track_idx_cd_fk
           options: []
           type: NORMAL
       name: track
@@ -259,24 +259,22 @@ translator:
       source_registrations:
         Artist: !!perl/hash:DBIx::Class::ResultSource::Table
           _columns:
-            artistid:
+            artist_id:
               data_type: integer
-            countryfk:
+            country_fk:
               data_type: integer
-              default_value: 1
-              is_foreign_key: 1
             name:
               data_type: varchar
               size: 96
           _columns_info_loaded: 0
           _ordered_columns:
-            - artistid
-            - countryfk
+            - artist_id
+            - country_fk
             - name
           _primaries: &2
-            - artistid
+            - artist_id
           _relationships:
-            cds:
+            cd_rs:
               attrs:
                 accessor: multi
                 cascade_copy: 1
@@ -284,18 +282,18 @@ translator:
                 join_type: LEFT
               class: Local::SchemaV2::Result::Cd
               cond:
-                foreign.artist: self.artistid
+                foreign.artist_fk: self.artist_id
               source: Local::SchemaV2::Result::Cd
             has_country:
               attrs:
                 accessor: single
                 fk_columns:
-                  countryfk: 1
+                  country_fk: 1
                 is_foreign_key_constraint: 1
                 undef_on_null_fk: 1
               class: Local::SchemaV2::Result::Country
               cond:
-                foreign.countryid: self.countryfk
+                foreign.country_id: self.country_fk
               source: Local::SchemaV2::Result::Country
           _unique_constraints:
             primary: *2
@@ -307,43 +305,42 @@ translator:
           source_name: Artist
         Cd: !!perl/hash:DBIx::Class::ResultSource::Table
           _columns:
-            artist:
-              _inflate_info:
-                deflate: !!perl/code '{ "DUMMY" }'
-                inflate: !!perl/code '{ "DUMMY" }'
+            artist_fk:
               data_type: integer
-            cdid:
+            cd_id:
               data_type: integer
             title:
               data_type: varchar
               size: 96
           _columns_info_loaded: 0
           _ordered_columns:
-            - cdid
-            - artist
+            - cd_id
+            - artist_fk
             - title
           _primaries: &3
-            - cdid
+            - cd_id
           _relationships:
             artist:
               attrs:
-                accessor: filter
+                accessor: single
+                fk_columns:
+                  artist_fk: 1
                 is_foreign_key_constraint: 1
                 undef_on_null_fk: 1
               class: Local::SchemaV2::Result::Artist
               cond:
-                foreign.artistid: self.artist
+                foreign.artist_id: self.artist_fk
               source: Local::SchemaV2::Result::Artist
-            tracks:
+            track_rs:
               attrs:
                 accessor: multi
                 cascade_copy: 1
                 cascade_delete: 1
                 join_type: LEFT
-              class: Local::SchemaV2::Result::Track
+              class: Local::SchemaV1::Result::Track
               cond:
-                foreign.cd: self.cdid
-              source: Local::SchemaV2::Result::Track
+                foreign.cd_fk: self.cd_id
+              source: Local::SchemaV1::Result::Track
           _unique_constraints:
             primary: *3
           name: cd
@@ -354,19 +351,19 @@ translator:
           source_name: Cd
         Country: !!perl/hash:DBIx::Class::ResultSource::Table
           _columns:
-            countryid:
+            country_id:
               data_type: integer
             name:
               data_type: varchar
               size: 96
           _columns_info_loaded: 0
           _ordered_columns:
-            - countryid
+            - country_id
             - name
           _primaries: &4
-            - countryid
+            - country_id
           _relationships:
-            artists:
+            artist_rs:
               attrs:
                 accessor: multi
                 cascade_copy: 1
@@ -374,7 +371,7 @@ translator:
                 join_type: LEFT
               class: Local::SchemaV2::Result::Artist
               cond:
-                foreign.countryfk: self.countryid
+                foreign.country_fk: self.country_id
               source: Local::SchemaV2::Result::Artist
           _unique_constraints:
             primary: *4
@@ -386,32 +383,31 @@ translator:
           source_name: Country
         Track: !!perl/hash:DBIx::Class::ResultSource::Table
           _columns:
-            cd:
-              _inflate_info:
-                deflate: !!perl/code '{ "DUMMY" }'
-                inflate: !!perl/code '{ "DUMMY" }'
+            cd_fk:
               data_type: integer
             title:
               data_type: varchar
               size: 96
-            trackid:
+            track_id:
               data_type: integer
           _columns_info_loaded: 0
           _ordered_columns:
-            - trackid
-            - cd
+            - track_id
+            - cd_fk
             - title
           _primaries: &5
-            - trackid
+            - track_id
           _relationships:
             cd:
               attrs:
-                accessor: filter
+                accessor: single
+                fk_columns:
+                  cd_fk: 1
                 is_foreign_key_constraint: 1
                 undef_on_null_fk: 1
               class: Local::SchemaV2::Result::Cd
               cond:
-                foreign.cdid: self.cd
+                foreign.cd_id: self.cd_fk
               source: Local::SchemaV2::Result::Cd
           _unique_constraints:
             primary: *5
@@ -456,13 +452,13 @@ translator:
           source_name: __VERSION
       storage: !!perl/hash:DBIx::Class::Storage::DBI
         _connect_info:
-          - DBI:SQLite:/Users/johnn/Desktop/App-DBIx-Class-Migration/tutorial/share/local-schema.db
+          - DBI:SQLite:/Users/johnn/Desktop/DBIx-Class-Migration/examples/tutorial/share/local-schema.db
           - ''
           - ''
         _dbh_details: {}
         _dbh_gen: 0
         _dbi_connect_info:
-          - DBI:SQLite:/Users/johnn/Desktop/App-DBIx-Class-Migration/tutorial/share/local-schema.db
+          - DBI:SQLite:/Users/johnn/Desktop/DBIx-Class-Migration/examples/tutorial/share/local-schema.db
           - ''
           - ''
           - &7

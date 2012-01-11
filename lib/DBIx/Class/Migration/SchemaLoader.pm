@@ -1,4 +1,5 @@
-package DBIx::Class::Migration::SchemaLoader;
+package  ## Hide from PAUSE
+  DBIx::Class::Migration::SchemaLoader;
 
 use Moose;
 

@@ -1,13 +1,10 @@
 package DBIx::Class::Migration::Script;
 
 use Moose;
+use MooseX::Attribute::ENV;
 use DBIx::Class::Migration;
 
 with 'MooseX::Getopt';
-
-has migration => (
-  is => 'ro',
-  lazy_build => 1);
 
 has includes => (
   traits => ['Getopt'],
@@ -16,28 +13,41 @@ has includes => (
   predicate => 'has_includes',
   cmd_aliases => ['I', 'libs']);
 
-has schema_class => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str', predicate=>'has_schema_class', cmd_aliases => 'S');
-has target_dir => (traits => [ 'Getopt' ], is => 'ro', isa=> 'Str', predicate=>'has_target_dir', cmd_aliases => 'dir');
-has username => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str', default => '', , cmd_aliases => 'U');
-has password => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str', default => '', cmd_aliases => 'P');
-has dsn => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str');
-has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool', default => 0, cmd_aliases => 'O');
-has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int', predicate=>'has_to_version', cmd_aliases => 'V');
+has schema_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+  predicate=>'has_schema_class', env_prefix=>'DBIC_MIGRATION', cmd_aliases => 'S');
+
+has target_dir => (traits => [ 'Getopt',  ], is => 'ro', isa=> 'Str',
+  predicate=>'has_target_dir', cmd_aliases => 'dir');
+
+has username => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+  default => '', env_prefix=>'DBIC_MIGRATION', cmd_aliases => 'U');
+
+has password => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+  default => '', env_prefix=>'DBIC_MIGRATION', cmd_aliases => 'P');
+
+has dsn => (traits => [ 'Getopt', 'ENV' ], is => 'ro', 
+  env_prefix=>'DBIC_MIGRATION', isa => 'Str');
+
+has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool',
+  default => 0, cmd_aliases => 'O');
+
+has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
+  predicate=>'has_to_version', cmd_aliases => 'V');
 
 has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef', 
-  lazy_build => 1, predicate=>'has_databases', cmd_aliases => 'database');
+  predicate=>'has_databases', cmd_aliases => 'database');
 
 has fixture_sets => (
   traits => [ 'Getopt' ],
   is=>'ro',
   isa=>'ArrayRef',
-  default => sub { +['all'] },
+  default => sub { +['all_tables'] },
   cmd_aliases => 'fixture_set');
 
 has migration => (
   is => 'ro',
   lazy_build => 1,
-  handles=>{
+  handles => {
     cmd_version=>'version',
     cmd_status=>'status',
     cmd_prepare=>'prepare',
@@ -46,7 +56,12 @@ has migration => (
     cmd_downgrade=>'downgrade',
     cmd_drop_tables=>'drop_tables',
     cmd_delete_table_rows=>'delete_table_rows',
-    cmd_dump_all_sets=>'dump_all_sets'});
+    cmd_dump_all_sets=>'dump_all_sets'}
+  );
+
+sub _map_databases_tosqlt {
+  my $databases = shift->databases
+}
 
 sub _build_migration {
   my $self = shift;
@@ -76,13 +91,18 @@ sub cmd_dump_named_sets {
 
 sub cmd_populate {
   my $self = shift;
-  $self->migration->cmd_populate(@{$self->fixture_sets});
+  $self->migration->populate(@{$self->fixture_sets});
 }
 
 sub _import_libs {
   my ($self, @libs) = @_;
   require lib;
   lib->import(@libs);
+}
+
+sub _defaults {
+  my $class = shift;
+  $class->can('defaults') ? $class->defaults : ();
 }
 
 sub run {
@@ -101,7 +121,7 @@ sub run {
 
 sub run_if_script {
   my $class = shift;
-  caller(1) ? 1 : $class->new_with_options()->run;
+  caller(1) ? 1 : $class->new_with_options($class->_defaults)->run;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -120,7 +140,7 @@ DBIx::Class::Migration::Script - Tools to manage database Migrations
 
 =head1 DESCRIPTION
 
-This is a class which is provider interface mapping between the commandline
+This is a class which provides an interface mapping between the commandline
 script L<dbic-migration> and the back end code that does the heavy lifting,
 L<DBIx::Class::Migration>.  This class has very little of it's own
 functionality, since it basically acts as processing glue between that
@@ -134,6 +154,14 @@ reference when you are familiar with the system.
 =head1 ATTRIBUTES
 
 This class defines the following attributes.
+
+=head2 migration
+
+This contains an instance of L<DBIx::Class::Migration> which is constructed
+from various attributes described futher in these docs.
+
+This is basically a delegate for all the commands you perform with this
+interface.
 
 =head2 includes
 
@@ -153,13 +181,8 @@ This is the schema we use as the basic for creating, managing and running your
 deployments.  This should be the full package namespace defining your subclass
 of L<DBIx::Class::Schema>.  For example C<MyApp::Schema>.
 
-If you don't prove this, we will try to guess it by looking for a C<::Schema>
-class in the parent namespace.  This will only work if you create a custom
-subclass of L<App::DBIx::Class::Migration> for your project.  For example, if
-you have a class C<MyApp::Schema::Migration> which is a subclass of
-L<App::DBIx::Class::Migration>, we will assume C<MyApp::Schema> is a subclass
-of L<DBIx::Class::Schema> and assume that is the name of the L</schema_class>
-you wish to use.
+Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+DBIC_MIGRATION_SCHEMA_CLASS
 
 If the L</schema_class> cannot be loaded, a hard exception will be thrown.
 
@@ -177,6 +200,9 @@ considered a community practice in regards to where to store your distribution
 non code files.  Please see L<File::ShareDir::ProjectDistDir> as well as
 L<File::ShareDir> for more information.
 
+Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+DBIC_MIGRATION_TARGET_DIR
+
 =head2 username
 
 Accepts Str.  Not Required
@@ -184,12 +210,18 @@ Accepts Str.  Not Required
 This should be the username for the database we connect to for deploying
 ddl, ddl changes and fixtures.
 
+Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+DBIC_MIGRATION_USERNAME
+
 =head2 password
 
 Accepts Str.  Not Required
 
 This should be the password for the database we connect to for deploying
 ddl, ddl changes and fixtures.
+
+Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+DBIC_MIGRATION_PASSWORD
 
 =head2 dsn
 
@@ -221,11 +253,14 @@ enforce constraints differently it would not be impossible to generate fixtures
 that can be loaded by one database but not another.  Therefore I recommend
 always generated fixtures from a database that is consistent across enviroments.
 
+Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+DBIC_MIGRATION_DSN
+
 =head2 force_overwrite
 
 Accepts Bool.  Not Required.  Defaults to False.
 
-Used when building L</_dh> to en / disable  the L<DBIx::Class::DeploymentHandler>
+Used when building L</migration> to en / disable  the L<DBIx::Class::DeploymentHandler>
 option C<force_overwrite>.  This is used when generating DDL and related
 files for a given version of your L</_schema> to decide if it is ok to overwrite
 deployment files.  You might need this if you deploy a version of the database
@@ -248,7 +283,7 @@ your $schema->version.
 
 Accepts ArrayRef.  Not Required.
 
-Used when building L</_dh> to define the target databases we are building
+Used when building L</migration> to define the target databases we are building
 migration files for.  You can name any of the databases currently supported by
 L<SQLT>.  If you leave this undefined we will derive a value based on the value
 of L</dsn>.  For example, if your L</dsn> is "DBI:SQLite:test.db", we will set
@@ -256,10 +291,10 @@ the valuye of L</databases> to C<['SQLite']>.
 
 =head2 fixture_sets
 
-Accepts ArrayRef.  Not Required. Defaults to ['all'].
+Accepts ArrayRef.  Not Required. Defaults to ['all_tables'].
 
 This defines a list of fixture sets that we use for dumping or populating
-fixtures.  Defaults to the C<['all']> set, which is the one set we build
+fixtures.  Defaults to the C<['all_tables']> set, which is the one set we build
 automatically for each version of the database we prepare deployments for.
 
 =head1 COMMANDS
@@ -270,7 +305,73 @@ Since this class consumes the L<MooseX::GetOpt> role, it can be run directly
 as a commandline application.  The following is a list of commands we support
 as well as the options / flags associated with each command.
 
-=head2 flags
+=head2 help
+
+Summary of commands and aliases.
+
+=head2 version
+
+prints the current version of the application to STDOUT
+
+=head2 status
+
+Returns the state of the deployed database (if it is deployed) and the state
+of the current C<schema>
+
+=head2 prepare
+
+Creates a C<fixtures> and C<migrations> directory under L</target_dir> (if they
+don't already exist) and makes deployment files for the current schema.  If
+deployment files exist, will fail unless you L</overwrite_migrations> and
+L</overwrite_fixtures>.
+
+=head2 install
+
+Installs either the current schema version (if already prepared) or the target
+version specified via L</to_version> to the database connected via the L</dsn>,
+L</username> and L</password>
+
+=head2 upgrade
+
+Run upgrade files to either bring the database into sync with the current
+schema version, or stop at an intermediate version specified via L</to_version>
+
+=head2 downgrade
+
+Run down files to bring the database down to the version specified via
+L</to_version>
+
+=head2 dump_named_sets
+
+Given listed L<fixture_sets>, dump files for the current database version (not
+the current schema version)
+
+=head2 dump_all_sets
+
+Just dump all the sets for the current database
+
+=head2 populate
+
+Given listed L<fixture_sets>, populate a database with fixtures for the matching
+version (matches database version to fixtures, not the schema version)
+
+=head2 drop_tables
+
+Drops all the tables in the connected database with no backup or recovery.  For
+real! (Make sure you are not connected to Prod, for example)
+
+=head2 delete_table_rows
+
+does a C<delete> on each table in the database, which clears out all your data
+but preserves tables.  For Real!  You might want this if you need to load
+and unload fixture sets during testing, or perhaps to get rid of data that
+accumulated in the database while running an app in development, before dumping
+fixtures.
+
+Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
+deployment info (this is different from L</drop_tables> which does delete it.)
+
+=head2 Command Flags
 
 The following flags are used to modify or inform commands.
 
@@ -332,15 +433,7 @@ at L</target_dir>.
 
     dbic_migration install --username myuser --password mypass --dsn DBI:SQLite:mydb.db
 
-=head3 deployment_handler_class
-
-Value: Str
-
-Lets you use something other than L<DBIx::Class::DeploymentHandler> as your
-base class for created deployment handlers.  You might wish to change this if
-you have a custom version of the deployment tool.
-
-=head3 overwrite_migrations
+=head3 force_overwrite
 
 Aliases: O
 Value: Bool (default: False)
@@ -351,16 +444,6 @@ first).  This lets you deploy over an existing set.  This will of course destroy
 and manual modifications you made, buyer beware.)
 
     dbic_migration prepare --overwrite_migrations
-
-=head3 drop_tables
-
-Aliases: D
-Value: Bool (default: False)
-
-Used to influence how L<SQLT> created a DDL for your migration.  If this is
-enabled, we add a 'drop table $TABLE' statement before each create table
-statement.  Personally I used the command 'drop_tables', but you might prefer
-this method.
 
 =head3 to_version
 
@@ -389,19 +472,6 @@ the L<dsn> you specified but you can use this to prepare additional deployments
 Please note if you choose to manually set this value, you won't automatically
 get the default, unless you specify as above
 
-=head3 dbic_fixtures_class
-
-Value: Str (default: DBIx::Class::Fixtures)
-
-If you've created a custom subclass of L<DBIx::Class::Fixtures> and want to use
-it, this is how to do it.
-
-=head3 overwrite_fixtures
-
-Value: Bool (default: False)
-
-Lets you overwrite previously created fixtures for a given schema version.
-
 =head3 fixture_sets
 
 Alias: fixture_set
@@ -412,10 +482,10 @@ When dumping or populating fixture sets, you use this to set which sets.
     dbic_migration dump --fixture_set roles --fixture_set core
 
 Please note that if you manually describe your sets as in the above example,
-you don't automatically get the C<all> set, which is a fixture set of all
+you don't automatically get the C<all_tables> set, which is a fixture set of all
 database information and not 'all' the sets.
 
-We automatically create the C<all> fixture set description file for you when
+We automatically create the C<all_tables> fixture set description file for you when
 you prepare a new migration of the schema.  You can use this set for early
 testing but I recommend you study L<DBIx::Class::Fixtures> and learn the set
 configuration rules, and create limited fixture sets for given purposes, rather
@@ -426,67 +496,37 @@ such as role types, default users, lists of countries, etc. and then create a
 'demo' or 'dev' set that contains extra information useful to populate a
 database so that you can run test cases and develop against.
 
-=head2 help
+=head1 EXAMPLES
 
-Summary of commands and aliases.
+Please see L<DBIx::Class::Migration::Tutorial> for more.  Here's some basic use
+cases.
 
-=head2 version
+head2 Prepare deployment files for a schema
 
-prints the current version of the application to STDOUT
+    dbic_migration prepare --schema_class MyApp::Schema
 
-=head2 status
+This will prepare deployment files for just SQLite
 
-Returns the state of the deployed database (if it is deployed) and the state
-of the current C<schema>
+    dbic_migration prepare --database SQLite --database mysql \
+      --schema_class MyApp::Schema
 
-=head2 prepare
+This will prepare deployment files for both SQLite and MySQL
 
-Creates a C<fixtures> and C<migrations> directory under L</target_dir> (if they
-don't already exist) and makes deployment files for the current schema.  If
-deployment files exist, will fail unless you L</overwrite_migrations> and
-L</overwrite_fixtures>.
+head2 Install database from deployments
 
-=head2 install
+    dbic_migration install --schema_class MyApp::Schema
 
-Installs either the current schema version (if already prepared) or the target
-version specified via L</to_version> to the database connected via the L</dsn>,
-L</username> and L</password>
+Creates the default sqlite database in the C<share> directory.
 
-=head2 upgrade
+    dbic_migration install --schema_class MyApp::Schema --to_version 2
 
-Run upgrade files to either bring the database into sync with the current
-schema version, or stop at an intermediate version specified via L</to_version>
+Same as the previous command, but installs version 2, instead of whatever is
+the most recent version
 
-=head2 downgrade
+    dbic_migration populate --schema_class MyApp::Schema --fixture_set seed
 
-Run down files to bring the database down to the version specified via
-L</to_version>
-
-=head2 dump
-
-Given listed L<fixture_sets>, dump files for the current database version (not
-the current schema version)
-
-=head2 populate
-
-Given listed L<fixture_sets>, populate a database with fixtures for the matching
-version (matches database version to fixtures, not the schema version)
-
-=head2 drop_tables
-
-Drops all the tables in the connected database with no backup or recovery.  For
-real! (Make sure you are not connected to Prod, for example)
-
-=head2 delete_table_rows
-
-does a C<delete> on each table in the database, which clears out all your data
-but preserves tables.  For Real!  You might want this if you need to load
-and unload fixture sets during testing, or perhaps to get rid of data that
-accumulated in the database while running an app in development, before dumping
-fixtures.
-
-Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
-deployment info (this is different from L</drop_tables> which does delete it.)
+Populates the C<seed> fixture set to the current database (matches the database
+version to the seed version.
 
 =head1 AUTHOR
 
@@ -494,7 +534,7 @@ John Napiorkowski L<email:jjnapiork@cpan.org>
 
 =head1 SEE ALSO
 
-L<DBIx::Class::Migrations>, L<MooseX::Getopt>.
+L<DBIx::Class::Migration>, L<MooseX::Getopt>.
 
 =head1 COPYRIGHT & LICENSE
 

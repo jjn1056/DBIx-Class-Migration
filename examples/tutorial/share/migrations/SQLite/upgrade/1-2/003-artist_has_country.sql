@@ -4,24 +4,24 @@
 BEGIN;
 
 CREATE TEMPORARY TABLE artist_temp_alter (
-  artistid INTEGER PRIMARY KEY NOT NULL,
+  artist_id INTEGER PRIMARY KEY NOT NULL,
   name varchar(96) NOT NULL
 );
 
-INSERT INTO artist_temp_alter SELECT artistid, name FROM artist;
+INSERT INTO artist_temp_alter SELECT artist_id, name FROM artist;
 
 DROP TABLE artist;
 
 CREATE TABLE artist (
-  artistid INTEGER PRIMARY KEY NOT NULL,
-  countryfk integer NOT NULL DEFAULT 1,
+  artist_id INTEGER PRIMARY KEY NOT NULL,
+  country_fk integer NOT NULL DEFAULT 1,
   name varchar(96) NOT NULL,
-  FOREIGN KEY(countryfk) REFERENCES country(countryid)
+  FOREIGN KEY(country_fk) REFERENCES country(country_id)
 );
 
-CREATE INDEX artist_idx_countryfk ON artist (countryfk);
+CREATE INDEX artist_idx_country_fk ON artist (country_fk);
 
-INSERT INTO artist SELECT artistid, 1, name FROM artist_temp_alter;
+INSERT INTO artist SELECT artist_id, 1, name FROM artist_temp_alter;
 
 DROP TABLE artist_temp_alter;
 

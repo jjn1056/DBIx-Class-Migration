@@ -35,7 +35,6 @@ By the completion of the tutorial I would expect you to understand how to
 prepare and install migrations, create custom deployment steps (and modify
 the stubs created during the prepare phase) as well as perform standard
 development workflows for testing and roundtripping a database.
-use cases and presents next steps.
 
 All code mentioned can be found the C</examples/tutorial> directory
 contained in the distribution installation files.  Additionally, we will use
@@ -54,7 +53,7 @@ John Napiorkowski L<email:jjnapiork@cpan.org>
 
 =head1 SEE ALSO
 
-L<App::DBIx::Class::Migration>
+L<App::DBIx::Class::Migration>, L<DBIx::Class::Manual::Example>
 
 =head1 COPYRIGHT & LICENSE
 

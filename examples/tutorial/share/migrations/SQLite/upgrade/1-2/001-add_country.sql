@@ -5,7 +5,7 @@ BEGIN;
 
 ;
 CREATE TABLE country (
-  countryid INTEGER PRIMARY KEY NOT NULL,
+  country_id INTEGER PRIMARY KEY NOT NULL,
   name varchar(96) NOT NULL
 );
 

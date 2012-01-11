@@ -2,7 +2,7 @@ sub {
   shift->resultset('Artist')
     ->create({
       name => 'JoJo',
-      countryfk => {name=>'USA'},
+      country_fk => {name=>'USA'},
       cds => [{title=>'My Cool New Album'}],
     });
 }

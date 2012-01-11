@@ -10,10 +10,12 @@ use File::Path 'mkpath', 'remove_tree';
 use File::ShareDir::ProjectDistDir ();
 use DBIx::Class::Migration::SchemaLoader;
 use MooseX::Types::LoadableClass 'LoadableClass';
+use Class::Load 'load_class';
 
 has schema_class => (
   is => 'ro',
   predicate=>'has_schema_class',
+  required=>0,
   isa => LoadableClass,
   coerce=>1);
 
@@ -28,7 +30,7 @@ has schema_args => (is=>'ro', isa=>'ArrayRef', lazy_build=>1);
   sub _generate_dsn {
     my ($schema_class, $target_dir) = @_;
     my $filename = _generate_filename_for_default_db($schema_class);
-    'DBI:SQLite:'. File::Spec->catfile($target_dir, "$filename.db");
+    'DBI:SQLite:'. catfile($target_dir, "$filename.db");
   }
 
   sub _build_schema_args {
@@ -36,7 +38,7 @@ has schema_args => (is=>'ro', isa=>'ArrayRef', lazy_build=>1);
     [ _generate_dsn($self->schema_class, $self->target_dir), '', '' ];
   }
 
-has schema => (is=>'ro', lazy_build=>1);
+has schema => (is=>'ro', lazy_build=>1, predicate=>'has_schema');
 
   sub _build_schema {
     my ($self) = @_;
@@ -104,7 +106,9 @@ has deployment_handler_class => (
     my $storage = shift->storage;
     $storage->ensure_connected;
     my $storage_specific_class = ref($storage);
-    return ($storage =~m/DBI::(.+)\=/)[0] || 'SQLite';
+    my $inferred_storage = ($storage =~m/DBI::(.+)\=/)[0] || 'SQLite';
+    $inferred_storage = 'MySQL' if $inferred_storage eq 'mysql'; #Ugg
+    return $inferred_storage;
   }
 
   sub _build_dbic_dh {
@@ -112,6 +116,9 @@ has deployment_handler_class => (
     my $databases = $self->dbic_dh_args->{databases} ?
       delete($self->dbic_dh_args->{databases}) :
       [_infer_database_from_schema($self->schema)];
+
+    (load_class "SQL::Translator::Producer::$_" ||
+      die "No SQLT Producer for $_") for @$databases;
 
     $self->deployment_handler_class->new({
       schema => $self->schema,
@@ -302,10 +309,12 @@ sub dump_all_sets {
 sub populate {
   (my $self = shift)->dbic_dh->version_storage_is_installed
     || die "No Database to dump!";
+  my $version_to_populate = $self->dbic_dh->database_version ||
+    $self->dbic_dh->to_version;
 
   foreach my $set(@_) {
     my $target_dir = _prepare_fixture_data_dir($self->target_dir,
-      $self->dbic_dh->database_version, $set);
+      $version_to_populate, $set);
 
     $self->build_dbic_fixtures->populate({
       no_deploy => 1,
@@ -329,13 +338,12 @@ DBIx::Class::Migration - Make database migrations possible
     use DBIx::Class::DeploymentHander;
     use MyApp::Schema;
 
-    my $migrations = DBIx::Class::Migration->new(
+    my $migration = DBIx::Class::Migration->new(
       schema_class => MyApp::Schema;
     );
 
-    $migrations->prepare;
-    $migrations->dump;
-
+    $migration->prepare;
+    $migration->install;
 
 =head1 DESCRIPTION
 
@@ -363,11 +371,8 @@ difficult architectual issues, you might be better off building something on
 top of L<DBIx::Class::DeploymentHandler> directly.
 
 L<DBIx::Class::Migration> is a base class upon which interfaces like
-L<DBIx::Class::Migration::Script> and L<Test::DBIx::Class::Migration> are built.
-This class is not going to be directly useful to you unless you are writing
-custom deployment code (in which case it might be better for you to build
-something directly on top of L<DBIx::Class::DeploymentHandler> and the related
-deployment software ecosystem.
+L<DBIx::Class::Migration::Script> are built.  In the future hopefully there
+will be other interfaces for particular needs, such as testing.
 
 Please see L<DBIx::Class::Migration::Tutorial> for more approachable
 documentation.  The remainder of this POD is API level documentation on the
@@ -385,19 +390,14 @@ This is the schema we use as the basic for creating, managing and running your
 deployments.  This should be the full package namespace defining your subclass
 of L<DBIx::Class::Schema>.  For example C<MyApp::Schema>.
 
-If you don't prove this, we will try to guess it by looking for a C<::Schema>
-class in the parent namespace.  This will only work if you create a custom
-subclass of L<App::DBIx::Class::Migration> for your project.  For example, if
-you have a class C<MyApp::Schema::Migration> which is a subclass of
-L<App::DBIx::Class::Migration>, we will assume C<MyApp::Schema> is a subclass
-of L<DBIx::Class::Schema> and assume that is the name of the L</schema_class>
-you wish to use.
-
 If the L</schema_class> cannot be loaded, a hard exception will be thrown.
 
 =head2 schema_args
 
 Accepts ArrayRef.  Required but lazily builds from defaults
+
+Provides arguments passed to C<connect> on your L</schema_class>.  Should
+connect to a database.
 
 This is an arrayref that would work the same as L<DBIx::Class::Schema/connect).
 If you choose to create an instance of L<DBIx::Class::Migration> by providing a

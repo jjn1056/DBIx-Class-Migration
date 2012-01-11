@@ -3,7 +3,7 @@ use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('artist');
 __PACKAGE__->add_columns(
-  'artistid' => {
+  'artist_id' => {
     data_type => 'integer',
   },
   'name' => {
@@ -11,7 +11,9 @@ __PACKAGE__->add_columns(
     size => '96',
   });
 
-__PACKAGE__->set_primary_key('artistid');
-__PACKAGE__->has_many('cds' => "Local::SchemaV1::Result::Cd");
+__PACKAGE__->set_primary_key('artist_id');
+__PACKAGE__->has_many(
+  'cd_rs' => 'Local::SchemaV1::Result::Cd',
+  {'foreign.artist_fk'=>'self.artist_id'});
 
 1;

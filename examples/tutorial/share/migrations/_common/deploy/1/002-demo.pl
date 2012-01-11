@@ -21,7 +21,7 @@ sub {
   }
 
   $schema->populate('Cd', [
-    [qw/title artist/],
+    [qw/title artist_fk/],
     @cds,
   ]);
 
@@ -45,7 +45,7 @@ sub {
   }
 
   $schema->populate('Track',[
-    [qw/cd title/],
+    [qw/cd_fk title/],
     @tracks,
   ]);
 };

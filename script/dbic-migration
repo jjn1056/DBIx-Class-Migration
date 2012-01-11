@@ -3,3 +3,37 @@
 use DBIx::Class::Migration::Script;
 DBIx::Class::Migration::Script
   ->new_with_options->run;
+
+=head1 NAME
+
+dbic-migration - commandline tool to create and manage your migrations
+
+=head1 SYNOPSIS
+
+    dbic-migration status \
+      --libs="lib"
+      --schema_class='MyApp::Schema' \
+      --dns='DBI:SQLite:myapp.db'
+
+=head1 DESCRIPTION
+
+This is a script interface to L<DBIx::Class::Migration::Script>.  For now you
+should review those docs and see the L<DBIx::Class::Migration::Tutorial>.
+
+=head1 AUTHOR
+
+John Napiorkowski L<email:jjnapiork@cpan.org>
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration::Script>.
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2012, John Napiorkowski L<email:jjnapiork@cpan.org>
+
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
+
+=cut
+
