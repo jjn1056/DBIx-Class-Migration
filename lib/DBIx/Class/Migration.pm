@@ -672,7 +672,7 @@ version
 =head make_schema
 
 Given an existing database, reverse engineer a L<DBIx::Class> Schema in the
-L</target_dir> (under C<dumped_db).  You can use this if you need to bootstrap
+L</target_dir> (under C<dumped_db>).  You can use this if you need to bootstrap
 your DBIC files.
 
 =head2 populate

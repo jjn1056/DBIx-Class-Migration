@@ -328,6 +328,10 @@ Given an array of set names, dump them for the current database version
 Takes no arguments just dumps all the sets we can find for the current database
 version
 
+Given an existing database, reverse engineer a [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) Schema in the
+["target_dir"](#target_dir) (under `dumped_db`).  You can use this if you need to bootstrap
+your DBIC files.
+
 ## populate
 
 Given an array of fixture set names, populate the current database version with
