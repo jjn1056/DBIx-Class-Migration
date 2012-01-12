@@ -539,20 +539,17 @@ the most recent version
 Populates the C<seed> fixture set to the current database (matches the database
 version to the seed version.
 
-=head1 AUTHOR
-
-John Napiorkowski L<email:jjnapiork@cpan.org>
-
 =head1 SEE ALSO
 
-L<DBIx::Class::Migration>, L<MooseX::Getopt>.
+L<App::DBIx::Class::Migration>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2012, John Napiorkowski L<email:jjnapiork@cpan.org>
-
-This library is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.
+See L<DBIx::Class::Migration> for copyright and license information
 
 =cut
 

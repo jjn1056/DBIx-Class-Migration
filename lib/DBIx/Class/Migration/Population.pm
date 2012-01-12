@@ -137,19 +137,17 @@ You don't have any control over which version we are trying to populate, we
 always use the declared schema Version.  We assume you have an existing
 deployed database that matches the current schema.
 
-=head1 AUTHOR
-
-John Napiorkowski L<email:jjnapiork@cpan.org>
-
 =head1 SEE ALSO
 
-L<DBIx::Class::Migration>.
+L<App::DBIx::Class::Migration>, L<DBIx::Class::Manual::Example>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2012, John Napiorkowski L<email:jjnapiork@cpan.org>
-
-This library is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.
+See L<DBIx::Class::Migration> for copyright and license information
 
 =cut
+
