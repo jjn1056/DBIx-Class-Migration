@@ -532,7 +532,7 @@ following defaults:
       script_directory => Points to catdir($self->target_dir, 'migrations')
       databases => Inferred from your connected schema, defaults to SQLite
 
- L</dbic_dh_args> will overwrite the defaults, if you pass them.
+L</dbic_dh_args> will overwrite the defaults, if you pass them.
 
 =head1 METHODS
 
@@ -669,7 +669,7 @@ Given an array of set names, dump them for the current database version
 Takes no arguments just dumps all the sets we can find for the current database
 version
 
-=head make_schema
+=head2 make_schema
 
 Given an existing database, reverse engineer a L<DBIx::Class> Schema in the
 L</target_dir> (under C<dumped_db>).  You can use this if you need to bootstrap
