@@ -346,7 +346,6 @@ DBIx::Class::Migration - Make database migrations possible
 =head1 SYNOPSIS
 
     use DBIx::Class::Migration;
-    use DBIx::Class::DeploymentHander;
     use MyApp::Schema;
 
     my $migration = DBIx::Class::Migration->new(
