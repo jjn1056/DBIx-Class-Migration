@@ -1,0 +1,4 @@
+$HASH1 = {
+           code       => 'can',
+           country_id => 1
+         };

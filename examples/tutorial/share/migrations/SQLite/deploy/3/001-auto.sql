@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Wed Jan 11 18:17:21 2012
+-- Created on Wed Jan 11 21:47:21 2012
 -- 
 
 ;
@@ -17,8 +17,9 @@ CREATE TABLE cd (
 --
 CREATE TABLE country (
   country_id INTEGER PRIMARY KEY NOT NULL,
-  name varchar(96) NOT NULL
+  code char(3) NOT NULL
 );
+CREATE UNIQUE INDEX country_code ON country (code);
 --
 -- Table: artist
 --

@@ -12,7 +12,7 @@ __PACKAGE__->add_columns(
   });
 
 __PACKAGE__->set_primary_key('country_id');
-__PACKAGE__->add_unique_constraint(['code']);
+__PACKAGE__->add_unique_constraint(['name']);
 __PACKAGE__->has_many(
   'artist_rs' => "Local::SchemaV2::Result::Artist",
   {'foreign.country_fk'=>'self.country_id'});

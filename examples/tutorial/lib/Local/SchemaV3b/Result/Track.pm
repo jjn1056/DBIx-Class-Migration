@@ -16,7 +16,7 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key('track_id');
 __PACKAGE__->belongs_to(
-  'cd' => "Local::SchemaV3a::Result::Cd",
+  'cd' => "Local::SchemaV3b::Result::Cd",
   {'foreign.cd_id'=>'self.cd_fk'});
  
 1;

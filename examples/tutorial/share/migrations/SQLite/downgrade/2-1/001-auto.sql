@@ -28,9 +28,6 @@ INSERT INTO artist SELECT artist_id, name FROM artist_temp_alter;
 DROP TABLE artist_temp_alter;
 
 ;
-DROP INDEX track_fk_cd_fk;
-
-;
 DROP TABLE country;
 
 ;

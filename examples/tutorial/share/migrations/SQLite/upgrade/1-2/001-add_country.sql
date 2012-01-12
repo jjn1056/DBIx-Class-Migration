@@ -9,5 +9,10 @@ CREATE TABLE country (
   name varchar(96) NOT NULL
 );
 
+;
+CREATE UNIQUE INDEX country_name ON country (name);
+
+;
+
 COMMIT;
 

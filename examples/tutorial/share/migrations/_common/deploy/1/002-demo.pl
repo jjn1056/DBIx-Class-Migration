@@ -25,7 +25,6 @@ sub {
     @cds,
   ]);
 
-
   my %tracks = (
     'Beat It'         => 'Thriller',
     'Billie Jean'     => 'Thriller',

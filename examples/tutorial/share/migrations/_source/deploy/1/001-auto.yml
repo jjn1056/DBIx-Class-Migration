@@ -336,11 +336,14 @@ translator:
           resultset_class: DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResultSet
           schema: *1
           source_name: __VERSION
-      storage: !!perl/hash:DBIx::Class::Storage::DBI
+      storage: !!perl/hash:DBIx::Class::Storage::DBI::SQLite
+        _conn_pid: 6738
         _connect_info:
           - DBI:SQLite:/Users/johnn/Desktop/DBIx-Class-Migration/examples/tutorial/share/local-schema.db
           - ''
           - ''
+        _dbh: !!perl/hash:DBI::db {}
+        _dbh_autocommit: 1
         _dbh_details: {}
         _dbh_gen: 0
         _dbi_connect_info:
@@ -353,6 +356,7 @@ translator:
             RaiseError: 1
             ShowErrorStatement: 1
         _dbic_connect_attributes: *6
+        _driver_determined: 1
         _in_do_block: 0
         _sql_maker: ~
         _sql_maker_opts: {}
