@@ -463,7 +463,7 @@ L<File::ShareDir> for more information.
 This uses whatever is in L</schema_class> to determine your project (and look
 for a C<share> directory, which you'll need to create in your project root).
 If you dont' have a L</schema_class> defined, you must have a L</schema>,
-and we'll infer the class via C<ref($self->schema)>.
+and we'll infer the class via C<<ref($self->schema)>>.
 
 =head2 schema_loader_class
 
@@ -515,7 +515,7 @@ Used to pass custom args when building a L<DBIx::Class::DeploymentHandler>.
 Please see the docs for that class for more.  Useful args might be C<databases>,
 C<to_version> and C<force_overwrite>.
 
-=head3 dbic_dh
+=head2 dbic_dh
 
 Accepts Instance of L<DBIx::Class::DeploymentHandler>.  Required but lazily
 built from default data and L<dbic_dh_args>.

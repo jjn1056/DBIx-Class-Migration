@@ -122,7 +122,7 @@ non code files.  Please see [File::ShareDir::ProjectDistDir](http://search.cpan.
 This uses whatever is in ["schema_class"](#schema_class) to determine your project (and look
 for a `share` directory, which you'll need to create in your project root).
 If you dont' have a ["schema_class"](#schema_class) defined, you must have a ["schema"](#schema),
-and we'll infer the class via `ref($self-`schema)>.
+and we'll infer the class via `<ref($self-`schema)>>.
 
 ## schema_loader_class
 
@@ -174,7 +174,7 @@ Used to pass custom args when building a [DBIx::Class::DeploymentHandler](http:/
 Please see the docs for that class for more.  Useful args might be `databases`,
 `to_version` and `force_overwrite`.
 
-### dbic_dh
+## dbic_dh
 
 Accepts Instance of [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).  Required but lazily
 built from default data and [dbic_dh_args](http://search.cpan.org/perldoc?dbic_dh_args).
