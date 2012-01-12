@@ -61,10 +61,6 @@ has migration => (
   lazy_build => 1,
   handles => { _delegated_commands });
 
-sub _map_databases_tosqlt {
-  my $databases = shift->databases
-}
-
   sub _prepare_schema_args {
     my $self = shift;
     my @schema_args;
@@ -93,12 +89,14 @@ sub _build_migration {
 
 sub cmd_dump_named_sets {
   my $self = shift;
-  $self->migration->dump_named_sets(@{$self->fixture_sets});
+  $self->migration
+    ->dump_named_sets(@{$self->fixture_sets});
 }
 
 sub cmd_populate {
   my $self = shift;
-  $self->migration->populate(@{$self->fixture_sets});
+  $self->migration
+    ->populate(@{$self->fixture_sets});
 }
 
 sub _import_libs {
