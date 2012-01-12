@@ -12,10 +12,25 @@ In this section you will change you database and learn how to create upgrade
 files.  You will also create some custom fixture configurations and learn
 about creating seed data.
 
-=head1 Change you Schema
+=head1 Changing Requirements
 
 So far your L<MusicBase> application is doing fine, but some new requirements
-come down.
+come down.  In addition to storing the Artist's name, we now want to store
+some geolocation information, in this case a Country that can be associated
+with the Artist.  Right now we are just going to care about Artists that can
+be located in one of the three following Countries:
+
+    Canada
+    Mexico
+    USA
+
+We'll need to seed that data to the database and also track it via some custom
+fixture configurations.  That way if you need to start a new database from go
+you can get both the table structure and the essential running information (in
+this case the list of countries we care about could be considered system / 
+domain data, not transactional data).  Let's do it!
+
+=head1 Change you Schema
 
 =head1 SUMMARY
 
