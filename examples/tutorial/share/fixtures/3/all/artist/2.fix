@@ -1,5 +1,0 @@
-$HASH1 = {
-           artistid  => 2,
-           countryfk => 1,
-           name      => 'Eminem'
-         };
