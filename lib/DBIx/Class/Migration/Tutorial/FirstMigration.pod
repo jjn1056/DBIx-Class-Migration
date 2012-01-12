@@ -431,7 +431,7 @@ database development.
 
 =head1 NEXT STEPS
 
-Proceed to L<DBIx::Class::Migration::Tutorial::>.
+Proceed to L<DBIx::Class::Migration::Tutorial::SecondMigration>.
 
 =head1 AUTHOR
 
