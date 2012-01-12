@@ -399,7 +399,7 @@ Accepts ArrayRef.  Required but lazily builds from defaults
 Provides arguments passed to C<connect> on your L</schema_class>.  Should
 connect to a database.
 
-This is an arrayref that would work the same as L<DBIx::Class::Schema/connect).
+This is an arrayref that would work the same as L<DBIx::Class::Schema/connect>.
 If you choose to create an instance of L<DBIx::Class::Migration> by providing a
 L<schema_class>, you can use this to customize how we connect to a database.
 

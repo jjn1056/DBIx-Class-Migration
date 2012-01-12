@@ -1,0 +1,373 @@
+# NAME
+
+DBIx::Class::Migration - Make database migrations possible
+
+# SYNOPSIS
+
+    use DBIx::Class::Migration;
+    use DBIx::Class::DeploymentHander;
+    use MyApp::Schema;
+
+    my $migration = DBIx::Class::Migration->new(
+      schema_class => MyApp::Schema;
+    );
+
+    $migration->prepare;
+    $migration->install;
+
+# DESCRIPTION
+
+[DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) is a state of the art solution to the problem
+of creating sane workflows for versioning [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) managed database
+projects.  However, since it is more of a toolkit for building custom versioning
+and migration workflows than an expression of a particular migration practice,
+it might not always be the most approachable tool.  If you are starting a new
+[DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) project and you don't have a particular custom workflow need,
+you might prefer to simple be given a reasonable clear and standard practice,
+rather than a toolkit with a set of example scripts.
+
+[DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) defines some logic which combines both
+[DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) and [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures), along with
+a standard tutorial, to give you a simple and straightforward approach to
+solving the problem of how to best create database versions, migrations and
+testing data.  It offers code and advice based on my experience of using
+[DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) for several years, which hopefully can help you bootstrap out of
+the void.  The solutions given should work for you if you want to use [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class)
+and have database migrations, but don't really know what to do next.  These
+solutions should scale upward from a small project to a medium project involving
+many developers and more than one target environment (DEV -> QA -> Production.)
+If you have very complex database versioning requirements, huge teams and
+difficult architectual issues, you might be better off building something on
+top of [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) directly.
+
+[DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) is a base class upon which interfaces like
+[DBIx::Class::Migration::Script](http://search.cpan.org/perldoc?DBIx::Class::Migration::Script) are built.  In the future hopefully there
+will be other interfaces for particular needs, such as testing.
+
+Please see [DBIx::Class::Migration::Tutorial](http://search.cpan.org/perldoc?DBIx::Class::Migration::Tutorial) for more approachable
+documentation.  The remainder of this POD is API level documentation on the
+various internals.
+
+# ATTRIBUTES
+
+This class defines the following attributes.
+
+## schema_class
+
+Accepts Str.  Not Required (but if missing, you need to populate ["schema"](#schema)).
+
+This is the schema we use as the basic for creating, managing and running your
+deployments.  This should be the full package namespace defining your subclass
+of [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema).  For example `MyApp::Schema`.
+
+If the ["schema_class"](#schema_class) cannot be loaded, a hard exception will be thrown.
+
+## schema_args
+
+Accepts ArrayRef.  Required but lazily builds from defaults
+
+Provides arguments passed to `connect` on your ["schema_class"](#schema_class).  Should
+connect to a database.
+
+This is an arrayref that would work the same as ["connect" in DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema#connect).
+If you choose to create an instance of [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) by providing a
+[schema_class](http://search.cpan.org/perldoc?schema_class), you can use this to customize how we connect to a database.
+
+If you don't provide a value, we will automatically create a SQLite based
+database connection with the following DSN:
+
+    DBD:SQLite:[path to target_dir]/[db_file_name].db
+
+Where c<[path to home_dir]> is ["target_dir"](#target_dir) and [db_file_name] is a converted
+version of ["schema_class"](#schema_class).  For example if you set [schema_class](http://search.cpan.org/perldoc?schema_class) to:
+
+    MyApp::Schema
+
+Then [db_file_name] would be `myapp-schema`.
+
+Basically, this means you can start testing your database designs right off
+without a lot of effort, just point at a [schema_class](http://search.cpan.org/perldoc?schema_class) and get deploying!
+
+## schema
+
+Accepts: Object of [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema).  Not required.
+
+If you already have a connected schema (subclass of [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema))
+you can simple point to it, skipping [schema_class](http://search.cpan.org/perldoc?schema_class) and [schema_args](http://search.cpan.org/perldoc?schema_args).  You
+might for example be using [Catalyst](http://search.cpan.org/perldoc?Catalyst) and want to build deployments for
+database that are part of your configuration:
+
+    use MyCatalyst::App;
+    use DBIx::Class::Migration;
+
+    my $migration = DBIx::Class::Migration->new(
+      schema => MyCatalyst::App->model('Schema')->schema,
+      %{MyCatalyst::App->config->{extra_migration_init_args}};
+    );
+
+## target_dir
+
+Accepts Str.  Required.
+
+This is the directory we store our migration and fixture files.  Inside this
+directory we will create a `fixtures` and `migrations` sub-directory.
+
+Although you can specify the directory, if you leave it undefined, we will use
+[File::ShareDir::ProjectDistDir](http://search.cpan.org/perldoc?File::ShareDir::ProjectDistDir) to locate the `share` directory for your
+project and place the files there.  This is the recommended approach, and is
+considered a community practice in regards to where to store your distribution
+non code files.  Please see [File::ShareDir::ProjectDistDir](http://search.cpan.org/perldoc?File::ShareDir::ProjectDistDir) as well as
+[File::ShareDir](http://search.cpan.org/perldoc?File::ShareDir) for more information.
+
+This uses whatever is in ["schema_class"](#schema_class) to determine your project (and look
+for a `share` directory, which you'll need to create in your project root).
+If you dont' have a ["schema_class"](#schema_class) defined, you must have a ["schema"](#schema),
+and we'll infer the class via `ref($self-`schema)>.
+
+## schema_loader_class
+
+Accepts Str.  Required
+
+Because your application subclass of [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema) is going to
+change a lot, sometimes we need to generate our own schema and get one that is
+in a known, good state.  Mostly this is used by the commands to drop tables
+and clear tables.
+
+Defaults to [DBIx::Class::Migration::SchemaLoader](http://search.cpan.org/perldoc?DBIx::Class::Migration::SchemaLoader).  You'll probably only
+need to change this if your database is crazy and you need to massage the
+init arguments to [DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader).
+
+## schema_loader
+
+This is a factory that provider autoloaded schema based on the current schema's
+database.
+
+## dbic_fixture_class
+
+Accepts Str.  Required
+
+This is the class we use when creating instances of [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures).
+You'll probably need to review the docs for that and understand how configuration
+rules work in order to best take advantage of the system.
+
+Defaults to [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures).  You'll probably not need to change this
+unless you have some usual needs regarding fixtures.
+
+## deployment_handler_class
+
+Accepts Str.  Required
+
+This is the class we use when creating instances of [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).
+It would be ideal that you review those docs in order to better understand the
+overall architecture of the system.
+
+Defaults to [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).  You'll probably not need to
+change this unless you need a custom deployment handler, and if you do, I
+can't be sure this framework will work correctly, particularly if you are not
+useing monotonic versioning.
+
+## dbic_dh_args
+
+Accepts HashRef.  Required and defaults to an empty hashref.
+
+Used to pass custom args when building a [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).
+Please see the docs for that class for more.  Useful args might be `databases`,
+`to_version` and `force_overwrite`.
+
+### dbic_dh
+
+Accepts Instance of [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).  Required but lazily
+built from default data and [dbic_dh_args](http://search.cpan.org/perldoc?dbic_dh_args).
+
+You probably won't need to build your own deployment handler and pass it in
+(unlike [schema](http://search.cpan.org/perldoc?schema), where it might actually be useful).  Be careful it you do
+since this framework makes some assumptions about your deployment handler (for
+example we assume you are using the monotonic versioning).
+
+When this attribute is lazily built, we merge ["dbic_dh_args"](#dbic_dh_args) with the
+following defaults:
+
+      schema => Points to $self->schema
+      script_directory => Points to catdir($self->target_dir, 'migrations')
+      databases => Inferred from your connected schema, defaults to SQLite
+
+    L</dbic_dh_args> will overwrite the defaults, if you pass them.
+
+# METHODS
+
+This class defines the following methods for public use
+
+## new
+
+Used to create an new instance of [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration).  There's a couple
+of paths to creating this instance.
+
+### Specify a schema_class and optionally schema_args
+
+    use DBIx::Class::Migration;
+    my $migration = DBIx::Class::Migration->new(
+      schema_class => 'MyApp::Schema',
+      schema_args => [@connect_info],
+    );
+
+This is probably the most general approach, and is recommended unless you
+already have a connected instance of your [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema) subclass.
+
+["schema_args"](#schema_args) would be anything you'd pass to ["connect" in DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema#connect).
+see ["schema_args"](#schema_args) for how we construct default connect information if you
+choose to leave this undefined.
+
+### Specify a schema
+
+There may be some cases when you already have a schema object constructed and
+woudl prefer to just use that.  For example, you may be using [Catalyst](http://search.cpan.org/perldoc?Catalyst) and
+wish to build custom scripts using the built-in dependency and service lookup:
+
+    use MyCatalyst::App;
+    use DBIx::Class::Migration;
+
+    my $migration = DBIx::Class::Migration->new(
+      schema => MyCatalyst::App->model('Schema')->schema,
+      %{MyCatalyst::App->config->{extra_migration_init_args}};
+    );
+
+Be care of potential locking issues when using some databases like SQLite.
+
+### OPTIONAL: Specify a target_dir
+
+Optionally, you can specify your migrations target directory (where your
+migrations get created, in your init arguments.  This option can be combined
+with either approach listed above.
+
+    use DBIx::Class::Migration;
+    my $migration = DBIx::Class::Migration->new(
+      schema_class => 'MyApp::Schema',
+      schema_args => [@connect_info],
+      target_dir => '/opt/database-migrations',
+    );
+
+If you leave this undefined we default to using the `share` directory in your
+distribution root.  This is generally the community supported place for non
+code data, but if you have huge fixture sets you might wish to place them in
+an alternative location.
+
+### OPTIONAL: Specify dbic_dh_args
+
+Optionally, you can specify additional arguments to the constructor for the
+["dbic_dh"](#dbic_dh) attribute.  Useful arguments might include additional `databases`
+we should build fixtures for, `to_version` and `force_overwrite`.
+
+See [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) for more information on supported init
+arguments.  See ["dbic_dh"](#dbic_dh) for how we merge default arguments with your custom
+arguments.
+
+### Other Initial Arguments
+
+For normal usage the remaining init args are probably not particularly useful
+and reflect a desire for long term code flexibility and clean design.
+
+## version
+
+Prints to STDOUT a message regarding the current application $VERSION
+
+## status
+
+Returns the state of the deployed database (if it is deployed) and the state
+of the current `schema` version.  Sends this as a string to STDOUT
+
+## prepare
+
+Creates a `fixtures` and `migrations` directory under ["target_dir"](#target_dir) (if they
+don't already exist) and makes deployment files for the current schema.  If
+deployment files exist, will fail unless you ["overwrite_migrations"](#overwrite_migrations) and
+["overwrite_fixtures"](#overwrite_fixtures).
+
+The `migrations` directory reflects a directory structure as documented in
+[DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).
+
+If this is the first version, we create directories and initial DLL, etc.  For
+versions greater than 1, we will also generate diffs and copy any fixture
+configs etc (as well as generating a fresh 'all_table.json' fixture config). For
+safety reasons, we never overwrite any fixture configs.
+
+## install
+
+Installs either the current schema version (if already prepared) or the target
+version specified via any `to_version` flags sent as an [dbic_dh_args](http://search.cpan.org/perldoc?dbic_dh_args) to the
+database which is connected via ["schema"](#schema)
+
+## upgrade
+
+Run upgrade files to bring the database into sync with the current schema
+version.
+
+## downgrade
+
+Run down files to bring the database down to the previous version from what is
+installed to the database
+
+## drop_tables
+
+Drops all the tables in the connected database with no backup or recovery.  For
+real! (Make sure you are not connected to Prod, for example)
+
+## delete_table_rows
+
+does a `delete` on each table in the database, which clears out all your data
+but preserves tables.  For Real!  You might want this if you need to load
+and unload fixture sets during testing, or perhaps to get rid of data that
+accumulated in the database while running an app in development, before dumping
+fixtures.
+
+## dump_named_sets
+
+Given an array of set names, dump them for the current database version
+
+## dump_all_sets
+
+Takes no arguments just dumps all the sets we can find for the current database
+version
+
+## populate
+
+Given an array of fixture set names, populate the current database version with
+the matching sets for that version.
+
+Skips the table `dbix_class_deploymenthandler_versions`, so you don't lose
+deployment info (this is different from ["drop_tables"](#drop_tables) which does delete it.)
+
+# THANKS
+
+Because of the awesomeness of CPAN and the work of many others, all this
+functionality is provided with a few hundred lines of code.  In fact, I spent
+a lot more time writing docs and tests than anything else. Here are  some
+particular projects / people I'd like to thank:
+
+First, thanks to `mst` for providing me a big chunk of code that served to
+kickstart my work, and served as an valuable prototype.
+
+Thanks to `frew` for the awesome [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) which gives
+us such a powerful base for organizing database versions.  Thanks to all the
+authors of [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures) for giving me a foundation for managing
+sets of data.  Lastly, thanks to the [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) cabal for all the work done
+in making the [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) ORM so amazingly powerful.
+
+As usual, thanks to the [Moose](http://search.cpan.org/perldoc?Moose) cabal for making Perl programming fun and
+beautiful.  Lastly, a shout-out to the [Dist::Zilla](http://search.cpan.org/perldoc?Dist::Zilla) cabal for making it so I
+don't need to write my own build and deployment tools.
+
+# AUTHOR
+
+John Napiorkowski [email:jjnapiork@cpan.org](email:jjnapiork@cpan.org)
+
+# SEE ALSO
+
+[DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler), [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures), [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class),
+[DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader), [Moose](http://search.cpan.org/perldoc?Moose).
+
+# COPYRIGHT & LICENSE
+
+Copyright 2012, John Napiorkowski [email:jjnapiork@cpan.org](email:jjnapiork@cpan.org)
+
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
