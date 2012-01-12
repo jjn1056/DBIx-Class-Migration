@@ -235,7 +235,10 @@ sub prepare {
 }
 
 sub drop_tables {
-  my $schema = shift->schema_loader->schema_from_database;
+  my $self = shift;
+  my $schema = $self->schema_loader
+    ->schema_from_database($self->_infer_schema_class);
+
   $schema->storage->with_deferred_fk_checks(sub {
     my $txn = $schema->txn_scope_guard;
     foreach my $source ($schema->sources) {
@@ -248,7 +251,10 @@ sub drop_tables {
 }
 
 sub delete_table_rows {
-  my $schema = shift->schema_loader->schema_from_database;
+  my $self = shift;
+  my $schema = $self->schema_loader
+    ->schema_from_database($self->_infer_schema_class);
+
   $schema->storage->with_deferred_fk_checks(sub {
     my $txn = $schema->txn_scope_guard;
     foreach my $source ($schema->sources) {
@@ -333,7 +339,9 @@ sub populate {
 sub make_schema {
   my $self = shift;
   my $schema = $self->schema_loader
-    ->generate_dump(catdir($self->target_dir, 'dumped_db'));
+    ->generate_dump(
+      $self->_infer_schema_class,
+      catdir($self->target_dir, 'dumped_db'));
 }
 
 
