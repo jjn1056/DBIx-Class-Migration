@@ -1,12 +1,21 @@
-package DBIx::Class::Migration::Tutorial;
+package DBIx::Class::Migration::Tutorial::SecondMigration;
 
 1;
 
 =head1 NAME
 
-DBIx::Class::Migration::Tutorial::Setup - Bootstrap your project files
+DBIx::Class::Migration::Tutorial::SecondMigration - Upgrade the Database
 
 =head1 GOAL
+
+In this section you will change you database and learn how to create upgrade
+files.  You will also create some custom fixture configurations and learn
+about creating seed data.
+
+=head1 Change you Schema
+
+So far your L<MusicBase> application is doing fine, but some new requirements
+come down.
 
 =head1 SUMMARY
 

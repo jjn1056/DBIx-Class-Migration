@@ -22,7 +22,7 @@ have good working knowledge of DDL and SQL, as well as some general
 understanding of database administration.
 
 If you are new to L<DBIx::Class> I really recommend you perform that tutorial
-first, and review its documentation.  
+first, and review its documentation.
 
 This tutorial identifies the problem we are trying to solve, walks though
 increasingly complicated examples using these tools, and offers some advice

@@ -100,6 +100,22 @@ control tool, you should probably commit.
 =head1 DBIx::Class Application Version 1
 
 In this section you'll setup a first version of the L<MusicBase> DBIC files.
+
+The working application we are going to design is called L<MusicBase> which
+is an application that tracks what Artists have made what CDs and which
+Tracks are part of which CD.  Here's the general model
+
+    -- An Artist has zero or more Cds.
+    -- Each Cd belongs to a single Artist
+    -- Each Cd has zero or more Tracks (or songs you can listen to)
+    -- A Track can belong to only one Cd.
+
+Additionally you need to store the Artists name, and the titles for both the
+Cds and the Tracks.
+
+You also have some business logic that requires you to return the set of
+Artists that have more than one Cd published.  Let's model that!
+
 From your appliation home directory (the directory that contains your
 C<dist.ini> file) perform the following commands:
 
