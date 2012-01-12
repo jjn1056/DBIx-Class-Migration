@@ -463,7 +463,7 @@ L<File::ShareDir> for more information.
 This uses whatever is in L</schema_class> to determine your project (and look
 for a C<share> directory, which you'll need to create in your project root).
 If you dont' have a L</schema_class> defined, you must have a L</schema>,
-and we'll infer the class via C<<ref($self->schema)>>.
+and we'll infer the class via C<< ref($self->schema) >>.
 
 =head2 schema_loader_class
 
