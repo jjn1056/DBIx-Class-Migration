@@ -117,10 +117,21 @@ I also assume you have SQLite installed and parts of the advanced tutorial will
 assume you have MySQL availabe.  Please see L<MySQL::Sandbox> for some help in
 getting a development instance of MySQL running.
 
-=head2 Setup Project Files
+=head2 STEP 1: Setup Project Files
 
 L<DBIx::Class::Migration::Tutorial::Setup> shows you how to bootstrap a very
 basic L<DBIx::Class> driven application.
+
+=head2 STEP 2: First Migration, using dbic-migration and fixtures.
+
+L<DBIx::Class::Migration::Tutorial::FirstMigration> takes the basic application
+and prepare some migrations.
+
+=head2 STEP 3: Creating upgrades and modify the database
+
+L<DBIx::Class::Migration::Tutorial::SecondMigration> SHows you how to start
+handling database change by creating a version 2 of the schema.  We also create
+more complex fixtures and customize the migration.
 
 =head1 SEE ALSO
 

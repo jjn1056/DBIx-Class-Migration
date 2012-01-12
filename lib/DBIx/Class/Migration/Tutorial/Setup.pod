@@ -1,4 +1,4 @@
-package DBIx::Class::Migration::Tutorial;
+package DBIx::Class::Migration::Tutorial::Setup;
 
 1;
 
@@ -8,9 +8,264 @@ DBIx::Class::Migration::Tutorial::Setup - Bootstrap your project files
 
 =head1 GOAL
 
+By the end of this section, you should be able to bootstrap a standard Perl
+project and have a simple L<DBIx::Class> project installed.  You should then
+be able to proceed to creating some migrations.
+
+=head1 Bootstrap your Project
+
+We make minimal use of L<Dist::Zilla> to create a basic project skeleton.  I
+realize L<Dist::Zilla> is not everyone's favorite tool for this purpose, but I
+am choosing it for the purpose of the tutorial because its simple enough for my
+basic need.  If you know enough to not like L<Dist::Zilla> then I will assume
+you know enough to perform this next task using some other tool.
+
+=head1 Open a shell / terminal
+
+Most Perl projects use commandline tools, rather than a GUI IDE.  You should
+open a terminal with a commandline interface of choice, change to a directory
+where you like to store project files, and proceed.
+
+=head1 Install Dist::Zilla
+
+    cpanm Dist::Zilla
+
+=head1 Create a basic Project Skeleton
+
+    dzil new MusicBase
+    cd MusicBase
+
+You should now have a directory structure like this
+
+    /MusicBase
+      dist.ini
+      /lib
+        MusicBase.pm
+
+We will use the C<dist.ini> file to manage our project dependencies.  Open
+C<dist.ini> in your editor of choice and alter it to look like this:
+
+    name    = DBIx-Class-Migration
+    author  = John Napiorkowski <jjnapiork@cpan.org>
+    license = Perl_5
+    copyright_holder = John Napiorkowski
+    copyright_year   = 2011
+    abstract = Tutorial Application for DBIx-Class-Migration
+
+    version = 0.001
+
+    [@Basic]
+    [Prereqs]
+    DBIx::Class = 0
+    DBIx::Class::Migration = 0
+
+Set C<author> and C<copyright_holder> as suits you.
+
+Next open the file C<lib/MusicBase.pm> in your text editor and change it as
+follows:
+
+    package MusicBase;
+
+    our $VERSION = '0.001';
+
+    1;
+
+    =head1 NAME
+
+    MusicBase - The DBIx::Class::Migration tutorial application
+
+    =head1 AUTHOR
+
+    John Napiorkowski L<email:jjnapiork@cpan.org>
+
+    =head1 SEE ALSO
+
+    L<DBIx::Class::Migration>
+
+    =head1 COPYRIGHT & LICENSE
+
+    Copyright 2012, John Napiorkowski L<email:jjnapiork@cpan.org>
+
+    This library is free software; you can redistribute it and/or modify it under
+    the same terms as Perl itself.
+
+    =cut
+
+As you can see, this is just a stub of POD to help give someone general
+context.
+
+Congrats, you have a basic Perl project setup!  If you are using a source
+control tool, you should probably commit.
+
+=head1 DBIx::Class Application Version 1
+
+In this section you'll setup a first version of the L<MusicBase> DBIC files.
+From your appliation home directory (the directory that contains your
+C<dist.ini> file) perform the following commands:
+
+    mkdir lib/MusicBase
+    mkdir lib/MusicBase/Schema
+    mkdir lib/MusicBase/Schema/Result
+    mkdir lib/MusicBase/Schema/ResultSet
+    touch lib/MusicBase/Schema.pm
+    touch lib/MusicBase/Schema/Result/Artist.pm
+    touch lib/MusicBase/Schema/Result/Cd.pm
+    touch lib/MusicBase/Schema/Result/Track.pm
+    touch lib/MusicBase/Schema/ResultSet/Artist.pm
+
+You'll now have a standard L<DBIx::Class> directory structure that follows
+current good practices.  Lets add in some code to our file stubs.
+
+Change C<lib/MusicBase/Schema.pm> to match the following:
+
+    package MusicBase::Schema;
+    use base 'DBIx::Class::Schema';
+
+    our $VERSION = 1;
+
+    __PACKAGE__->load_namespaces;
+
+    1;
+
+Change C<lib/MusicBase/Schema/Result/Artist.pm>
+
+    package MusicBase::Schema::Result::Artist;
+    use base 'DBIx::Class::Core';
+
+    __PACKAGE__->table('artist');
+    __PACKAGE__->add_columns(
+      'artist_id' => {
+        data_type => 'integer',
+      },
+      'name' => {
+        data_type => 'varchar',
+        size => '96',
+      });
+
+    __PACKAGE__->set_primary_key('artist_id');
+    __PACKAGE__->has_many(
+      'cd_rs' => 'MusicBase::Schema::Result::Cd',
+      {'foreign.artist_fk'=>'self.artist_id'});
+
+    1;
+
+Change C<lib/MusicBase/Schema/Result/CD.pm>
+
+    package MusicBase::Schema::Result::Cd;
+    use base qw/DBIx::Class::Core/;
+
+    __PACKAGE__->table('cd');
+    __PACKAGE__->add_columns(
+      'cd_id' => {
+        data_type => 'integer',
+      },
+      'artist_fk' => {
+        data_type => 'integer',
+      },
+      'title' => {
+        data_type => 'varchar',
+        size => '96',
+      });
+
+    __PACKAGE__->set_primary_key('cd_id');
+
+    __PACKAGE__->belongs_to(
+      'artist' => 'MusicBase::Schema::Result::Artist',
+      {'foreign.artist_id'=>'self.artist_fk'});
+
+    __PACKAGE__->has_many(
+      'track_rs' => 'MusicBase::Schema::Result::Track',
+      {'foreign.cd_fk'=>'self.cd_id'});
+
+    1;
+
+Change C<lib/MusicBase/Schema/Result/Track.pm>
+
+    package MusicBase::Schema::Result::Track;
+    use base qw/DBIx::Class::Core/;
+
+    __PACKAGE__->table('track');
+    __PACKAGE__->add_columns(
+      'track_id' => {
+        data_type => 'integer',
+      },
+      'cd_fk' => {
+        data_type => 'integer',
+      },
+      'title' => {
+        data_type => 'varchar',
+        size => '96',
+      });
+
+    __PACKAGE__->set_primary_key('track_id');
+    __PACKAGE__->belongs_to(
+      'cd' => "MusicBase::Schema::Result::Cd",
+      {'foreign.cd_id'=>'self.cd_fk'});
+
+    1;
+
+Change C<lib/MusicBase/Schema/ResultSet/Artist.pm>
+
+    package MusicBase::Schema::ResultSet::Artist;
+    use base 'DBIx::Class::ResultSet';
+
+    sub has_more_than_one_cds {
+      my $me = (my $self = shift)->current_source_alias;
+      $self->search(
+        {},
+        {
+          join=>['cd_rs'],
+          '+select'=> [ { count => 'cd_rs.cd_id', -as => 'cd_count'} ],
+          '+as'=> ['cd_count'],
+          group_by=>["$me.artist_id"],
+          having => { cd_count => { '>', 1 } }
+        }
+      );
+    }
+
+    1;
+
+That completes creating your basic L<DBIx::Class> structure.
+
+=head1 Install your dependencies
+
+    dzil listdeps | cpanm
+
+=head1 Basic Test Case
+
+You should create a basic test case just to make sure you didn't make any
+serious errors or forgot something while creating the files.
+
+    mkdir t
+    touch t/use.t
+
+Change C<t/use.t> as follows
+
+    use Test::Most tests=>1;
+
+    BEGIN {
+      use_ok 'MusicBase::Schema';
+    }
+
+Then run your test case.
+
+    prove -lv t/use.t
+
+You should expect the one test to pass.  If it fails, please review your
+classes since you probably introduced a typo or syntax error.
+
+If your tests pass, that' great you've completed the first part of the tutorial!
+
 =head1 SUMMARY
 
+You did a lot of cut and paste this step, I promise things will be more
+interesting later on.  However, you did all the main grunt work that it takes
+to get going on a well formed Perl project.  At this point you have a DBIC
+application that you'd actually be able to use.
+
 =head1 NEXT STEPS
+
+Proceed to L<DBIx::Class::Migration::Tutorial::FirstMigration>.
 
 =head1 AUTHOR
 

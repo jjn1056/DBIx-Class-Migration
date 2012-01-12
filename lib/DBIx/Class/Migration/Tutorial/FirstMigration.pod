@@ -1,0 +1,445 @@
+package DBIx::Class::Migration::Tutorial::FirstMigration;
+
+1;
+
+=head1 NAME
+
+DBIx::Class::Migration::Tutorial::FirstMigration - Prepare your first Migration
+
+=head1 GOAL
+
+In this section you will use L<DBIx::Class::Migration> to prepare migration
+files for version 1.  You will also install a test database, create some 'seed'
+data and dump some fixtures.
+
+In preparation for this section, you might wish to revist the documentation for
+L<DBIx::Class::DeploymentHandler> and in particular
+L<DBIx::Class::DeploymentHandler::Manual::Intro>
+
+=head1 Using the dbic-migration commandline tool
+
+From your project home directory (that contains the C<dist.ini> file) run the
+C<dbic-migration> command line tool:
+
+    dbic-migration version --schema_class MusicBase::Schema -Ilib
+
+This should return:
+
+    Application version is 0.001
+
+Let's do a quick review.  C<dbic-migration> is your main gateway to managing
+your migrations.  When using the tool you will give it one command (such as
+C<version> above) and any number of option flags (starting with C<--> or C<->).
+
+When using the tool, you'll need to specify the C<schema_class> that you are
+creating and use migrations for.  Typically this will be your subclass of
+L<DBIx::Class::Schema>, and you'll need to extend the Perl module search path
+with C<I> as above.
+
+If you are going to be working with one schema for a bit, you can export
+C<DBIC_MIGRATION_SCHEMA_CLASS> into your current shell, that way you don't need
+to keep retyping it.  If your shell is C<bash> you can do this with the
+following command:
+
+    export DBIC_MIGRATION_SCHEMA_CLASS=MusicBase::Schema
+
+Then you can simply do:
+
+    dbic-migration -Ilib version
+
+For the remainder of the tutorial, I will assume your Schema Class has been
+exported.  Remember, you can always specific with the C<--schema_class> option
+flag.
+
+Before we move on, let's see the status of your schema and database:
+
+    dbic-migration -Ilib status
+
+This should return an error similar to the following:
+
+    Failed to find share dir for dist 'MusicBase-Schema' at ....
+
+Why did this happen?  In order to use L<DBIx::Class::Migration> you need to
+tell it where to put the migration files.  You'd use the C<--target_dir> option
+flag to do this, but if you don't provide a value, it will automatically
+assume you have a C<share> directory in the home directory of you application
+and wish to put files there.  This is a good, accepted community practice for
+storing non code data for your project and I recommend you follow it.  Let's
+create the share directory and try again:
+
+    mkdir share
+    dbic-migration -Ilib status
+
+You should now get:
+
+    Schema is 1
+    Database is not currently installed
+
+Great!  Now you have the basics of using the commandline tool!
+
+=head1 Prepare migration files
+
+Let's create some migrations for Version 1 of your Schema.
+
+    dbic-migration -Ilib prepare
+
+You should see:
+
+    There is not current database deployed, so I can't prepare upgrades
+    or downgrades
+
+Since this is the first version, we won't create any upgrades or downgrade
+migrations, since that makes little sense.  Okay, lets see what we now have
+
+In your C<share> directory you now have the following:
+
+    /share
+      /fixtures
+        /1
+          /conf
+            all_tables.json
+      /migrations
+        /_source  (There's stuff in here, but we won't peek!)
+        /SQLite
+          /deploy
+            /1
+              001-auto-_VERSION.sql
+              001-auto.sql
+      musicbase-schema.db
+
+So Lets review.  We created a default fixture configuration that just serializes
+all the database information.  This is probably not great for the long term but
+until you get the hang of creating custom fixture configurations (and for this
+you need to review L<DBIx::Class::Fixtures>) it will serve.  In any case you
+can take a quick peek to get the idea:
+
+C</share/fixtures/1/conf/all_tables.json>
+
+    {
+       "sets" : [
+          {
+             "quantity" : "all",
+             "class" : "Cd"
+          },
+          {
+             "quantity" : "all",
+             "class" : "Track"
+          },
+          {
+             "quantity" : "all",
+             "class" : "Artist"
+          }
+       ],
+       "might_have" : {
+          "fetch" : 0
+       },
+       "belongs_to" : {
+          "fetch" : 0
+       },
+       "has_many" : {
+          "fetch" : 0
+       }
+    }
+
+L<DBIx::Class::Fixtures> uses JSON for its configuration.  In this case you
+can note that we are just dumping all the rows in all the tables.  You will see
+that each time you prepare a version, we always build a fresh C<all_tables.json>
+for you to use as a default.
+
+You should also note that the path to your fixtures and your migrations contain
+the schema version number you have prepared.  You'll see later that as you add
+more schema versions this becomes your primary way of managing all the directories.
+
+Three other files of interest have been created.  The first is 
+C<001-auto-_VERSION.sql> which is DDL for the default database (SQLite) to create
+the meta table that L<DBIx::Class::DeploymentHandler> uses to keep track of the
+version history for your deployments.  We also create a full DDL (data description
+language) for the tables that make up your application.  In this case we have one
+table for each of the Artist, CD and Track Result classes.  
+
+C</share/migrations/SQLite/deploy/1/001-auto.sql>
+
+    BEGIN TRANSACTION;
+    --
+    -- Table: artist
+    --
+    CREATE TABLE artist (
+      artist_id INTEGER PRIMARY KEY NOT NULL,
+      name varchar(96) NOT NULL
+    );
+    --
+    -- Table: cd
+    --
+    CREATE TABLE cd (
+      cd_id INTEGER PRIMARY KEY NOT NULL,
+      artist_fk integer NOT NULL,
+      title varchar(96) NOT NULL,
+      FOREIGN KEY(artist_fk) REFERENCES artist(artist_id)
+    );
+    CREATE INDEX cd_idx_artist_fk ON cd (artist_fk);
+    --
+    -- Table: track
+    --
+    CREATE TABLE track (
+      track_id INTEGER PRIMARY KEY NOT NULL,
+      cd_fk integer NOT NULL,
+      title varchar(96) NOT NULL,
+      FOREIGN KEY(cd_fk) REFERENCES cd(cd_id)
+    );
+    CREATE INDEX track_idx_cd_fk ON track (cd_fk);
+    COMMIT
+
+You should review this DDL to make sure it properly reflects your schema.
+
+L<DBIx::Class::DeploymentHandler> will build full DDL for each of the databases
+you are creating migrations for.  We feel this is the best approach since it
+lets you take maximum advantage of your target database.  By default, if you
+don't specify a database (using the C<database> option flag) we build migrations
+for SQLite, since that is easy to use and test, but you can always build any
+of the supported databases.  For example if you ran the following:
+
+    dbic-migration -Ilib prepare --database MySQL --database SQLite
+
+We'd build migrations for both MySQL and SQLite.  We'll try that later on, for
+now let's stick to SQLite, since that is very low effort and you have plenty
+to learn already!
+
+There's one more file we've created C<musicbase-schema.db> which is an empty
+SQLite database you can use for testing your migrations or for prototyping.
+
+You've now completed creating your first migration!
+
+=head1 Customizing the Migration
+
+You have a database migration, but without any initial data it would be hard to
+use.  Let's add some code to prepopulate the database with a few musicians and
+cds.  That way when we install the database we can run some SQL on it and play
+with it.  Generally when you are developing you are going to need to setup the
+database with some useful data in order to be able to do some work.  Lets do
+that now.  Perform the following commands in your shell:
+
+    mkdir share/migrations/_common
+    mkdir share/migrations/_common/deploy
+    mkdir share/migrations/_common/deploy/1
+    touch share/migrations/_common/deploy/1/002-demo.pl
+
+Then open the file C<share/migrations/_common/deploy/1/002-demo.pl> in your
+editor of choice and add the following code:
+
+    sub {
+      my $schema = shift;
+      my @artists = (['Michael Jackson'], ['Eminem']);
+      $schema->populate('Artist', [
+         [qw/name/],
+         @artists,
+      ]);
+
+      my %albums = (
+        'Thriller' => 'Michael Jackson',
+        'Bad' => 'Michael Jackson',
+        'The Marshall Mathers LP' => 'Eminem',
+      );
+
+      my @cds;
+      foreach my $lp (keys %albums) {
+        my $artist = $schema->resultset('Artist')->find({
+          name => $albums{$lp}
+        });
+        push @cds, [$lp, $artist->id];
+      }
+
+      $schema->populate('Cd', [
+        [qw/title artist_fk/],
+        @cds,
+      ]);
+
+      my %tracks = (
+        'Beat It'         => 'Thriller',
+        'Billie Jean'     => 'Thriller',
+        'Dirty Diana'     => 'Bad',
+        'Smooth Criminal' => 'Bad',
+        'Leave Me Alone'  => 'Bad',
+        'Stan'            => 'The Marshall Mathers LP',
+        'The Way I Am'    => 'The Marshall Mathers LP',
+      );
+
+      my @tracks;
+      foreach my $track (keys %tracks) {
+        my $cdname = $schema->resultset('Cd')->find({
+          title => $tracks{$track},
+        });
+        push @tracks, [$cdname->id, $track];
+      }
+
+      $schema->populate('Track',[
+        [qw/cd_fk title/],
+        @tracks,
+      ]);
+    };
+
+If your read the L<DBIx::Class::DeploymentHandler> docs, you know that in
+addition to running SQL files natively against your database of choice, you can
+also create Perl run scripts, which is a Perl file that returns an anonymous
+subroutine (similar to L<Plack>).  That subroutine should expect to get one
+argument from the deployment handler, which is a schema object upon which you
+can run L<DBIx::Class> commands.
+
+B<IMPORTANT>: The schema that is passed to your subroutine reference is one
+that we autogenerate using L<DBIx::Class::Schema::Loader>.  It is not the same
+as your application subclass of L<DBIx::Class::Schema> (for us that would be
+L<MusicBase::Schema>).  Since your schema is going to be in flux, we can't
+rely on it for creating Perl run files.  Because of this, the names of the
+relationships will reflect those that L<DBIx::Class::Schema::Loader> generates
+as part of its introspection of the database.  If you get confused and can't
+figure out the generated schema, you can always dump it with the C<make_schema>
+command.
+
+Why use Perl instead of SQL?  You should use what makes sense to you and what
+you are comfortable with.  I use Perl when I can since I can put that in the
+C<_common> directory and use it for all the database I create migrations for.
+That saves me a bit of repeating myself, but adds a bit of complexity to
+understanding.
+
+You should also notice that the file we created starts with '002'.  This ensures
+that it will run after the '001' file (in this case we run C<001-auto.sql>
+first.
+
+Awesome, you now have customized your first migration.  Now we can install it!
+
+=head2 Installing the migration
+
+Installing the migration is straightforward:
+
+    dbic-migration -Ilib install
+
+Lets take a peek at the database and make sure we got that demo data:
+
+    sqlite3 share/musicbase-schema.db
+
+This should give use the SQLite shell, something like this:
+
+    SQLite version 3.7.5
+    Enter ".help" for instructions
+    Enter SQL statements terminated with a ";"
+    sqlite>
+
+Enter this command
+
+    .tables
+
+You should see that your tables have been created:
+
+    artist               dbix_class_deploymenthandler_versions
+    cd                   track
+
+Let's check the artist table.  We'd expect a few because of the
+demo.pl script we wrote:
+
+    select * from artist;
+
+You should get:
+
+    1|Michael Jackson
+    2|Eminem
+
+You've just verified your installation worked!  Exit the SQLite shell with
+the C<.q> command.
+
+=head2 Make your first fixtures and test them.
+
+Next, lets dump some fixtures, that way you can mess around with the database
+data as much as you'd like and then get back to a good, known state at any
+time:
+
+    dbic-migration -Ilib dump_all_sets
+
+This will read each of the fixture configuration you've prepared, and
+serialize them to C</share/fixtures/1>.  Since we just have the C<all_tables>
+fixture configuration, we'd only expect to see those.  Look at the directory
+structure under share now:
+
+    /share
+      /fixtures
+        /1
+          /all_tables
+            _dumper_version
+              /artist
+                1.fix
+                2.fix
+              /cd
+                (1-3.fix)
+              /track
+                (1-7.fix)
+          /conf
+            all_tables.json
+      /migrations
+        (...)
+
+For each fixture configuration you've created, you will get a directory and
+serialized data.  Since this is the C<all_tables> set, this represents all
+the data in your database at the time your ran C<dump_all_sets>.
+
+Let's test the fixtures.  Pretend you've been developing on this database for
+a while and you got a bunch of messy data around that you no longer need. Lets
+clear out all the tables:
+
+    dbic-migration -Ilib delete_table_rows
+
+You should take care with this, and make sure you are not pointing to a
+database you care about (such as Production) since this command loops through
+all your tables and issues a C<delete>.  If you have a lot of data, this
+could take a bit of time.
+
+Now you have tables but no data.  Lets restore the C<all_tables> fixtures that
+you previously dumped:
+
+    dbic-migration -Ilib populate
+
+Since we only have one fixture configuration, we can skip the step of specifying
+which fixtures to load (you'd use the flag C<--fixture_set> to do that and you
+can list as many as you wish).  You automatically restore the C<all_tables> set
+if you don't name one.  You'd expect to see some output like this:
+
+    Reading configurations from .../share/fixtures/1/conf
+    Restored set all_tables to database
+
+Let's peek into the database and check:
+
+    sqlite3 share/musicbase-schema.db
+
+and see if we have some tracks:
+
+    sqlite> select * from track;
+    1|3|The Way I Am
+    2|3|Stan
+    3|1|Billie Jean
+    4|2|Leave Me Alone
+    5|2|Smooth Criminal
+    6|1|Beat It
+    7|2|Dirty Diana
+
+Perfect, you just restored your database to a given fixture dump!
+
+=head1 SUMMARY
+
+You've just learned how to use the basics of the commandline C<dbic-migration>
+to prepare and install migrations.  You also learned some basic customizing
+of your migrations and you dumped and restore some fixtures.
+
+At this point I'd say you have the minimum setup for being about to do real
+database development.
+
+=head1 NEXT STEPS
+
+Proceed to L<DBIx::Class::Migration::Tutorial::>.
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
