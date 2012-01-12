@@ -13,20 +13,25 @@ has includes => (
   predicate => 'has_includes',
   cmd_aliases => ['I', 'libs']);
 
-has schema_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
-  predicate=>'has_schema_class', env_prefix=>'DBIC_MIGRATION', cmd_aliases => 'S');
+sub ENV_PREFIX {
+  $ENV{DBIC_MIGRATION_ENV_PREFIX}
+    || 'DBIC_MIGRATION';
+}
 
-has target_dir => (traits => [ 'Getopt',  ], is => 'ro', isa=> 'Str',
+has schema_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+  predicate=>'has_schema_class', env_prefix=>ENV_PREFIX, cmd_aliases => 'S');
+
+has target_dir => (traits => [ 'Getopt' ], is => 'ro', isa=> 'Str',
   predicate=>'has_target_dir', cmd_aliases => 'dir');
 
 has username => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
-  default => '', env_prefix=>'DBIC_MIGRATION', cmd_aliases => 'U');
+  default => '', env_prefix=>ENV_PREFIX, cmd_aliases => 'U');
 
 has password => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
-  default => '', env_prefix=>'DBIC_MIGRATION', cmd_aliases => 'P');
+  default => '', env_prefix=>ENV_PREFIX, cmd_aliases => 'P');
 
-has dsn => (traits => [ 'Getopt', 'ENV' ], is => 'ro', 
-  env_prefix=>'DBIC_MIGRATION', isa => 'Str');
+has dsn => (traits => [ 'Getopt', 'ENV' ], is => 'ro',
+  env_prefix=>ENV_PREFIX, isa => 'Str');
 
 has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool',
   default => 0, cmd_aliases => 'O');
@@ -34,7 +39,7 @@ has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool',
 has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
   predicate=>'has_to_version', cmd_aliases => 'V');
 
-has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef', 
+has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef',
   predicate=>'has_databases', cmd_aliases => 'database');
 
 has fixture_sets => (
@@ -44,34 +49,36 @@ has fixture_sets => (
   default => sub { +['all_tables'] },
   cmd_aliases => 'fixture_set');
 
+  sub _delegated_commands {
+    map { 'cmd_'.$_ => $_ } qw(
+      version status prepare install upgrade
+      downgrade drop_tables delete_table_rows
+      dump_all_sets make_schema);
+  }
+
 has migration => (
   is => 'ro',
   lazy_build => 1,
-  handles => {
-    cmd_version=>'version',
-    cmd_status=>'status',
-    cmd_prepare=>'prepare',
-    cmd_install=>'install',
-    cmd_upgrade=>'upgrade',
-    cmd_downgrade=>'downgrade',
-    cmd_drop_tables=>'drop_tables',
-    cmd_delete_table_rows=>'delete_table_rows',
-    cmd_dump_all_sets=>'dump_all_sets'}
-  );
+  handles => { _delegated_commands });
 
 sub _map_databases_tosqlt {
   my $databases = shift->databases
 }
 
-sub _build_migration {
-  my $self = shift;
-  my @schema_args;
-  if($self->dsn) {
-    push @schema_args, $self->dsn;
-    push @schema_args, $self->username;
-    push @schema_args, $self->password;
+  sub _prepare_schema_args {
+    my $self = shift;
+    my @schema_args;
+    if($self->dsn) {
+      push @schema_args, $self->dsn;
+      push @schema_args, $self->username;
+      push @schema_args, $self->password;
+    }
+    return @schema_args;
   }
 
+sub _build_migration {
+  my $self = shift;
+  my @schema_args = $self->_prepare_schema_args;
   return DBIx::Class::Migration->new(
     schema_class => $self->schema_class,
     (@schema_args ? (schema_args=>\@schema_args) : ()),
@@ -370,6 +377,12 @@ fixtures.
 
 Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
 deployment info (this is different from L</drop_tables> which does delete it.)
+
+=head2 make_schema
+
+Creates DBIC schema files from the currently deployed database into your target
+directory.  You can use this to bootstrap your ORM, or if you get confused about
+what the deployment perl run files get for schema.
 
 =head2 Command Flags
 

@@ -47,11 +47,15 @@ has schema => (is=>'ro', lazy_build=>1, predicate=>'has_schema');
 
 has target_dir => (is=>'ro', lazy_build=>1);
 
+  sub _infer_schema_class {
+    my $self = shift;
+    return $self->has_schema_class ?
+      $self->schema_class : ref($self->schema);
+  }
+
   sub _build_target_dir {
     my $self = shift;
-    my $class = $self->has_schema_class ?
-      $self->schema_class : ref($self->schema);
-
+    my $class = $self->_infer_schema_class;
     my $file_name = $class;
     $file_name =~s/::/\//g;
 
@@ -325,6 +329,13 @@ sub populate {
     print "Restored set $set to database\n";
   }
 }
+
+sub make_schema {
+  my $self = shift;
+  my $schema = $self->schema_loader
+    ->generate_dump(catdir($self->target_dir, 'dumped_db'));
+}
+
 
 __PACKAGE__->meta->make_immutable;
 
@@ -657,6 +668,12 @@ Given an array of set names, dump them for the current database version
 
 Takes no arguments just dumps all the sets we can find for the current database
 version
+
+=head make_schema
+
+Given an existing database, reverse engineer a L<DBIx::Class> Schema in the
+L</target_dir> (under C<dumped_db).  You can use this if you need to bootstrap
+your DBIC files.
 
 =head2 populate
 
