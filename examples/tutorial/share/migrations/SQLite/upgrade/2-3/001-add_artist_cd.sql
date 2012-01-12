@@ -5,18 +5,18 @@ BEGIN;
 
 ;
 CREATE TABLE artist_cd (
-  artistfk integer NOT NULL,
-  cdfk integer NOT NULL,
-  PRIMARY KEY (artistfk, cdfk),
-  FOREIGN KEY(artistfk) REFERENCES artist(artistid),
-  FOREIGN KEY(cdfk) REFERENCES cd(cdid)
+  artist_fk integer NOT NULL,
+  cd_fk integer NOT NULL,
+  PRIMARY KEY (artist_fk, cd_fk),
+  FOREIGN KEY(artist_fk) REFERENCES artist(artist_id),
+  FOREIGN KEY(cd_fk) REFERENCES cd(cd_id)
 );
 
 ;
-CREATE INDEX artist_cd_idx_artistfk ON artist_cd (artistfk);
+CREATE INDEX artist_cd_idx_artist_fk ON artist_cd (artist_fk);
 
 ;
-CREATE INDEX artist_cd_idx_cdfk ON artist_cd (cdfk);
+CREATE INDEX artist_cd_idx_cd_fk ON artist_cd (cd_fk);
 
 COMMIT;
 

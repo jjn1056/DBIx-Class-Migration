@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Fri Jan  6 09:56:35 2012
+-- Created on Wed Jan 11 18:17:21 2012
 -- 
 
 ;
@@ -9,47 +9,46 @@ BEGIN TRANSACTION;
 -- Table: cd
 --
 CREATE TABLE cd (
-  cdid INTEGER PRIMARY KEY NOT NULL,
+  cd_id INTEGER PRIMARY KEY NOT NULL,
   title varchar(96) NOT NULL
 );
 --
 -- Table: country
 --
 CREATE TABLE country (
-  countryid INTEGER PRIMARY KEY NOT NULL,
-  code char(3) NOT NULL
+  country_id INTEGER PRIMARY KEY NOT NULL,
+  name varchar(96) NOT NULL
 );
-CREATE UNIQUE INDEX country_code ON country (code);
 --
 -- Table: artist
 --
 CREATE TABLE artist (
-  artistid INTEGER PRIMARY KEY NOT NULL,
-  countryfk integer NOT NULL DEFAULT 1,
+  artist_id INTEGER PRIMARY KEY NOT NULL,
+  country_fk integer NOT NULL,
   name varchar(96) NOT NULL,
-  FOREIGN KEY(countryfk) REFERENCES country(countryid)
+  FOREIGN KEY(country_fk) REFERENCES country(country_id)
 );
-CREATE INDEX artist_idx_countryfk ON artist (countryfk);
+CREATE INDEX artist_idx_country_fk ON artist (country_fk);
 --
 -- Table: track
 --
 CREATE TABLE track (
-  trackid INTEGER PRIMARY KEY NOT NULL,
-  cd integer NOT NULL,
+  track_id INTEGER PRIMARY KEY NOT NULL,
+  cd_fk integer NOT NULL,
   title varchar(96) NOT NULL,
-  FOREIGN KEY(cd) REFERENCES cd(cdid)
+  FOREIGN KEY(cd_fk) REFERENCES cd(cd_id)
 );
-CREATE INDEX track_idx_cd ON track (cd);
+CREATE INDEX track_idx_cd_fk ON track (cd_fk);
 --
 -- Table: artist_cd
 --
 CREATE TABLE artist_cd (
-  artistfk integer NOT NULL,
-  cdfk integer NOT NULL,
-  PRIMARY KEY (artistfk, cdfk),
-  FOREIGN KEY(artistfk) REFERENCES artist(artistid),
-  FOREIGN KEY(cdfk) REFERENCES cd(cdid)
+  artist_fk integer NOT NULL,
+  cd_fk integer NOT NULL,
+  PRIMARY KEY (artist_fk, cd_fk),
+  FOREIGN KEY(artist_fk) REFERENCES artist(artist_id),
+  FOREIGN KEY(cd_fk) REFERENCES cd(cd_id)
 );
-CREATE INDEX artist_cd_idx_artistfk ON artist_cd (artistfk);
-CREATE INDEX artist_cd_idx_cdfk ON artist_cd (cdfk);
+CREATE INDEX artist_cd_idx_artist_fk ON artist_cd (artist_fk);
+CREATE INDEX artist_cd_idx_cd_fk ON artist_cd (cd_fk);
 COMMIT

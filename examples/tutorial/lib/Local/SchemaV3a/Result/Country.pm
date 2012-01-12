@@ -1,10 +1,9 @@
 package Local::SchemaV3a::Result::Country;
-
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('country');
 __PACKAGE__->add_columns(
-  'countryid' => {
+  'country_id' => {
     data_type => 'integer',
   },
   'name' => {
@@ -12,9 +11,10 @@ __PACKAGE__->add_columns(
     size => '96',
   });
 
-__PACKAGE__->set_primary_key('countryid');
+__PACKAGE__->set_primary_key('country_id');
+__PACKAGE__->add_unique_constraint(['code']);
 __PACKAGE__->has_many(
-  'artists' => "Local::SchemaV3a::Result::Artist",
-  {'foreign.countryfk'=>'self.countryid'});
+  'artist_rs' => "Local::SchemaV3a::Result::Artist",
+  {'foreign.country_fk'=>'self.country_id'});
 
 1;

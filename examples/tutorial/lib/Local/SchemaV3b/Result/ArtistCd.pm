@@ -1,26 +1,23 @@
 package Local::SchemaV3b::Result::ArtistCd;
-
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('artist_cd');
 __PACKAGE__->add_columns(
-  artistfk => {
+  artist_fk => {
     data_type => 'integer',
-    is_foreign_key => 1,
   },
-  cdfk => {
+  cd_fk => {
     data_type => 'integer',
-    is_foreign_key => 1,
   });
 
-__PACKAGE__->set_primary_key('artistfk','cdfk');
+__PACKAGE__->set_primary_key('artist_fk','cd_fk');
 
 __PACKAGE__->belongs_to(
   'artist' => "Local::SchemaV3b::Result::Artist",
-  {'foreign.artistid'=>'self.artistfk'});
+  {'foreign.artist_id'=>'self.artist_fk'});
 
 __PACKAGE__->belongs_to(
   'cd' => 'Local::SchemaV3b::Result::Cd',
-  {'foreign.cdid'=>'self.cdfk'});
+  {'foreign.cd_id'=>'self.cd_fk'});
 
 1;

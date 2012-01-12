@@ -16,12 +16,12 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key('cd_id');
 
+__PACKAGE__->has_many(
+  'track_rs' => 'Local::SchemaV2::Result::Track',
+  {'foreign.cd_fk'=>'self.cd_id'});
+
 __PACKAGE__->belongs_to(
   'artist' => 'Local::SchemaV2::Result::Artist',
   {'foreign.artist_id'=>'self.artist_fk'});
-
-__PACKAGE__->has_many(
-  'track_rs' => 'Local::SchemaV1::Result::Track',
-  {'foreign.cd_fk'=>'self.cd_id'});
 
 1;

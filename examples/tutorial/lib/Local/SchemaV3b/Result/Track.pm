@@ -1,13 +1,12 @@
 package Local::SchemaV3b::Result::Track;
-
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('track');
 __PACKAGE__->add_columns(
-  'trackid' => {
+  'track_id' => {
     data_type => 'integer',
   },
-  'cd' => {
+  'cd_fk' => {
     data_type => 'integer',
   },
   'title' => {
@@ -15,7 +14,9 @@ __PACKAGE__->add_columns(
     size => '96',
   });
 
-__PACKAGE__->set_primary_key('trackid');
-__PACKAGE__->belongs_to('cd' => 'Local::SchemaV3b::Result::Cd');
+__PACKAGE__->set_primary_key('track_id');
+__PACKAGE__->belongs_to(
+  'cd' => "Local::SchemaV3a::Result::Cd",
+  {'foreign.cd_id'=>'self.cd_fk'});
  
 1;
