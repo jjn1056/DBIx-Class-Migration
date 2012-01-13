@@ -1,12 +1,207 @@
-package DBIx::Class::Migration::Tutorial;
+package DBIx::Class::Migration::Tutorial::ThirdMigration;
 
 1;
 
 =head1 NAME
 
-DBIx::Class::Migration::Tutorial::Setup - Bootstrap your project files
+DBIx::Class::Migration::Tutorial::ThirdMigration - A more advanced database change
 
 =head1 GOAL
+
+In the last version we added a new table C<country> and enforced a one to many
+relationship between C<country> and C<artist> such that every C<artist> belonged
+to a single C<country>  These types of database changes, when you add a table
+and some columns, tend to be some the easier types of migrations to perform.
+
+Lets take on a more complicated migration problem, and add some more fixture
+configurations and seed data.  This time we will add a table and change the
+nature of an existing relationship.  Is L<DBIx::Class::Migration> up to the
+job?  Let's find out!
+
+=head1 The New Business Requirement
+
+In version 1 and 2 the relationship between Artist and CD is one to many; for
+each Artist there are zero to many CDs, and for each Cd there is one and only
+one artist.  Now we realize that a CD could have a bunch of Artists working
+together as a collaboration.  We need to change our database to reflect this
+need, and we additionally need to migrate our existing data to this new schema
+Let's get to it!
+
+=head1 Change your Schema
+
+Let's make the Version 3 schema.  We need to to add a Bridge class between
+Artist and Cd so that we can express the idea of 'many to many'.
+
+    touch lib/MusicBase/Schema/Result/ArtistCd.pm
+
+And then open that in your text editor, enter the following code:
+
+    package MusicBase::Schema::Result::ArtistCd;
+    use base qw/DBIx::Class::Core/;
+
+    __PACKAGE__->table('artist_cd');
+    __PACKAGE__->add_columns(
+      artist_fk => {
+        data_type => 'integer',
+      },
+      cd_fk => {
+        data_type => 'integer',
+      });
+
+    __PACKAGE__->set_primary_key('artist_fk','cd_fk');
+
+    __PACKAGE__->belongs_to(
+      'artist' => "MusicBase::Schema::Result::Artist",
+      {'foreign.artist_id'=>'self.artist_fk'});
+
+    __PACKAGE__->belongs_to(
+      'cd' => 'MusicBase::Schema::Result::Cd',
+      {'foreign.cd_id'=>'self.cd_fk'});
+
+    1;
+
+So if you are familiar with L<DBIx::Class> you'll already know this is the
+classic pattern.  We have a bridge table where each row points to one Artist
+and on CD row, and no duplications are allowed (the Same Artist can't be linked
+to the same CD twice, for example).
+
+Now we need to change the Artist and CD Result classes.  Open your editor on
+C<lib/MusicBase/Schema/Result/Artist.pm>:
+
+    package MusicBase::Schema::Result::Artist;
+    use base qw/DBIx::Class::Core/;
+
+    __PACKAGE__->table('artist');
+
+    __PACKAGE__->add_columns(
+      artist_id => {
+        data_type => 'integer',
+      },
+      country_fk => {
+        data_type => 'integer',
+      },
+      name => {
+        data_type => 'varchar',
+        size => '96',
+      });
+
+    __PACKAGE__->set_primary_key('artist_id');
+
+    __PACKAGE__->belongs_to(
+      'has_country' => 'MusicBase::Schema::Result::Country',
+      {'foreign.country_id'=>'self.country_fk'});
+
+    __PACKAGE__->has_many(
+      'artist_cd_rs' => 'MusicBase::Schema::Result::ArtistCd',
+      {'foreign.artist_fk'=>'self.artist_id'});
+
+    __PACKAGE__->many_to_many(artist_cds => artist_cd_rs => 'cd');
+
+    1;
+
+So we didn't change the columns, but we removed the direct relationship to Cd
+and replaced it with a relationship to the new ArtistCd result class.  We also
+created one pseudo 'many to many' relationship across the bridge so that we can
+directly pick up all the Cds for a given Artist.
+
+Now we need to change the Cd.  Open C<lib/MusicBase/Schema/Result/Cd.pm>
+and make the following change:
+
+    package MusicBase::Schema::Result::Cd;
+    use base qw/DBIx::Class::Core/;
+
+    __PACKAGE__->table('cd');
+    __PACKAGE__->add_columns(
+      'cd_id' => {
+        data_type => 'integer',
+      },
+      'title' => {
+        data_type => 'varchar',
+        size => '96',
+      });
+
+    __PACKAGE__->set_primary_key('cd_id');
+
+    __PACKAGE__->has_many(
+      'track_rs' => 'MusicBase::Schema::Result::Track',
+      {'foreign.cd_fk'=>'self.cd_id'});
+
+    __PACKAGE__->has_many(
+      'artist_cd_rs' => 'MusicBase::Schema::Result::ArtistCd',
+      {'foreign.cd_fk'=>'self.cd_id'});
+
+    __PACKAGE__->many_to_many(artists_cd => artist_cd_rs => 'artist');
+
+    1;
+
+Changes here are a bit deeper.  First we removed the C<artist_fk> column since
+we no longer constrain each Cd to a single Artist.  Then we removed the 
+relationship directly to Artist (since we no longer have that) and replaced it
+with a new relationship C<artist_cd_rs> which connects us to the ArtistCD
+bridge table.  Last, we added another pseudo relationship so that you can
+easily cross the bridge table and get all the Artists related to a given Cd.
+
+As always, you should remember to up the C<$VERSION> in your
+C<MusicBase::Schema>:
+
+    package MusicBase::Schema;
+    use base 'DBIx::Class::Schema';
+
+    our $VERSION = 3;
+
+    __PACKAGE__->load_namespaces();
+
+    1;
+
+Very good, we've changed the database to reflect our new requirement.  Lets
+start working on the migration.
+
+=head2 Prepare the migrations
+
+    dbic-migration -Ilib status
+    Schema is 3
+    Deployed database is 2
+
+So first off we've check the status of our system and can see the database is
+one version behind.  Let's prepare the migration:
+
+    dbic-migration -Ilib prepare
+
+And as usually we can see a bunch of new version 3 directories and some 2-3
+directories related to upgrades.  As in the previous migration, we'll skip
+the 3-2 downgrade, instead covering downgrades in a later section.  Here's
+some of the new directory structure:
+
+    /share
+      /fixtures
+        /1
+          (Same as before)
+        /2
+          (Same as before)
+        /3
+          /conf
+            all_tables.json
+            countries.json
+      /migrations
+        /_common
+          (Same as before)
+        /_source
+          (system files for DBIC::DeploymentHandler.  Leave alone!)
+        /SQLite
+          /deploy
+            /1
+              (Same as before
+            /2
+              001-auto-_VERSION.sql
+              001-auto.sql
+          /downgrade
+            /2-1
+              001-auto.sql
+          /upgrade
+            /1-2
+              001-auto.sql
+      musicbase-schema.db
+
 
 =head1 SUMMARY
 

@@ -195,6 +195,7 @@ sub _only_from_when_not_to {
 
 sub _copy_from_to {
   my ($from_dir, $to_dir) = @_;
+  print "Copying Fixture Confs from $from_dir to $to_dir\n";
   (cp($_, $to_dir)
     || die "Could not copy $_: $!")
       for _only_from_when_not_to($from_dir, $to_dir);
@@ -230,7 +231,7 @@ sub prepare {
     my $previous_fixtures_conf = _prepare_fixture_conf_dir(
       $self->target_dir, $previous);
 
-    _copy_from_to($fixture_conf_dir, $previous_fixtures_conf);
+    _copy_from_to($previous_fixtures_conf, $fixture_conf_dir);
   }
 }
 
