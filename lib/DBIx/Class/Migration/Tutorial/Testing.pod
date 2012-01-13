@@ -47,7 +47,34 @@ L<Test::DBIx::Class> to automatically deploy a temporary test database (by
 default it creates a SQlite in memory database) which reflects the current 
 schema and then we populate the C<all_tables> fixtures using the utility class
 L<DBIx::Class::Migration::Population> which is part of the <DBIx::Class::Migration>
-distribution.  Let's run it:
+distribution.  Before we can run the test case, we need to update our C<dist.ini>
+file.  Open this is a text editor and change it to look like this:
+
+    name    = DBIx-Class-Migration
+    author  = John Napiorkowski <jjnapiork@cpan.org>
+    license = Perl_5
+    copyright_holder = John Napiorkowski
+    copyright_year   = 2011
+    abstract = Tutorial Application for DBIx-Class-Migration
+
+    version = 0.001
+
+    [@Basic]
+    [Prereqs]
+    DBIx::Class = 0
+    DBIx::Class::Migration = 0
+
+    [Prereqs / TestRequires]
+    Test::Most = 0
+    Test::DBIx::Class = 0
+
+We just added a new section "[Prereqs / TestRequires]" and listed the two
+testing modules.  Great, now install the new dependencies:
+
+    dzil listdeps | cpanm
+
+Perfect, we are now fully up to date (and anyone that checks out our code can
+also be sure to have all the right dependencies.  Let's run the test case:
 
     $ prove -lv t/upgrade-1to2.t 
     t/upgrade-1to2.t .. 
