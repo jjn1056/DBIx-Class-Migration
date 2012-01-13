@@ -234,7 +234,7 @@ Change C<lib/MusicBase/Schema/ResultSet/Artist.pm>
           '+select'=> [ { count => 'cd_rs.cd_id', -as => 'cd_count'} ],
           '+as'=> ['cd_count'],
           group_by=>["$me.artist_id"],
-          having => { cd_count => { '>', 1 } }
+          having => { cd_count => \'> 1' }
         }
       );
     }

@@ -30,11 +30,513 @@ you can get both the table structure and the essential running information (in
 this case the list of countries we care about could be considered system / 
 domain data, not transactional data).  Let's do it!
 
-=head1 Change you Schema
+=head2 Change the Schema
+
+We will need to add a new table and then link that table to Artist.  From the
+project home directory (containing the C<dist.ini> file) execute the following
+command in your terminal shell.
+
+    touch lib/MusicBase/Schema/Result/Country.pm
+
+Then open this file in your text editor of choice and add the following code:
+
+    package MusicBase::Schema::Result::Country;
+    use base 'DBIx::Class::Core';
+
+    __PACKAGE__->table('country');
+    __PACKAGE__->add_columns(
+      'country_id' => {
+        data_type => 'integer',
+      },
+      'name' => {
+        data_type => 'varchar',
+        size => '96',
+      });
+
+    __PACKAGE__->set_primary_key('country_id');
+    __PACKAGE__->add_unique_constraint(['name']);
+    __PACKAGE__->has_many(
+      'artist_rs' => "MusicBase::Schema::Result::Artist",
+      {'foreign.country_fk'=>'self.country_id'});
+
+    1;
+
+This will establish a new Result class with a one to many relationship to
+the Artist Result class.  You probably notice that we are referencing a column
+in the Artist Result class that does not yet exist.  Lets add that as well
+
+Open C<lib/MusicBase/Schema/Result/Artist.pm> in your editor and change it to
+look like this:
+
+    package MusicBase::Schema::Result::Artist;
+    use base qw/DBIx::Class::Core/;
+
+    __PACKAGE__->table('artist');
+
+    __PACKAGE__->add_columns(
+      artist_id => {
+        data_type => 'integer',
+      },
+      country_fk => {
+        data_type => 'integer',
+      },
+      name => {
+        data_type => 'varchar',
+        size => '96',
+      });
+
+    __PACKAGE__->set_primary_key('artist_id');
+
+    __PACKAGE__->belongs_to(
+      'has_country' => 'MusicBase::Schema::Result::Country',
+      {'foreign.country_id'=>'self.country_fk'});
+
+    __PACKAGE__->has_many(
+      'cd_rs' => 'MusicBase::Schema::Result::Cd',
+      {'foreign.artist_fk'=>'self.artist_id'});
+
+    1;
+
+So we added the foreign key field C<country_fk> and we added the other end of
+our new relationship to Country (called C<has_country>).
+
+Great, we've altered our schema to fit the new requirement.  Let's up the
+C<$VERSION> and commit if you are using a repository.
+
+Alter file C<lib/MusicBase/Schema.pm>
+
+    package MusicBase::Schema;
+    use base 'DBIx::Class::Schema';
+
+    our $VERSION = 2;
+
+    __PACKAGE__->load_namespaces();
+
+    1;
+
+So we just change C<$VERSION> from 1 to 2, which is how the default configuration
+of L<DBIx::Class::DeploymentHandler> works.
+
+=head1 Prepare the new migration
+
+Now that we've altered the schema and upped the version, we use the C<prepare>
+command to create the version 2 files.  First, let's verify the status of our 
+system:
+
+    dbic-migration -Ilib status
+
+Should return
+
+    Schema is 2
+    Deployed database is 1
+    
+That looks correct.  Let's get the database up to date.  First prepare the
+files.
+
+    dbic-migration -Ilib prepare
+
+That will generate a bunch of new files.  Lets see the directory structure now.
+
+    /share
+      /fixtures
+        /1
+          (Same as before)
+        /2
+          /conf
+            all_tables.json
+      /migrations
+        /_common
+          (Same as before)
+        /_source
+          (system files for DBIC::DeploymentHandler.  Leave alone!)
+        /SQLite
+          /deploy
+            /1
+              (Same as before
+            /2
+              001-auto-_VERSION.sql
+              001-auto.sql
+          /downgrade
+            /2-1
+              001-auto.sql
+          /upgrade
+            /1-2
+              001-auto.sql
+      musicbase-schema.db
+
+Oe, we got a bunch more files.  You can see that we've created a new
+C<all_tables.json> fixture configuration, which if you peek inside, you will
+see has been updated to include your new Country Result class.
+
+Additionally you can see we have a new version 2 directory under C<deploy>
+which contains the full DDL for you new schema, as well as the special
+metadata table that L<DBIx::Class::DeploymentHandler> uses to manage deployment
+history.  You should take a quick look inside those as well, and see that
+the new country table has been added.
+
+So far all this is similar to Version 1.  What is different is you have the
+new C<downgrade> and C<upgrade> directories.  For simplicity I will not deal
+with downgrades for this section of the tutorial, and instead focus on the
+upgrade path.
+
+Lets take a closer look at C</upgrade>:
+
+    /upgrade
+      /1-2
+        001-auto.sql
+
+Since our schema was at version 2 and the database was at version 1, we created
+a 1 to 2 upgrade path, which will allow us to get the database in sync with our
+schema.  L<DBIx::Class::DeploymentHandler> will introspect your schema and
+database using L<SQLT> and try to suggest some DDL that would do the job.  You
+should treat this initial C<001-auto.sql> file as a suggestion and as a guide.
+You will need to make changes to it based on your data change need (L<SQLT>
+knows about your table structure, but not your data) as well as your performance
+and uptime needs.  For example, when changing a table that has 1 million rows
+you might need to take an alternative approach than what is suggested.
+
+This is the part of the job where you need to exercise the most planning and
+good judegment, and you might need to involve your DBA to help you craft a
+change set that can work for your particular needs.  In this case we have a very
+small database using sqlite, so our needs are similarly small, however that
+should not excuse us from planning!
+
+Let's look at the proposed DDL change.  In the editor of your choice open
+C<share/migrations/SQlite/upgrade/1-2/001-auto.sql>
+
+    BEGIN;
+
+    CREATE TABLE country (
+      country_id INTEGER PRIMARY KEY NOT NULL,
+      name varchar(96) NOT NULL
+    );
+
+    CREATE UNIQUE INDEX country_name ON country (name);
+
+    ALTER TABLE artist ADD COLUMN country_fk integer NOT NULL;
+
+    CREATE INDEX artist_idx_country_fk ON artist (country_fk);
+
+    COMMIT;
+
+So the first part of this that adds the C<country> table is pretty straight
+forward.  Lets break that part out into its own upgrade step.  Generally even
+if the DDL change proposed is perfect, I prefer to move the code to a file name
+other than the default C<001-auto.sql> since if I need to prepare the upgrade
+several times (as you might if you are building a new version and realize you
+make a mistake and need to re prepare it, as we'll see in a later step) each
+time you do it will overwrite that file, blowing away any customization you
+made.  So lets bust out the first part:
+
+    touch share/migrations/SQlite/upgrade/1-2/001-add_country.sql
+
+And then open it in your text editor and add the following (copied from the
+C<001-auto.sql> file).
+
+    BEGIN;
+
+    ;
+    CREATE TABLE country (
+      country_id INTEGER PRIMARY KEY NOT NULL,
+      name varchar(96) NOT NULL
+    );
+
+    CREATE UNIQUE INDEX country_name ON country (name);
+
+    ;
+    COMMIT;
+
+Great, now we have a step that makes a table.  Next, we need to add the list
+of default countries.  For this we will use a Perl script similar to the one
+we did for version 1.  You could do this in SQL if you wanted, just if I can
+use a Perl script I would prefer that since it would be more portable across
+other databases (and eventually you will need something other than SQLite for
+production).  Lets add that now:
+
+    mkdir share/migrations/_common/upgrade
+    mkdir share/migrations/_common/upgrade/1-2
+    touch share/migrations/_common/upgrade/1-2/002-insert_countries.pl
+
+We are putting this in the C<_common> migrations directory so that later on if
+we add another database (such as MySQL) we'd be able have it run for both.
+Since Perl migration run files are going to be database agnostic, it makes
+sense to do this.  You could have just as easily created a file 
+
+    touch share/migrations/SQlite/upgrade/1-2/002-insert_countries.pl
+
+And that woould have made a script that would only run on SQLite installs.
+
+Lets edit our Perl run file:
+
+C<share/migrations/_common/upgrade/1-2/002-insert_countries.pl>
+
+    sub {
+      shift->resultset('Country')
+        ->populate([
+          ['name'],
+          ['Canada'],
+          ['Mexico'],
+          ['USA'],
+      ]);
+    };
+
+Since the C<populate> method uses bulk insertion, its generally my favored way
+to insert rows for migrations.  Its going to be much faster than doing separate
+inserts.  In this case we don't have a lot of data, so it didn't make a big
+difference, just that later on if you data needs are larger it would have an
+impact.
+
+Ok, so let's look at the remaining part of the C<001-auto.sql> file that we
+have not yet examined:
+
+    ALTER TABLE artist ADD COLUMN country_fk integer NOT NULL;
+
+    CREATE INDEX artist_idx_country_fk ON artist (country_fk);
+
+So that only does part of the job.  First of all, we can't really add a NOT NULL
+column without default values, since that's going to be a constraint.  Also the
+foriegn key is missing.  That's because it seems SQLite doesn't let you alter
+a table to add that kind of constraint.  Let's look at the DDL for the new
+artist table from the full ddl in C<share/migrations/SQlite/deploy/2/001-auto.sql>:
+
+    CREATE TABLE artist (
+      artist_id INTEGER PRIMARY KEY NOT NULL,
+      country_fk integer NOT NULL,
+      name varchar(96) NOT NULL,
+      FOREIGN KEY(country_fk) REFERENCES country(country_id)
+    );
+    CREATE INDEX artist_idx_country_fk ON artist (country_fk);
+
+Alright, lets try to fix it.  Lets create a file to hold our code:
+
+    touch share/migrations/SQlite/upgrade/1-2/003-change_artist.sql
+
+So this is going to be the third step for this upgrade.  Open the file in your
+text editor and enter this code:
+
+    BEGIN;
+
+    CREATE TEMPORARY TABLE artist_temp_alter (
+      artist_id INTEGER PRIMARY KEY NOT NULL,
+      name varchar(96) NOT NULL
+    );
+
+    INSERT INTO artist_temp_alter SELECT artist_id, name FROM artist;
+
+    DROP TABLE artist;
+
+    CREATE TABLE artist (
+      artist_id INTEGER PRIMARY KEY NOT NULL,
+      country_fk integer NOT NULL DEFAULT 1,
+      name varchar(96) NOT NULL,
+      FOREIGN KEY(country_fk) REFERENCES country(country_id)
+    );
+
+    CREATE INDEX artist_idx_country_fk ON artist (country_fk);
+
+    INSERT INTO artist SELECT artist_id, 1, name FROM artist_temp_alter;
+
+    DROP TABLE artist_temp_alter;
+
+    COMMIT;
+
+So this was my personal best shot, but of course there is going to be more than
+one way to do it.  I decide it would be best to create a temporary table to
+hold the current artist info, build a new artist table with the correct FK
+constraint and new column, and then copy back from the temp table.  Now, if I
+had a million rows this wouldn't work out very well, but with a database that
+big you'd probably have moved on to something that would actually allow you
+to add an FK in an alter statement.  So I'll go with this since it does the
+job.
+
+Notice that when I copy back to the new artist table from the temporary table
+I make all the artists live in the country matching country_id = 1 (Canada).
+I'll leave it this way for the section of the tutorial, just to keep it simple
+but in reality you would probably need to copy things more careful, or maybe
+add an "UNKNOWN" country option to the list of countries.  We'll do an example
+of something like that in a later section.  I just want to point out that when
+you craft your migration code you need to interpret the suggested DDL change
+and keep in mind how you data is put together.  That way you can craft a good
+change set that keeps you database well constrained and organized.
+
+Now that your are done converting the suggested DDL change, you should delete
+that file (otherwise when later you run the migration, you will end up doing
+more changes and get some errors)
+
+    rm share/migrations/SQLite/upgrade/1-2/001-auto.sql 
+
+Ok, so now you have a good set of migrations to move from version 1 to 2.  Lets
+try that out now.
+
+=head1 Upgrade the database
+
+Once you have good migrations, its time to upgrade.  Typically I first make
+sure the database is in a good known state:
+
+    dbic-migration -Ilib drop_tables
+
+That will blow away you tables, so be careful when using this command!  You
+should see:
+
+    Dropping table cd
+    Dropping table track
+    Dropping table artist
+    Dropping table dbix_class_deploymenthandler_versions
+
+Great, now the database is clear.  Let's install version 1
+
+    dbic-migration -Ilib install --to_version 1
+
+Since the schema is version 2 we need to explicitly mention the target version
+we are deploying.  Otherwise L<DBIx::Class::Migration> will want to deploy a
+version that matches the current schema.  We want to do an upgrade, not an
+install, since we need to modify both the tables AND our data, then we can
+build some good new fixtures.  Lets do the upgrade:
+
+    dbic-migration -Ilib upgrade
+    dbic-migration -Ilib status
+
+That should give you:
+
+    Schema is 2
+    Deployed database is 2
+
+Let's peek in the database and see if everything is good:
+
+    sqlite3 share/musicbase-schema.db
+    sqlite> .tables
+
+Should give you:
+
+    artist                  dbix_class_deploymenthandler_versions
+    cd                      track                                
+    country   
+
+So there's our new table.  Lets make sure our data is correct:
+
+    sqlite> select * from country;
+    1|Canada
+    2|Mexico
+    3|USA
+
+    sqlite> select * from artist;
+    1|1|Michael Jackson
+    2|1|Eminem
+
+So looks like out migration worked out.  Later on we'll learn how to write
+some test cases for our database, and I would highly suggestion that you write
+some tests that make sure your migration worked as expected, rather than doing
+the manual inspect as above
+
+You are done with the upgrade, lets move on to make new fixtures.
+
+=head1 Customize Fixtures and Serializing Fixtures
+
+When you C<prepare>d the new version, in addition to creating the database
+structure migrations, we also got a new version 2 directory for the fixtures.
+
+    /share
+      /fixtures
+        /1
+          (Same as before)
+        /2
+          /conf
+            all_tables.json
+
+By default we build you a fresh C<all_tables.json> that should reflect any new
+or removed tables.  Additionally, if there where any custom fixture
+configurations, we would have copied those from the version 1.  We didn't have
+any custom files so nothing was copied.  Lets make a custom fixture config now:
+
+    touch share/fixtures/2/conf/countries.json
+
+We will make a fixture configuration to dump all the countries.  Since the list
+of countries is part of your domain data (and not transaction data) you should
+create fixtures for it so that when someone is setting up a new version 2
+database they can install a version that has both the structure and the data
+needed to have a functioning database.  Data that is part of the domain we call
+'seed' data.  You'll need to create fixtures for all types of seed data, such
+as country lists, roles, product names, etc.
+
+So you can use fixtures for a variety of jobs, from created demo databases to
+show clients, databases for developer, fixtures for running tests, and
+fixtures to preserve necessary domain data.  You can then install a database
+and setup whatever list of fixtures is needed for the job at had.  Additionally
+since our migrations perform updates on the database data, we can just dump new
+fixtures after each clean update, and expect to have properly updated fixtures.
+
+Here's our fixture configuration for C<share/fixtures/2/conf/countries.json>:
+
+    {
+       "sets" : [
+          {
+             "quantity" : "all",
+             "class" : "Country"
+          }
+       ],
+       "might_have" : {
+          "fetch" : 0
+       },
+       "belongs_to" : {
+          "fetch" : 0
+       },
+       "has_many" : {
+          "fetch" : 0
+       }
+    }
+
+This will dump all the countries, and you will be able to load them later.
+
+Now that you have the new, custom fixture, lets dump all the sets:
+
+    dbic-migration -Ilib dump_all_sets
+
+Please note that if you 'played' with the database after doing the update, any
+new additional data with now become part of your fixtures.  This may or may not
+be desirable.  Let's see the list of new fixtures:
+
+    /share
+      /fixtures
+        /1
+          (Same as before)
+        /2
+          /all_tables
+            _dumper_version
+            /artist
+              1.fix
+              2.fix
+            /cd
+              (1-3.fix)
+            /country
+              (1-3.fix)
+            /track
+              (1-7.fix)
+          /countries
+            _dumper_version
+            /country
+              (1-3.fix)
+          /conf
+            all_tables.json
+            countries.json
+
+So now you have two sets of fixtures, the C<all_tables> and the C<countries>
+sets!
 
 =head1 SUMMARY
 
+    dbic-migration -Ilib status
+    Schema is 2
+    Deployed database is 2
+
+You've successful crafted a migration to move your database structure and your
+data from version 1 to version 2.  You've also updated your fixtures and
+created a custom fixture configuration for managing your seed data.  You now
+have a good system where a new developer can walk in and run one or two
+commands to get a solid working database!  Congrats.
+
 =head1 NEXT STEPS
+
+Proceed to L<DBIx::Class::Migration::Tutorial::Testing>.
 
 =head1 AUTHOR
 
