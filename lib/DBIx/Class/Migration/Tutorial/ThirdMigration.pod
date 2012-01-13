@@ -186,21 +186,246 @@ some of the new directory structure:
         /_common
           (Same as before)
         /_source
-          (system files for DBIC::DeploymentHandler.  Leave alone!)
+          (System files for DBIC::DeploymentHandler)
         /SQLite
           /deploy
             /1
-              (Same as before
+              (Same as before)
             /2
+              (Same as before)
+            /3
               001-auto-_VERSION.sql
               001-auto.sql
           /downgrade
             /2-1
-              001-auto.sql
+            /3-2
           /upgrade
             /1-2
+              (Same as before)
+            /2-3
               001-auto.sql
       musicbase-schema.db
+
+At this point there should be no surprises.  You'll notice that C<prepare>
+made a fresh C<all_tables.json> for you, which has added your new bridge table
+and it also copied over your custom C<countries.json> from the previous version.
+Please note that this is a dumb copy; no attempt has been made to convert the
+configuration to make sense with any database structural changes.  You'll need
+to examine your custom configurations and manually make any needed changes.  In
+this case the existing custom configuration is fine for this version, so we can
+move on to reviewing the deploy and upgrades.
+
+There should be no surprises under C<deploy/3/*>.  The only reason you'll need
+to poke into these files is if you need to see the full DLL as part of helping
+you craft the upgrades correctly, or if your DBA needs to tweak aspects of the
+design (change indexes, storage engines, etc.)
+
+The real fun begins under C<share/migrations/SQLite/upgrade/2-3/*>.  Again you
+have the C<001-auto.sql> file, which is the first, best guess on how to upgrade
+the database.  We need to poke into that and shape it into something that can
+work for both our database structure and our data.  Let's look at the the 
+suggestion.  Open  C<share/migrations/SQLite/upgrade/2-3/001-auto.sql> in your
+text editor:
+
+    BEGIN;
+
+    CREATE TABLE artist_cd (
+      artist_fk integer NOT NULL,
+      cd_fk integer NOT NULL,
+      PRIMARY KEY (artist_fk, cd_fk),
+      FOREIGN KEY(artist_fk) REFERENCES artist(artist_id),
+      FOREIGN KEY(cd_fk) REFERENCES cd(cd_id)
+    );
+
+    CREATE INDEX artist_cd_idx_artist_fk ON artist_cd (artist_fk);
+
+    CREATE INDEX artist_cd_idx_cd_fk ON artist_cd (cd_fk);
+
+    CREATE TEMPORARY TABLE cd_temp_alter (
+      cd_id INTEGER PRIMARY KEY NOT NULL,
+      title varchar(96) NOT NULL
+    );
+
+    INSERT INTO cd_temp_alter SELECT cd_id, title FROM cd;
+
+    DROP TABLE cd;
+
+    CREATE TABLE cd (
+      cd_id INTEGER PRIMARY KEY NOT NULL,
+      title varchar(96) NOT NULL
+    );
+
+    INSERT INTO cd SELECT cd_id, title FROM cd_temp_alter;
+
+    DROP TABLE cd_temp_alter;
+
+    COMMIT;
+
+This doesn't look too bad.  From first review it looks to me like we are just
+missing transfering data from the old relationship to the new bridge table.  So
+like last time we will bust this up into a few steps, under new file names but
+under this directory.  Lets handle this in bits.
+
+    touch share/migrations/SQLite/upgrade/2-3/001-create_artist_cd.sql
+
+And then open that in your editor.  We will copy the first bit of the
+C<001-auto.sql>, having to do with creating the new table and indexes over:
+
+    BEGIN;
+
+    CREATE TABLE artist_cd (
+      artist_fk integer NOT NULL,
+      cd_fk integer NOT NULL,
+      PRIMARY KEY (artist_fk, cd_fk),
+      FOREIGN KEY(artist_fk) REFERENCES artist(artist_id),
+      FOREIGN KEY(cd_fk) REFERENCES cd(cd_id)
+    );
+
+    CREATE INDEX artist_cd_idx_artist_fk ON artist_cd (artist_fk);
+    CREATE INDEX artist_cd_idx_cd_fk ON artist_cd (cd_fk);
+
+    COMMIT;
+
+Now we need to populate that with existing data:
+
+    touch share/migrations/SQLite/upgrade/2-3/002-populate_artist_cd.sql
+
+Here's the SQL to enter:
+
+    ;
+    BEGIN;
+
+    INSERT INTO artist_cd(artist_fk,cd_fk) select artist_fk,cd_id FROM cd;
+
+    COMMIT;
+
+Luckily everything we need exists in the current C<cd> table, so this is a
+straightup insert.  In this case I didn't use a Perl deploy run script since
+I felt the performance benefit of a native SQL approach outweighed the
+advantage of database portability.  If I ever needed to make this work on say
+MySQL or Pg, I'd need to rewrite it, and there's not a lot of SQL so I am
+willing to take that risk.
+
+Lastly, we need to alter the C<cd> table to get rid of the now unneeded
+relationship:
+
+    touch share/migrations/SQLite/upgrade/2-3/003-alter_cd.sql
+
+Then open that in your text editor, and lets bring over the last part from
+C<001-auto.sql>:
+
+    BEGIN;
+
+    CREATE TEMPORARY TABLE cd_temp_alter (
+      cd_id INTEGER PRIMARY KEY NOT NULL,
+      title varchar(96) NOT NULL
+    );
+
+    INSERT INTO cd_temp_alter SELECT cd_id, title FROM cd;
+
+    DROP TABLE cd;
+
+    CREATE TABLE cd (
+      cd_id INTEGER PRIMARY KEY NOT NULL,
+      title varchar(96) NOT NULL
+    );
+
+    INSERT INTO cd SELECT cd_id, title FROM cd_temp_alter;
+
+    DROP TABLE cd_temp_alter;
+
+    COMMIT;
+
+Again, since SQLite doesn't have any DDL alter to remove FK's we need to
+roundtrip the data via a temporary table.  If you had a million+ rows you
+might worry about this approach :)  Again, I will accept this DDL change for
+the scope of our limited requirement
+
+So, that's all the changes.  Like last time, remember to remove the suggested
+upgrade script:
+
+    rm share/migrations/SQLite/upgrade/2-3/001-auto.sql
+
+And you'd probably wish to commit these files now if you are using an source
+control system (and if you are not, prepare for pain!)
+
+Next step will be to perform the upgrade.
+
+=head1 Upgrade your database.
+
+    $ dbic-migration -Ilib status
+    Schema is 3
+    Deployed database is 2
+
+SO the database is in the expected state.  If you've been messing with the data
+you might which to 'clean' things up, with something like:
+
+    $ dbic-migration -Ilib delete_table_rows
+    $ dbic-migration -Ilib populate
+    Reading configurations from /Users/johnn/Desktop/MusicBase/share/fixtures/2/conf
+    Restored set all_tables to database
+
+As you might notice above, even though the schema is version two, we installed
+fixtures from version one.  The tool will always try to match fixture populates
+to the current database version.
+
+Let's go ahead with the upgrade:
+
+    $ dbic-migration -Ilib upgrade
+    $ dbic-migration -Ilib status
+    Schema is 3
+    Deployed database is 3
+
+Looks good.  Lets peek in the database and do a quick sanity check.  You should
+also consider writing some test cases similar to what we did in the previous
+section:
+
+    $sqlite3 share/musicbase-schema.db
+
+    SQLite version 3.7.5
+    Enter ".help" for instructions
+    Enter SQL statements terminated with a ";"
+
+    sqlite> .tables
+    artist                  country                              
+    artist_cd               dbix_class_deploymenthandler_versions
+    cd                      track  
+
+    sqlite> select * from artist_cd;
+    1|1
+    1|2
+    2|3
+
+    sqlite> .q
+
+So that looks pretty good.  Normally at this point you'd be getting ready to
+dump fixtures but then...
+
+=head2 Requirementa Change!  Mistakes Happen!
+
+Just about when you are finished there is a sudden requirement change to the
+version.  Or maybe you realize your new schema isn't exactly what you need.  In
+any case you find yourself in a situation where you've already updated and now
+you need to step back, change the migration, and upgrade again.
+
+This really isn't a problem at all.  Its actually very easy to step back and
+redo your version.  You could handle this in two ways.  Either you've been very
+good and making sure you made good downgrades (we didn't :) ) or you can force
+install the database to an arbitrary older version and start again with the
+C<prepare> command.  We will take this second option for this tutorial, and I
+will cover downgrades as a special example later.
+
+So for the purposes of our tutorial, lets say that suddenly we realize our
+design for the C<country> table is terrible wrong.  We've been putting real
+country names in the table, and in English, but now we want to internationalize
+our site.  That means we should avoid english words in our seed data, and
+instead use normalized codes that our UI layer can use and leverage existing
+internationalization and localization tools against.  So we need to change that
+country table, and do so in a way to make sure we keep our existing country
+information correct.  Lastly, we want to add a few new countries to the list
+as well as one more artist to the system.  Thats a bunch of changes, so lets
+get to it!
+
 
 
 =head1 SUMMARY
