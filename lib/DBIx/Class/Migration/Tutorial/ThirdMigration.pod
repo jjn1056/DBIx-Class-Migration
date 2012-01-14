@@ -401,7 +401,7 @@ section:
 So that looks pretty good.  Normally at this point you'd be getting ready to
 dump fixtures but then...
 
-=head2 Requirementa Change!  Mistakes Happen!
+=head2 Requirements Change!  Mistakes Happen!
 
 Just about when you are finished there is a sudden requirement change to the
 version.  Or maybe you realize your new schema isn't exactly what you need.  In
@@ -426,11 +426,339 @@ information correct.  Lastly, we want to add a few new countries to the list
 as well as one more artist to the system.  Thats a bunch of changes, so lets
 get to it!
 
+Changes to be made:
 
+    1 - Change Country table to use codes not english names
+    2 - Update the table data to match above
+    3 - Add new countries to list
+    4 - Add one additional artist
+
+Let's start by altering C<lib/MusicBase/Schema/Result/Country.pm>
+
+    package MusicBase::Schema::Result::Country;
+    use base qw/DBIx::Class::Core/;
+
+    __PACKAGE__->table('country');
+    __PACKAGE__->add_columns(
+      'country_id' => {
+        data_type => 'integer',
+      },
+      'code' => {
+        data_type => 'char',
+        size => '3',
+      });
+
+    __PACKAGE__->set_primary_key('country_id');
+    __PACKAGE__->add_unique_constraint(['code']);
+    __PACKAGE__->has_many(
+      'artist_rs' => "MusicBase::Schema::Result::Artist",
+      {'foreign.country_fk'=>'self.country_id'});
+
+    1;
+
+So the change here is we drop the 'name' column, and replace it with a 'code'
+column, that is fixed as a 3 character datatype.  We decided that we'd use the
+standard international 3 digit codes for countries, that's something we can use
+to wrap internationalization UI around.  We also change the unique constraint
+that used to be on 'name' to 'code'.  Everything else stays the same.
+
+There's no other database changes, the rest will be handled in the migration so
+let's set our database back to version 2 (so that we have something to diff
+against and also migrate data from).
+
+    $ dbic-migration -Ilib drop_tables
+    Dropping table country
+    Dropping table cd
+    Dropping table artist_cd
+    Dropping table track
+    Dropping table artist
+    Dropping table dbix_class_deploymenthandler_versions
+
+    $ dbic-migration -Ilib install --to_version 2
+    $ dbic-migration -Ilib populate
+    Reading configurations from .../MusicBase/share/fixtures/2/conf
+    Restored set all_tables to database
+
+When the tables are small like this, you can get away with just dropping them
+and rebuilding everything from the ground up.  Once the tables are large you
+will probably need to actually write correct downgrades, since that would be
+much more efficient.
+
+Now we are ready to prepare the version (again):
+
+    dbic-migration -Ilib prepare --force_overwrite
+
+We need to use the C<force_overwrite> flag to tell L<DBIx::Class::DeploymentHandler>
+that it is ok to overwrite the generated files.  Since you've been making all
+your customizations in new files we don't have to worry about accidentally
+blowing away anything important.  You'd expect some output like so:
+
+    Overwriting existing DDL-YML file - ...
+    Overwriting existing DDL file - ...
+    Overwriting existing DDL-YML file - ...
+    Overwriting existing DDL file - ...
+    Your Database version must be lower than than your schema version
+    in order to prepare upgrades / downgrades
+    Copying Fixture Confs from .../MusicBase/share/fixtures/2/conf to 
+      .../MusicBase/share/fixtures/3/conf
+
+Output above has been abbreviated a bit to highlight the important information.
+Don't worry about that "Copying Fixture Confs from ..." overwriting any of your
+custom changes, if there is a file in the target directory matching we just
+skip the copy (we always assume if the file is there that you may have made
+some changes you'd rather not lose).
+
+Now, let's look at the new C<share/migrations/SQLite/upgrade/2-3/001-auto.sql>
+
+    CREATE TEMPORARY TABLE country_temp_alter (
+      country_id INTEGER PRIMARY KEY NOT NULL,
+      code char(3) NOT NULL
+    );
+
+    INSERT INTO country_temp_alter SELECT country_id, code FROM country;
+
+    DROP TABLE country;
+
+    CREATE TABLE country (
+      country_id INTEGER PRIMARY KEY NOT NULL,
+      code char(3) NOT NULL
+    );
+
+    CREATE UNIQUE INDEX country_code02 ON country (code);
+
+    INSERT INTO country SELECT country_id, code FROM country_temp_alter;
+
+    DROP TABLE country_temp_alter;
+
+Again, to be brief I've only included above the new statements related to our
+changes to the C<country> table.  This actually seems pretty good.  Lets
+break that out into a separate file, and add some statements to move data
+from the old name to the new code columns:
+
+    touch share/migrations/SQLite/upgrade/2-3/004-alter_country.sql
+
+And open that new file in your editor, add the following:
+
+    BEGIN;
+
+    CREATE TEMPORARY TABLE country_temp_alter (
+      country_id INTEGER PRIMARY KEY NOT NULL,
+      code char(3) NOT NULL
+    );
+
+    -- Match to current data
+    INSERT INTO country_temp_alter SELECT country_id, 'can' FROM country where name='Canada';
+    INSERT INTO country_temp_alter SELECT country_id, 'usa' FROM country where name='USA';
+    INSERT INTO country_temp_alter SELECT country_id, 'mex' FROM country where name='Mexico';
+    -- End Match
+
+    DROP TABLE country;
+
+    CREATE TABLE country (
+      country_id INTEGER PRIMARY KEY NOT NULL,
+      code char(3) NOT NULL
+    );
+
+    CREATE UNIQUE INDEX country_code02 ON country (code);
+
+    INSERT INTO country SELECT country_id, code FROM country_temp_alter;
+
+    DROP TABLE country_temp_alter;
+
+    COMMIT;
+
+So I basically just took that change and swapped:
+
+    INSERT INTO country_temp_alter SELECT country_id, code FROM country;
+
+with the three separate INSERTs so I could properly map the English country
+names to the new 3 character country codes.  Otherwise I've kept the rest.
+
+Don't forget to delete the C<001-auto.sql> file:
+
+    rm share/migrations/SQLite/upgrade/2-3/001-auto.sql
+
+In order to complete our new requirements, lets create some Perl run files to
+add some new country codes, and one new Artist:
+
+    touch share/migrations/SQLite/upgrade/2-3/005-new_countries.pl
+    touch share/migrations/SQLite/upgrade/2-3/006-new_artist.pl
+
+Open C<share/migrations/SQLite/upgrade/2-3/005-new_countries.pl> in your editor
+and add the following:
+
+    sub {
+      shift->resultset('Country')
+        ->populate([
+          ['code'],
+          ['bel'],
+          ['deu'],
+          ['fra'],
+      ]);
+    }
+
+Finally open C<share/migrations/SQLite/upgrade/2-3/006-new_artist.pl> in
+your editor and add the following:
+
+    sub {
+      shift->resultset('Artist')
+        ->create({
+          name => 'JoJo',
+          country_fk => {code=>'usa'},
+          artist_cds => [
+            { cd_fk => {
+                title=>'My Cool New Album'}
+            }
+          ],
+        });
+    }
+
+You might notice that the relationship names in C<006-new_artist.pl> don't
+exactly match those in our schema.  As I mentioned before, this is because the
+schema that is passed as the first (and only) argument to your anonymous 
+subroutinues is NOT the schema that comes from L<MusicBase::Schema> but instead
+it is generated directly from the database using L<DBIx::Class::Schema::Loader>
+This is because your schema is going to change a lot, we can't rely on it always
+being backwardly compatible with every version of the database.
+
+If you every get confused about what the auto generated schema looks like, you
+can always use the C<make_schema> command:
+
+    dbic-migration -Ilib make_schema
+
+And that will dump the current database version generated schema to
+C<share/dumped_db>
+
+Everything is ready to go.  Lets run the upgrade:
+
+    dbic-migration -Ilib upgrade
+
+As before, let's peek inside the database for a quick sanity check:
+
+    $sqlite3 share/musicbase-schema.db
+    SQLite version 3.7.5
+    Enter ".help" for instructions
+    Enter SQL statements terminated with a ";"
+    sqlite> .tables
+    artist                       country                              
+    artist_cd                    dbix_class_deploymenthandler_versions
+    cd                           track                                
+    sqlite> select * from country;
+    1|can
+    2|mex
+    3|usa
+    4|bel
+    5|deu
+    6|fra
+    sqlite> .tables
+
+Of course, we really should have some test cases!  But first, don't forget to
+dump your fixtures:
+
+    dbic-migration -Ilib dump_all_sets
+
+=head1 Adding some tests
+
+As usual after changing your version, you will need to add a few tests, and
+check your existing ones.  First, add a test for the 2 to 3 migration:
+
+    touch t/upgrade-2to3.t
+
+Then open that in you text editor, add the following:
+
+    use Test::Most;
+    use DBIx::Class::Migration::Population;
+    use Test::DBIx::Class
+      -schema_class=>'MusicBase::Schema',
+      qw(Artist Country);
+
+    plan skip_all => 'not correct schema version'
+      if Schema->schema_version != 3;
+
+    (my $population = DBIx::Class::Migration::Population->new(
+      schema=>Schema()))->populate('all_tables');
+
+    is Country->count, 6,
+      'Correct Number of Tests';
+
+    ok my $artist = Artist->first,
+      'Got one artist';
+
+    is $artist->has_country->code, 'can',
+      'Oh Canada!';
+
+    is scalar($artist->artist_cds), 2,
+      'has two cd';
+
+    done_testing;
+
+So this is just a basic test to see that all the new countries exist and that
+the new many to many between Artist and Cd works.  Lets run the test suite:
+
+    prove -l t
+
+This gives you:
+
+    t/more-than-1.t ... 1/? DBIx::Class::ResultSet::count(): No such relationship cd_rs on Artist 
+    t/more-than-1.t ... Dubious, test returned 9 (wstat 2304, 0x900)
+    All 1 subtests passed 
+    t/upgrade-1to2.t .. skipped: not correct schema version
+    t/upgrade-2to3.t .. ok   
+    t/use.t ........... ok   
+
+    Test Summary Report
+    -------------------
+    t/more-than-1.t (Wstat: 2304 Tests: 1 Failed: 0)
+      Non-zero exit status: 9
+      Parse errors: No plan found in TAP output
+    Files=4, Tests=6,  2 wallclock secs ( ... )
+    Result: FAIL
+
+Oops, we broke our resultset method when we changed the relationship!  Luckily
+we can fix it in one place (instead of having to hunt through all you code if
+you didn't bother to use an ORM!)
+
+Open C<lib/MusicBase/Schema/ResultSet/Artist.pm> and make the following change:
+
+    package MusicBase::Schema::ResultSet::Artist;
+    use base 'DBIx::Class::ResultSet';
+
+    sub has_more_than_one_cds {
+      my $me = (my $self = shift)->current_source_alias;
+      $self->search(
+        {},
+        {
+          join=>['artist_cd_rs'],
+          '+select'=> [ { count => 'artist_cd_rs.cd_fk', -as => 'cd_count'} ],
+          '+as'=> ['cd_count'],
+          group_by=>["$me.artist_id"],
+          having => { cd_count => \'> 1' }
+        }
+      );
+    }
+
+    1;
+
+We just change the join condition to match the new relationship, and try again:
+
+    $prove -l t
+    t/more-than-1.t ... ok   
+    t/upgrade-1to2.t .. skipped: not correct schema version
+    t/upgrade-2to3.t .. ok   
+    t/use.t ........... ok   
+    All tests successful.
+    Files=4, Tests=7,  2 wallclock secs ( ... )
+    Result: PASS
 
 =head1 SUMMARY
 
+Ok, that was a big section to get through, but we covered a lot of ground.  You
+have seen how to handle a more complicated change set, and we added some tests
+and dealt with changing requirements mid task.
+
 =head1 NEXT STEPS
+
+Proceed to L<DBIx::Class::Migration::Tutorial::Catalyst>
 
 =head1 AUTHOR
 

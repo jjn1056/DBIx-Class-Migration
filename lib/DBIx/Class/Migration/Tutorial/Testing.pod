@@ -30,7 +30,7 @@ Then open the new files in the editor of choice and enter the following code:
       -schema_class=>'MusicBase::Schema',
       qw(Artist Country);
 
-    plan skip_all => 'Test::mysqld not installed'
+    plan skip_all => 'not correct schema version'
       if Schema->schema_version != 2;
 
     (my $population = DBIx::Class::Migration::Population->new(
@@ -154,7 +154,7 @@ as you continue moving forward with your database changes.
 
 =head1 NEXT STEPS
 
-Proceed to L<DBIx::Class::Migration::ThirdMigration>
+Proceed to L<DBIx::Class::Migration::Tutorial::ThirdMigration>
 
 =head1 AUTHOR
 

@@ -1,0 +1,61 @@
+package DBIx::Class::Migration::Tutorial::Catalyst;
+
+1;
+
+=head1 NAME
+
+DBIx::Class::Migration::Tutorial::Catalyst - Using a web framework
+
+=head1 GOAL
+
+By the end of this section, you will learn some strategies for using migrations
+with web development and for testing.
+
+This is not a L<Catalyst> tutorial.  You should be familar with the L<Catalyst>
+web development framework, and have read the L<Catalyst::Manual>.  Although
+we will build a minimal L<Catalyst> application we are focused on database
+integration as well as explore some strategies for testing and would not
+consider this application to represent overall best practices.
+
+=head1 Bootrap a basic Catalyst application
+
+Update you C<dist.ini> file:
+
+    name    = DBIx-Class-Migration
+    author  = John Napiorkowski <jjnapiork@cpan.org>
+    license = Perl_5
+    copyright_holder = John Napiorkowski
+    copyright_year   = 2011
+    abstract = Tutorial Application for DBIx-Class-Migration
+
+    version = 0.001
+
+    [@Basic]
+    [Prereqs]
+    DBIx::Class = 0
+    DBIx::Class::Migration = 0
+    Catalyst = 0
+    Catalyst::Devel = 0
+
+    [Prereqs / TestRequires]
+    Test::DBIx::Class = 0
+    Test::Most = 0
+
+You should see we've added two dependencies related to L<Catalyst>
+
+=head1 SUMMARY
+
+=head1 NEXT STEPS
+
+Proceed to L<DBIx::Class::Migration::Tutorial::Conclusion>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
