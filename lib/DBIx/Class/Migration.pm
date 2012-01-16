@@ -372,7 +372,7 @@ projects.  However, since it is more of a toolkit for building custom versioning
 and migration workflows than an expression of a particular migration practice,
 it might not always be the most approachable tool.  If you are starting a new
 L<DBIx::Class> project and you don't have a particular custom workflow need,
-you might prefer to simple be given a reasonable clear and standard practice,
+you might prefer to simply be given a reasonable clear and standard practice,
 rather than a toolkit with a set of example scripts.
 
 L<DBIx::Class::Migration> defines some logic which combines both
@@ -405,7 +405,7 @@ This class defines the following attributes.
 
 Accepts Str.  Not Required (but if missing, you need to populate L</schema>).
 
-This is the schema we use as the basic for creating, managing and running your
+This is the schema we use as the basis for creating, managing and running your
 deployments.  This should be the full package namespace defining your subclass
 of L<DBIx::Class::Schema>.  For example C<MyApp::Schema>.
 
@@ -443,8 +443,8 @@ Accepts: Object of L<DBIx::Class::Schema>.  Not required.
 
 If you already have a connected schema (subclass of L<DBIx::Class::Schema>)
 you can simple point to it, skipping L<schema_class> and L<schema_args>.  You
-might for example be using L<Catalyst> and want to build deployments for
-database that are part of your configuration:
+might for example be using L<Catalyst> and want to build deployments for a
+database that is listed in configuration:
 
     use MyCatalyst::App;
     use DBIx::Class::Migration;
@@ -585,7 +585,7 @@ Be care of potential locking issues when using some databases like SQLite.
 =head3 OPTIONAL: Specify a target_dir
 
 Optionally, you can specify your migrations target directory (where your
-migrations get created, in your init arguments.  This option can be combined
+migrations get created), in your init arguments.  This option can be combined
 with either approach listed above.
 
     use DBIx::Class::Migration;
