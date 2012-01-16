@@ -34,14 +34,27 @@ ok -e catfile($target_dir, 'fixtures','1','conf','all_tables.json'), 'got the al
 ok -d catfile($target_dir, 'migrations'), 'got migrations';
 ok -e catfile($target_dir, 'migrations','SQLite','deploy','1','001-auto.sql'), 'found DDL';
 
+open(
+  my $perl_run, 
+  ">", 
+  catfile($target_dir, 'migrations', 'SQLite', 'deploy', '1', '002-artists.pl')
+) || die "Cannot open: $!";
+
+print $perl_run <<END;
+  sub {
+    shift->resultset('Country')
+      ->populate([
+      ['code'],
+      ['bel'],
+      ['deu'],
+      ['fra'],
+    ]);
+  };
+END
+
+close($perl_run);
+
 $migration->install;
-$schema->resultset('Country')
-  ->populate([
-    ['code'],
-    ['bel'],
-    ['deu'],
-    ['fra'],
-  ]);
 
 ok $schema->resultset('Country')->find({code=>'fra'}),
   'got some previously inserted data';
@@ -71,10 +84,17 @@ NEW_SCOPE_FOR_SCHEMA: {
     schema_class=>'Local::Schema');
     
   $migration->install;
-  $migration->populate('all_tables');
+  #$migration->populate('all_tables');
 
   ok $schema->resultset('Country')->find({code=>'fra'}),
     'got some previously inserted data';
+
+  $migration->delete_table_rows;
+  $migration->populate('all_tables');
+
+  ok $schema->resultset('Country')->find({code=>'bel'}),
+    'got some previously inserted data';
+
 }
 
 done_testing();
