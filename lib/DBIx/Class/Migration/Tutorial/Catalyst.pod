@@ -36,12 +36,191 @@ Update you C<dist.ini> file:
     DBIx::Class::Migration = 0
     Catalyst = 0
     Catalyst::Devel = 0
-
+    Catalyst::Plugin::ConfigLoader = 0
+    Catalyst::Model::DBIC::Schema = 0
+    Catalyst::Action::RenderView = 0
+    Catalyst::View::TT = 0
+    Plack = 0
+`
     [Prereqs / TestRequires]
     Test::DBIx::Class = 0
     Test::Most = 0
 
-You should see we've added two dependencies related to L<Catalyst>
+You should see we've added two dependencies related to L<Catalyst>.  Now install
+them with cpanm:
+
+    dzil listdeps | cpanm
+
+Next, bootstrap a L<Catalyst> application.  I know you can use the L<catalyst.pl>
+commandline tool, but for our simple application let's just create a few files
+manually:
+
+    touch app.psgi
+    touch lib/MusicBase/Web.pm
+    mkdir lib/MusicBase/Web
+    mkdir lib/MusicBase/Web/Controller
+    mkdir lib/MusicBase/Web/Model
+    mkdir lib/MusicBase/Web/View
+    touch lib/MusicBase/Web/Controller/Root.pm
+    touch lib/MusicBase/Web/Model/Schema.pm
+    touch lib/MusicBase/Web/View/HTML.pm
+    mkdir share/etc
+    touch share/etc/musicbase_web.pl
+    mkdir share/html
+    touch share/html/index.tt
+
+Now open C<lib/MusicBase/Web.pm> and change it to look like this:
+
+    package MusicBase::Web;
+
+    use Moose;
+    use Catalyst::Runtime 5.90;
+    use Catalyst qw/
+      ConfigLoader
+    /;
+
+    extends 'Catalyst';
+
+    __PACKAGE__->config(
+      'Plugin::ConfigLoader' => {
+        file => __PACKAGE__->path_to('share', 'etc'),
+      },
+    );
+
+    __PACKAGE__->setup;
+    __PACKAGE__->meta->make_immutable;
+
+This is a pretty plain and straight Catalyst application class.  The only thing
+I've done differently from default is I've placed our configuration files in
+C<share/etc>, rather than in the application root (the directory that contains
+your C<dist.ini> file).  I think this is a bit more forward looking, and since
+we already have the C<share> directory, why not use it?
+
+For your Model, we'll use C<Catalyst::Model::DBIC::Schema> to provide a bit of
+thin glue between you L<Catalyst> web application and your L<MusicBase::Schema>:
+
+C<lib/MusicBase/Web/Model/Schema.pm>
+
+    package MusicBase::Web::Model::Schema;
+
+    use Moose;
+    extends 'Catalyst::Model::DBIC::Schema';
+
+    __PACKAGE__->meta->make_immutable;
+
+As is typical for L<Catalyst> models, there's not a lot going on here, just the
+minimum useful glue to make L<Catalyst> aware of your Schema.
+
+Let's add the View now.  Open C<lib/MusicBase/Web/View/HTML.pm> and enter:
+
+    package MusicBase::Web::View::HTML;
+    use base  'Catalyst::View::TT';
+
+    1;
+
+We'll need a bit of configuration to finish the job of hooking the two together
+so open C<share/etc/musicbase_web.pl> in your text editor and make it look like
+this:
+
+    {
+      name => 'MusicBase::Web',
+      using_frontend_proxy => 1,
+      default_view => 'HTML',
+      disable_component_resolution_regex_fallback => 1,
+      'Controller::Root' => {
+        namespace => '',
+      },
+      'Model::Schema' => {
+        schema_class => 'MusicBase::Schema',
+        connect_info => {
+          dsn => 'DBI:SQLite:__path_to(share,musicbase-schema.db)__',
+          user => '',
+          password => '',
+        },
+      },
+      'View::HTML' => {
+        INCLUDE_PATH => [ '__path_to(share,html)__' ],
+        TEMPLATE_EXTENSION => '.tt',
+      },
+    };
+
+I know many of the C<Catalyst> examples use C<Config::General> or YAML for
+configuration information.  I tend to use Perl configuration files because of
+the extra flexibility.
+
+I'm setting a few things here, but for our discussion the most important one is
+the C<Model::Schema> section, where I point our model to the SQLite database
+we've been using all along.
+
+Let's setup a trivial controller that pulls a few rows out of the database
+and just outputs this to a web page.
+
+    package MusicBase::Web::Controller::Root;
+
+    use Moose;
+    use MooseX::MethodAttributes;
+
+    extends 'Catalyst::Controller';
+
+    sub index :Path :Args(0) {
+      my ($self, $ctx) = @_;
+      my @artists = $ctx->model('Schema::Artist')
+        ->search({},{ result_class =>
+          'DBIx::Class::ResultClass::HashRefInflator' })
+        ->all;
+
+      $ctx->stash(artists => \@artists);
+    }
+
+    sub end : ActionClass('RenderView') {}
+
+And here's the template for the webpage: C<share/html/index.tt>
+
+    <html>
+      <head>
+          <title>Artists</title>
+          <link rel="stylesheet"
+            href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css"
+            type="text/css" rel="Stylesheet">
+      </head>
+      <body class="container">
+        <h1>Artist List</h1>
+        [% FOR artist IN artists %]
+          <p>[% artist.name %]</p>
+        [% END %]
+      </body>
+    </html>
+
+We'll use Twitter's Bootstrap CSS to make things look neat. Lastly you need to
+edit C<app.psgi> as follows:
+
+    use MusicBase::Web;
+    MusicBase::Web->psgi_app;
+
+So now we can start our L<Catalyst> application!
+
+    plackup -Ilib
+
+=head1 Integrating DBIx::Class::Migration and Catalyst.
+
+There's two main places to where L<Catalyst> and L<DBIx::Class::Migration>
+can cooperate: Running migrations and Running Tests.
+
+=head2 Running Migrations
+
+Although you can just use L<dbic-migration> directly with you L<Catalyst>
+application, since L<Catalyst> already does a great job of managing
+configuration, let's learn how to subclass L<DBIx::Class::Migration::Script>
+and customize it for your application.  That way you don't need to set ENV
+or pass option flags to the C<dbic-migration> commandline tool (and easily
+make a mistake and upgrade the wrong database :) ).
+
+    touch lib/MusicBase/Schema/MigrationScript.pm
+
+And then open C<lib/MusicBase/Schema/MigrationScript.pm> in your editor and
+change it to look like this:
+
+
 
 =head1 SUMMARY
 

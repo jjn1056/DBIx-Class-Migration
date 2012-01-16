@@ -18,6 +18,8 @@ sub ENV_PREFIX {
     || 'DBIC_MIGRATION';
 }
 
+has schema => (is=>'ro', predicate=>'has_schema');
+
 has schema_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
   predicate=>'has_schema_class', env_prefix=>ENV_PREFIX, cmd_aliases => 'S');
 
@@ -72,19 +74,27 @@ has migration => (
     return @schema_args;
   }
 
-sub _build_migration {
-  my $self = shift;
-  my @schema_args = $self->_prepare_schema_args;
-  return DBIx::Class::Migration->new(
-    schema_class => $self->schema_class,
-    (@schema_args ? (schema_args=>\@schema_args) : ()),
-    dbic_dh_args => {
+  sub _prepare_dbic_dh_args {
+    my $self = shift;
+    return {
       force_overwrite => $self->force_overwrite,
       ($self->has_target_dir ? (script_directory=>$self->target_dir) : ()),
       ($self->has_to_version ? (to_version=>$self->to_version) : ()),
       ($self->has_databases ? (databases=>$self->databases) : ()),
-    }
-  );
+    };
+  }
+
+sub _build_migration {
+  my $self = shift;
+  my %args = (dbic_dh_args => $self->_prepare_dbic_dh_args);
+  if($self->has_schema) {
+    $args{schema} = $self->schema;
+  } else {
+    my @schema_args = $self->_prepare_schema_args;
+    $args{schema_class} = $self->schema_class;
+    $args{schema_args} = \@schema_args if @schema_args;
+  }
+  return DBIx::Class::Migration->new(%args);
 }
 
 sub cmd_dump_named_sets {
