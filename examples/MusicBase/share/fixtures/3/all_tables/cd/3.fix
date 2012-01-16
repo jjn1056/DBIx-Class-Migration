@@ -1,0 +1,4 @@
+$HASH1 = {
+           cd_id => 3,
+           title => 'The Marshall Mathers LP'
+         };

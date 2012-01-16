@@ -1,0 +1,18 @@
+{
+   "sets" : [
+      {
+         "quantity" : "all",
+         "class" : "Country"
+      }
+   ],
+   "might_have" : {
+      "fetch" : 0
+   },
+   "belongs_to" : {
+      "fetch" : 0
+   },
+   "has_many" : {
+      "fetch" : 0
+   }
+}
+

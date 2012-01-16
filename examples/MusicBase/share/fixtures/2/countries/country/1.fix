@@ -1,0 +1,4 @@
+$HASH1 = {
+           country_id => 1,
+           name       => 'Canada'
+         };

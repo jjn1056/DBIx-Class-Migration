@@ -1,0 +1,15 @@
+<html>
+  <head>
+      <title>Artists</title>
+      <link rel="stylesheet"
+        href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css"
+        type="text/css" rel="Stylesheet">
+  </head>
+  <body class="container">
+    <h1>Artist List</h1>
+    [% FOR artist IN artists %]
+      <p>[% artist.name %]</p>
+    [% END %]
+  </body>
+</html>
+

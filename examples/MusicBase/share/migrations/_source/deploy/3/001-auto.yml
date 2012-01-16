@@ -1,0 +1,590 @@
+---
+schema:
+  procedures: {}
+  tables:
+    artist:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - artist_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - country_fk
+          match_type: ''
+          name: artist_fk_country_fk
+          on_delete: CASCADE
+          on_update: CASCADE
+          options: []
+          reference_fields:
+            - country_id
+          reference_table: country
+          type: FOREIGN KEY
+      fields:
+        artist_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: artist_id
+          order: 1
+          size:
+            - 0
+        country_fk:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: country_fk
+          order: 2
+          size:
+            - 0
+        name:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: name
+          order: 3
+          size:
+            - 96
+      indices:
+        - fields:
+            - country_fk
+          name: artist_idx_country_fk
+          options: []
+          type: NORMAL
+      name: artist
+      options: []
+      order: 3
+    artist_cd:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - artist_fk
+            - cd_fk
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - artist_fk
+          match_type: ''
+          name: artist_cd_fk_artist_fk
+          on_delete: CASCADE
+          on_update: CASCADE
+          options: []
+          reference_fields:
+            - artist_id
+          reference_table: artist
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - cd_fk
+          match_type: ''
+          name: artist_cd_fk_cd_fk
+          on_delete: CASCADE
+          on_update: CASCADE
+          options: []
+          reference_fields:
+            - cd_id
+          reference_table: cd
+          type: FOREIGN KEY
+      fields:
+        artist_fk:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: artist_fk
+          order: 1
+          size:
+            - 0
+        cd_fk:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: cd_fk
+          order: 2
+          size:
+            - 0
+      indices:
+        - fields:
+            - artist_fk
+          name: artist_cd_idx_artist_fk
+          options: []
+          type: NORMAL
+        - fields:
+            - cd_fk
+          name: artist_cd_idx_cd_fk
+          options: []
+          type: NORMAL
+      name: artist_cd
+      options: []
+      order: 5
+    cd:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - cd_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+      fields:
+        cd_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: cd_id
+          order: 1
+          size:
+            - 0
+        title:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: title
+          order: 2
+          size:
+            - 96
+      indices: []
+      name: cd
+      options: []
+      order: 1
+    country:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - country_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - code
+          match_type: ''
+          name: country_code
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        code:
+          data_type: char
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: code
+          order: 2
+          size:
+            - 3
+        country_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: country_id
+          order: 1
+          size:
+            - 0
+      indices: []
+      name: country
+      options: []
+      order: 2
+    track:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - track_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - cd_fk
+          match_type: ''
+          name: track_fk_cd_fk
+          on_delete: CASCADE
+          on_update: CASCADE
+          options: []
+          reference_fields:
+            - cd_id
+          reference_table: cd
+          type: FOREIGN KEY
+      fields:
+        cd_fk:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: cd_fk
+          order: 2
+          size:
+            - 0
+        title:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: title
+          order: 3
+          size:
+            - 96
+        track_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: track_id
+          order: 1
+          size:
+            - 0
+      indices:
+        - fields:
+            - cd_fk
+          name: track_idx_cd_fk
+          options: []
+          type: NORMAL
+      name: track
+      options: []
+      order: 4
+  triggers: {}
+  views: {}
+translator:
+  add_drop_table: 0
+  filename: ~
+  no_comments: 0
+  parser_args:
+    package: &1 !!perl/hash:MusicBase::Schema
+      class_mappings:
+        DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResult: __VERSION
+        MusicBase::Schema::Result::Artist: Artist
+        MusicBase::Schema::Result::ArtistCd: ArtistCd
+        MusicBase::Schema::Result::Cd: Cd
+        MusicBase::Schema::Result::Country: Country
+        MusicBase::Schema::Result::Track: Track
+      source_registrations:
+        Artist: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            artist_id:
+              data_type: integer
+            country_fk:
+              data_type: integer
+            name:
+              data_type: varchar
+              size: 96
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - artist_id
+            - country_fk
+            - name
+          _primaries: &2
+            - artist_id
+          _relationships:
+            artist_cd_rs:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: MusicBase::Schema::Result::ArtistCd
+              cond:
+                foreign.artist_fk: self.artist_id
+              source: MusicBase::Schema::Result::ArtistCd
+            has_country:
+              attrs:
+                accessor: single
+                fk_columns:
+                  country_fk: 1
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: MusicBase::Schema::Result::Country
+              cond:
+                foreign.country_id: self.country_fk
+              source: MusicBase::Schema::Result::Country
+          _unique_constraints:
+            primary: *2
+          name: artist
+          result_class: MusicBase::Schema::Result::Artist
+          resultset_attributes: {}
+          resultset_class: MusicBase::Schema::ResultSet::Artist
+          schema: *1
+          source_name: Artist
+        ArtistCd: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            artist_fk:
+              data_type: integer
+            cd_fk:
+              data_type: integer
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - artist_fk
+            - cd_fk
+          _primaries: &3
+            - artist_fk
+            - cd_fk
+          _relationships:
+            artist:
+              attrs:
+                accessor: single
+                fk_columns:
+                  artist_fk: 1
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: MusicBase::Schema::Result::Artist
+              cond:
+                foreign.artist_id: self.artist_fk
+              source: MusicBase::Schema::Result::Artist
+            cd:
+              attrs:
+                accessor: single
+                fk_columns:
+                  cd_fk: 1
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: MusicBase::Schema::Result::Cd
+              cond:
+                foreign.cd_id: self.cd_fk
+              source: MusicBase::Schema::Result::Cd
+          _unique_constraints:
+            primary: *3
+          name: artist_cd
+          result_class: MusicBase::Schema::Result::ArtistCd
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: ArtistCd
+        Cd: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            cd_id:
+              data_type: integer
+            title:
+              data_type: varchar
+              size: 96
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - cd_id
+            - title
+          _primaries: &4
+            - cd_id
+          _relationships:
+            artist_cd_rs:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: MusicBase::Schema::Result::ArtistCd
+              cond:
+                foreign.cd_fk: self.cd_id
+              source: MusicBase::Schema::Result::ArtistCd
+            track_rs:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: MusicBase::Schema::Result::Track
+              cond:
+                foreign.cd_fk: self.cd_id
+              source: MusicBase::Schema::Result::Track
+          _unique_constraints:
+            primary: *4
+          name: cd
+          result_class: MusicBase::Schema::Result::Cd
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: Cd
+        Country: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            code:
+              data_type: char
+              size: 3
+            country_id:
+              data_type: integer
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - country_id
+            - code
+          _primaries: &5
+            - country_id
+          _relationships:
+            artist_rs:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: MusicBase::Schema::Result::Artist
+              cond:
+                foreign.country_fk: self.country_id
+              source: MusicBase::Schema::Result::Artist
+          _unique_constraints:
+            country_code:
+              - code
+            primary: *5
+          name: country
+          result_class: MusicBase::Schema::Result::Country
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: Country
+        Track: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            cd_fk:
+              data_type: integer
+            title:
+              data_type: varchar
+              size: 96
+            track_id:
+              data_type: integer
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - track_id
+            - cd_fk
+            - title
+          _primaries: &6
+            - track_id
+          _relationships:
+            cd:
+              attrs:
+                accessor: single
+                fk_columns:
+                  cd_fk: 1
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: MusicBase::Schema::Result::Cd
+              cond:
+                foreign.cd_id: self.cd_fk
+              source: MusicBase::Schema::Result::Cd
+          _unique_constraints:
+            primary: *6
+          name: track
+          result_class: MusicBase::Schema::Result::Track
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: Track
+        __VERSION: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            ddl:
+              data_type: text
+              is_nullable: 1
+            id:
+              data_type: int
+              is_auto_increment: 1
+            upgrade_sql:
+              data_type: text
+              is_nullable: 1
+            version:
+              data_type: varchar
+              size: 50
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - id
+            - version
+            - ddl
+            - upgrade_sql
+          _primaries: &7
+            - id
+          _relationships: {}
+          _unique_constraints:
+            dbix_class_deploymenthandler_versions_version:
+              - version
+            primary: *7
+          name: dbix_class_deploymenthandler_versions
+          result_class: DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResult
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResultSet
+          schema: *1
+          source_name: __VERSION
+      storage: !!perl/hash:DBIx::Class::Storage::DBI
+        _connect_info:
+          - DBI:SQLite:/Users/johnn/Desktop/MusicBase/share/musicbase-schema.db
+          - ''
+          - ''
+        _dbh_details: {}
+        _dbh_gen: 0
+        _dbi_connect_info:
+          - DBI:SQLite:/Users/johnn/Desktop/MusicBase/share/musicbase-schema.db
+          - ''
+          - ''
+          - &8
+            AutoCommit: 1
+            PrintError: 0
+            RaiseError: 1
+            ShowErrorStatement: 1
+        _dbic_connect_attributes: *8
+        _in_do_block: 0
+        _sql_maker: ~
+        _sql_maker_opts: {}
+        savepoints: []
+        schema: *1
+        transaction_depth: 0
+    sources:
+      - Country
+      - Cd
+      - ArtistCd
+      - Track
+      - Artist
+  parser_type: SQL::Translator::Parser::DBIx::Class
+  producer_args: {}
+  producer_type: SQL::Translator::Producer::YAML
+  show_warnings: 0
+  trace: 0
+  version: 0.11010
