@@ -1,0 +1,151 @@
+package DBIx::Class::Migration::Tutorial::AddMySQL;
+
+1;
+
+=head1 NAME
+
+DBIx::Class::Migration::Tutorial::AddMySQL - Add MySQL migration
+
+=head1 GOAL
+
+So far in the tutorial we've been building migrations for SQLite.  This is a
+good database for initial prototyping  and local development, but at some
+point you'll need a more production oriented database.  By the end of this
+tutorial you should have the basics of adding support for MySQL to your 
+migrations.  We'll add MySQL migrations for version 3.
+
+If you need assisting getting MySQL installed, I recommend stopping now and
+taking a look at L<MySQL::Sandbox>.
+
+=head1 Add Version 3 Migrations for Mysql
+
+Since we build out migrations from the current Schema, you can only prepare
+files for version 3 (at this point in the tutorial you should be at version
+3).
+
+Let's check our status
+
+    $ dbic-migration -Ilib status
+    Schema is 3
+    Deployed database is 3
+
+If you've been following along with the tutorial, you should see something like
+the above.  Now, lets prepare migration files for MySQL:
+
+    $ dbic-migration -Ilib prepare --database MySQL --force_overwrite
+
+    Overwriting existing DDL-YML file - .../share/migrations/_source/deploy/3/001-auto.yml
+    Overwriting existing DDL file - .../share/migrations/MySQL/deploy/3/001-auto.sql
+    Overwriting existing DDL-YML file - ../share/migrations/_source/deploy/3/001-auto-__VERSION.yml
+    Overwriting existing DDL file - .../share/migrations/MySQL/deploy/3/001-auto-__VERSION.sql
+
+    Your Database version must be lower than than your schema version
+      in order to prepare upgrades / downgrades
+    Copying Fixture Confs from .../share/fixtures/2/conf to .../share/fixtures/3/conf
+
+You need to C<force_overwrite> since L<DBIx::Class::DeploymentHandler> needs to
+update some system managed files (nothing you've customized).  Additionally,
+don't worry about the message, "Copying Fixture Confs from..." since we won't
+ever overwrite your customized fixtures.
+
+You'll also notice that we can't build version 2 to 3 upgrades for MySQL, since
+we don't have a version 2 of the database for MySQL.  We'll skip working on 
+upgrade files for MySQL since they won't essentially be at all different from
+the work you've don't already of SQLite.  If you needed to rebuild all the 
+versions, you actually can install down to Version 1 and build each step for
+MySQL (an exercise I'll leave to your practice session!)
+
+Let's see what's been added to C<share>:
+
+    /share
+      /migrations
+      /MySQL
+        /deploy
+          /3
+            001-auto-_VERSION.sql
+            001-auto.sql
+
+So this should start to look familiar to you.  Basically we just have a full
+DDL to deploy our MySQL database.
+
+=head1 How to install the version 3 MySQL
+
+So far you've only done C<install> and C<upgrade> to the default SQlite database
+(under C<share>).  If you want to run those commands against MySQL, obviously 
+you'll need a running MySQL instance.  In this tutorial I won't review how to
+install and setup MySQL, although if you need some help with this I'd recommend
+L<MySQL::Sandbox>.  For the remainder of this section I will assume you have a
+running MySQL instance like the following:
+
+    dbic-migration -Ilib status \
+      --dsn="DBI:mysql:database=test;host=127.0.0.1;port=5142" \
+      --user msandbox \
+      --password msandbox
+
+Which is pretty much the default if you use L<MySQL::Sandbox>.  You'd expect
+to see:
+
+    Schema is 3
+    Database is not currently installed
+
+You'd install the database and fixtures like so:
+
+    dbic-migration -Ilib install \
+      --dsn="DBI:mysql:database=test;host=127.0.0.1;port=5142" \
+      --user msandbox \
+      --password msandbox
+
+    dbic-migration -Ilib populate \
+      --dsn="DBI:mysql:database=test;host=127.0.0.1;port=5142" \
+      --user msandbox \
+      --password msandbox
+
+That would give you:
+
+    Reading configurations from ../share/fixtures/3/conf
+    Restored set all_tables to database
+
+Now you database is ready to use!
+
+    dbic-migration -Ilib status \
+      --dsn="DBI:mysql:database=test;host=127.0.0.1;port=5142" \
+      --user msandbox \
+      --password msandbox
+
+    Schema is 3
+    Database is 3
+
+You just like when you used DBIC_MIGRATION_SCHEMA_CLASS to make it less verbose
+when working on a given schema, you can set the following C<%ENV>:
+
+    DBIC_MIGRATION_DSN
+    DBIC_MIGRATION_USER
+    DBIC_MIGRATION_PASSWORD
+
+Or any mix of the above.  Just be careful you know what %ENV you are pointing
+to before installing a database (don't pull a github and blow away your
+production :) ).
+
+Another option to streamline using migrations againsts various databases will
+nbe explored in the next section!
+
+=head1 SUMMARY
+
+Let the section on Testing, this one was pretty short.  At this point you should
+have a good idea of the effort it would require to use your migrations against
+databases other than the default SQlite.  
+
+=head1 NEXT STEPS
+
+Proceed to L<DBIx::Class::Migration::Tutorial::Catalyst>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+

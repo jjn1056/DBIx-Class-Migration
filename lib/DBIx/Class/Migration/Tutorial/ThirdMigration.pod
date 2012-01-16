@@ -758,7 +758,7 @@ and dealt with changing requirements mid task.
 
 =head1 NEXT STEPS
 
-Proceed to L<DBIx::Class::Migration::Tutorial::Catalyst>
+Proceed to L<DBIx::Class::Migration::Tutorial::AddMySQL>
 
 =head1 AUTHOR
 

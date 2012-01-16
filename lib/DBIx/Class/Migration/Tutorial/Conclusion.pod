@@ -8,7 +8,16 @@ DBIx::Class::Migration::Tutorial::Conclusion - Final thoughts
 
 =head1 GOAL
 
+A quite recap and thoughts about where to go next.
+
 =head1 SUMMARY
+
+Nice to see you get this far!  I hope you now have the basic understanding
+needed to be able to integrate migrations into your DBIC workflow, testing
+and web development.  The next bit is up to you.  Use the tools, think about
+where the gaps are, and give me some feedback.  Hopefully over time this
+tutorial can become better and we can also start to create some basic recipes
+for good approachs to common problems.  Thanks!
 
 =head1 NEXT STEPS
 

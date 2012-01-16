@@ -17,6 +17,10 @@ we will build a minimal L<Catalyst> application we are focused on database
 integration as well as explore some strategies for testing and would not
 consider this application to represent overall best practices.
 
+Reviewing the documentation for L<Catalyst::Test> would be valuable, as well as
+L<Catalyst::Plugin::ConfigLoader> for a refresher on the idea of localized and
+enviroment specific configurations.
+
 =head1 Bootrap a basic Catalyst application
 
 Update you C<dist.ini> file:
@@ -220,9 +224,126 @@ make a mistake and upgrade the wrong database :) ).
 And then open C<lib/MusicBase/Schema/MigrationScript.pm> in your editor and
 change it to look like this:
 
+    package MusicBase::Schema::MigrationScript;
 
+    use Moose;
+    use MusicBase::Web;
+
+    extends 'DBIx::Class::Migration::Script';
+
+    sub defaults {
+      schema => MusicBase::Web->model('Schema')->schema,
+    }
+
+    __PACKAGE__->meta->make_immutable;
+    __PACKAGE__->run_if_script;
+
+Basically you've made a subclass of L<DBIx::Class::Migration::Script> but you
+are setting the C<schema> to always be whatever L<Catalyst> thinks it is.  Now
+you can use L<Catalyst>s build in configuration management to decide what
+database you are running migrations on.  For example you can run this straight
+out (remember to remove the ENV var DBIC_MIGRATION_SCHEMA_CLASS, if you have it
+set now for running the tutorial)
+
+    $ perl -Ilib lib/MusicBase/Schema/MigrationScript.pm status
+    Schema is 3
+    Deployed database is 3
+
+And you can reset the data from fixtures, dump new ones, etc.  Plus, if you
+created an enviroment specific configuration (such as if you have a file
+C<share/etc/musicbase_web_qa.pl> that points to your QA datase) you can leverage
+you L<Catalyst> based configuration to make your life a bit easier.  For
+example:
+
+    CATALYST_CONFIG_LOCAL_SUFFIX=qa perl -Ilib \
+      lib/MusicBase/Schema/MigrationScript.pm status
+
+Would grab the connected schema for your qa enviroment specific configuration
+and give you the status on that (assuming you can ping it from your logged
+in terminal).
+
+=head2 Running Tests
+
+We've seen how using tools like L<Test::DBIx::Class> together with L<DBIx::Class::Migration>
+can really simplify your unit level testing effort.  Using them you don't
+need to spend a lot of time setting up dedicated testing databases and 
+managing configuration sets (that need to change over time).  However if you
+want to write tests that check your actual web pages (for example you want to
+test things like if a page shows the correct results and if web forms work)
+you need to manage that a bit differently.  Here's what I do:
+
+First, create a enviroment specific configuration for testing:
+
+    touch share/etc/musicbase_web_test.pl
+
+Then open C<share/etc/musicbase_web_test.pl> and add the following:
+
+    use DBIx::Class::Migration::Population;
+    use Test::DBIx::Class
+      -schema_class=>'MusicBase::Schema',
+      -traits=>['Testmysqld'];
+
+    {
+      'Model::Schema' => {
+        schema_class => 'MusicBase::Schema',
+        connect_info => [
+          sub {Schema()->storage->dbh},
+          { on_connect_call => sub {
+            DBIx::Class::Migration::Population->new(
+              schema=>Schema())->populate('all_tables');
+            } },
+        ],
+      },
+    };
+
+So what is going to happen here is if you start the application pointing to
+this configuration (with CATALYST_CONFIG_LOCAL_SUFFIX=test) when the application
+runs it will automatically create a clean new database and populate it with
+the C<all_tables> fixture set.
+
+Another thing a bit different is that we are using the 'Testmysqld' trait which
+means that we will build a testing MySQL database (good idea to test on the
+server you are eventually deploying to).
+
+Maybe its evil to abuse configuration files this way, but it works for me :)
+Your thoughts or examples of better ways welcomed!  Sometimes I even do the
+above during development when I want to rapidly prototype a bunch of possible
+database changes.  In any case, this takes the database testing model we
+explored in an earlier section and just applies it to the L<Catalyst> level.
+Let's write a test case:
+
+    touch t/web.t
+
+And open C<t/web.t> in your editor:
+
+    use Test::Most;
+    use Catalyst::Test 'MusicBase::Web';
+
+    ok my $content  = get('/'),
+      'got some content';
+
+    like $content, qr/Michael Jackson/,
+      'Found Michael Jackson';
+
+    done_testing;
+
+
+Finally run your test:
+
+    CATALYST_CONFIG_LOCAL_SUFFIX=test prove -lvr t/web.t
+
+You know from when we did the original demo data script that "Michael Jackson"
+was one of the artist, so we'd expect to find him in the <$content> from the
+Root controller (since that's just a list of all the Artist names).  So you'd
+probably want a bit more testing on this page, but this should give you the
+idea.
 
 =head1 SUMMARY
+
+That's it for some ideas on using migrations with a web development framework
+like L<Catalyst>.  If you are using L<Catalyst> you can take advantage of its
+great configuration management tools to make it even easier to manage your
+migrations.  You also now have some strategies for making it easy to test.
 
 =head1 NEXT STEPS
 

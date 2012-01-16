@@ -6,17 +6,17 @@ use DBIx::Class::Migration;
 
 with 'MooseX::Getopt';
 
+sub ENV_PREFIX {
+  $ENV{DBIC_MIGRATION_ENV_PREFIX}
+    || 'DBIC_MIGRATION';
+}
+
 has includes => (
   traits => ['Getopt'],
   is => 'ro',
   isa => 'ArrayRef',
   predicate => 'has_includes',
   cmd_aliases => ['I', 'libs']);
-
-sub ENV_PREFIX {
-  $ENV{DBIC_MIGRATION_ENV_PREFIX}
-    || 'DBIC_MIGRATION';
-}
 
 has schema => (is=>'ro', predicate=>'has_schema');
 
@@ -36,7 +36,7 @@ has dsn => (traits => [ 'Getopt', 'ENV' ], is => 'ro',
   env_prefix=>ENV_PREFIX, isa => 'Str');
 
 has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool',
-  default => 0, cmd_aliases => 'O');
+  predicate=>'has_force_overwrite', cmd_aliases => 'O');
 
 has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
   predicate=>'has_to_version', cmd_aliases => 'V');
@@ -76,17 +76,18 @@ has migration => (
 
   sub _prepare_dbic_dh_args {
     my $self = shift;
-    return {
-      force_overwrite => $self->force_overwrite,
+    return (
+      ($self->has_force_overwrite ? (force_overwrite => $self->force_overwrite) : ()),
       ($self->has_target_dir ? (script_directory=>$self->target_dir) : ()),
       ($self->has_to_version ? (to_version=>$self->to_version) : ()),
       ($self->has_databases ? (databases=>$self->databases) : ()),
-    };
+    );
   }
 
 sub _build_migration {
   my $self = shift;
-  my %args = (dbic_dh_args => $self->_prepare_dbic_dh_args);
+  my %dbic_dh_args = $self->_prepare_dbic_dh_args;
+  my %args = (%dbic_dh_args ? (dbic_dh_args => \%dbic_dh_args) : ());
   if($self->has_schema) {
     $args{schema} = $self->schema;
   } else {
@@ -94,6 +95,7 @@ sub _build_migration {
     $args{schema_class} = $self->schema_class;
     $args{schema_args} = \@schema_args if @schema_args;
   }
+
   return DBIx::Class::Migration->new(%args);
 }
 

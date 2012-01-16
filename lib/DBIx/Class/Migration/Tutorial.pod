@@ -140,16 +140,22 @@ test cases for your database.
 
 =head2 STEP 5: Third Migration
 
-L<DBIx::Class::Migration::Tutorial::ThirdMigration> explores a more complicated migration
-and also reviews what to do if you need to run through a few iterations of a
-migration before you are ready to set it in stone.
+L<DBIx::Class::Migration::Tutorial::ThirdMigration> explores a more complicated
+migration and also reviews what to do if you need to run through a few iterations
+of a migration before you are ready to set it in stone.
 
-=head2 STEP 6: Using migrations with Catalyst
+=head2 STEP 6: Migrations for Additional Databases
+
+L<DBIx::Class::Migration::Tutorial::AddMySQL> So far we've been building
+migrations for just one database: SQLite.  Let's build migrations for MySQL
+
+
+=head2 STEP 7: Using migrations with Catalyst
 
 L<DBIx::Class::Migration::Tutorial::Catalyst> shows you how to use and customize
 L<DBIx::Class::Migration> with L<Catalyst> for development and testing.
 
-=head2 STEP 7: Conclusion
+=head2 STEP 8: Conclusion
 
 L<DBIx::Class::Migration::Tutorial::Conclusion> reviews some key concepts.
 
