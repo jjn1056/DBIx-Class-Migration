@@ -78,11 +78,11 @@ Now open C<lib/MusicBase/Web.pm> and change it to look like this:
     package MusicBase::Web;
 
     use Moose;
+    use Catalyst;
     extends 'Catalyst';
 
     our $VERSION = '0.01';
 
-    __PACKAGE__->setup_home;
     __PACKAGE__->config(
       'Plugin::ConfigLoader' => {
         file => __PACKAGE__->path_to('share', 'etc'),
@@ -91,7 +91,6 @@ Now open C<lib/MusicBase/Web.pm> and change it to look like this:
 
     __PACKAGE__->setup(qw/ConfigLoader/);
     __PACKAGE__->meta->make_immutable;
-
 
 This is a pretty plain and straight Catalyst application class.  The only thing
 I've done differently from default is I've placed our configuration files in
