@@ -9,7 +9,7 @@ DBIx::Class::Migration::Tutorial - How to use DBIx::Class::Migration
 =head1 SYNOPSIS
 
 This is a tutorial for the database migration and fixture generation tools
-described at the usage / api level at L<DBIx::Class::Migration> and
+described at the usage / api level at L<DBIx::Class::Migration:Script> and
 L<DBIx::Class::Migration>.  Although reviewing those docs would be helpful, I would
 not consider it required for the tutorial.  However, I would expect you are
 familiar with L<DBIx::Class> and that you are aware of the dependent projects
@@ -129,7 +129,7 @@ and prepare some migrations.
 
 =head2 STEP 3: Creating upgrades and modify the database
 
-L<DBIx::Class::Migration::Tutorial::SecondMigration> SHows you how to start
+L<DBIx::Class::Migration::Tutorial::SecondMigration> Shows you how to start
 handling database change by creating a version 2 of the schema.  We also create
 more complex fixtures and customize the migration.
 
