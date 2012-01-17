@@ -262,6 +262,29 @@ Would grab the connected schema for your qa enviroment specific configuration
 and give you the status on that (assuming you can ping it from your logged
 in terminal).
 
+B<Alternative>: If subclasing L<DBIx::Class::Migration::Script> seems like an
+overly heavy handed solution, or running the *.pm file like a script just
+weirds you out, you can simply create a script like the following, which would
+work identically:
+
+For example, something in C<script/my-dbic-migration>
+
+    #!/usr/bin/env perl
+
+    use MusicBase::Web;
+    use DBIx::Class::Migration::Script;
+    DBIx::Class::Migration::Script
+      ->new_with_options(
+         schema => MusicBase::Web->model('Schema')->schema)
+      ->run;
+
+And then use it like:
+
+    perl -Ilib script/my-dbic-migration status
+
+If you have a bunch of files in C</script> or if you need to be able to run
+your custom migration tool after installation, this could be a good option.
+
 =head2 Running Tests
 
 We've seen how using tools like L<Test::DBIx::Class> together with L<DBIx::Class::Migration>
