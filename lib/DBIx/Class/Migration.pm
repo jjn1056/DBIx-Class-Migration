@@ -359,14 +359,22 @@ DBIx::Class::Migration - Make database migrations possible
 =head1 SYNOPSIS
 
     use DBIx::Class::Migration;
-    use MyApp::Schema;
 
     my $migration = DBIx::Class::Migration->new(
-      schema_class => MyApp::Schema;
+      schema_class => 'MyApp::Schema';
     );
 
     $migration->prepare;
     $migration->install;
+
+Alternatively:
+
+    use DBIx::Class::Migration;
+    use MyApp::Schema;
+
+    my $migration = DBIx::Class::Migration->new(
+      schema => MyApp::Schema->connect(@connect_opts);
+    );
 
 =head1 DESCRIPTION
 
