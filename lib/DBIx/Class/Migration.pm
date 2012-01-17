@@ -71,7 +71,7 @@ has target_dir => (is=>'ro', lazy_build=>1);
 has dbic_dh_args => (is=>'ro', isa=>'HashRef', default=>sub { +{} });
 has dbic_dh => (
   is => 'ro',
-  init_arg =>  undef,
+  init_arg => undef,
   lazy_build => 1,
   handles => [qw/
     prepare_install
@@ -201,6 +201,22 @@ sub _copy_from_to {
       for _only_from_when_not_to($from_dir, $to_dir);
 }
 
+sub prepare_up_down_grades {
+  my ($self, $previous, $schema_version) = @_;
+  if($self->dbic_dh->version_storage_is_installed) {
+    if($self->dbic_dh->database_version < $schema_version) {
+      $self->prepare_upgrade;
+      $self->prepare_downgrade;
+    } else {
+      print "Your Database version must be lower than than your schema version\n";
+      print "in order to prepare upgrades / downgrades\n";
+    }
+  } else {
+    print "There is not current database deployed, so I can't prepare upgrades\n";
+    print "or downgrades\n";
+  }
+}
+
 sub prepare {
   my $self = shift;
   my $schema_version = $self->dbic_dh->schema_version
@@ -215,19 +231,7 @@ sub prepare {
   _create_all_fixture_set( catfile($fixture_conf_dir,'all_tables.json'), @sources);
 
   if(my $previous = _has_previous_version($schema_version)) {
-    if($self->dbic_dh->version_storage_is_installed) {
-      if($self->dbic_dh->database_version < $schema_version) {
-        $self->prepare_upgrade;
-        $self->prepare_downgrade;
-      } else {
-        print "Your Database version must be lower than than your schema version\n";
-        print "in order to prepare upgrades / downgrades\n";
-      }
-    } else {
-      print "There is not current database deployed, so I can't prepare upgrades\n";
-      print "or downgrades\n";
-    }
-
+    $self->prepare_up_down_grades($previous, $schema_version);
     my $previous_fixtures_conf = _prepare_fixture_conf_dir(
       $self->target_dir, $previous);
 
