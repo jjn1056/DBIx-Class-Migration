@@ -1,7 +1,6 @@
 package MusicBase::Web;
 
 use Moose;
-use Catalyst::Runtime 5.90;
 use Catalyst qw/
   ConfigLoader
 /;
