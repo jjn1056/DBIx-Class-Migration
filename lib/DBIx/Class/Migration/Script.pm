@@ -151,7 +151,7 @@ DBIx::Class::Migration::Script - Tools to manage database Migrations
 =head1 SYNOPSIS
 
     dbic-migration status \
-      --libs="lib"
+      --libs="lib" \
       --schema_class='MyApp::Schema' \
       --dns='DBI:SQLite:myapp.db'
 

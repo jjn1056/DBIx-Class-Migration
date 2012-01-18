@@ -79,6 +79,7 @@ Now open C<lib/MusicBase/Web.pm> and change it to look like this:
 
     use Moose;
     use Catalyst;
+
     extends 'Catalyst';
 
     our $VERSION = '0.01';
