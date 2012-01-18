@@ -2,6 +2,7 @@ package MusicBase::Web;
 
 use Moose;
 use Catalyst;
+
 extends 'Catalyst';
 
 our $VERSION = '0.01';
