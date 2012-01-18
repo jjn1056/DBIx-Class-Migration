@@ -349,7 +349,6 @@ sub make_schema {
       catdir($self->target_dir, 'dumped_db'));
 }
 
-
 __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
