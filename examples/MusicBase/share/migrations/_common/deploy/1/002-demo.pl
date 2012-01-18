@@ -1,51 +1,27 @@
 sub {
-  my $schema = shift;
-  my @artists = (['Michael Jackson'], ['Eminem']);
-  $schema->populate('Artist', [
-     [qw/name/],
-     @artists,
-  ]);
+  my $artist_rs = shift->resultset('Artist');
+  
+  $artist_rs->create({
+    name =>'Michael Jackson',
+    cds => [
+      { title => 'Thriller', tracks => [
+        { title => 'Beat It' },
+        { title => 'Billie Jean' }],
+      },
+      { title => 'Bad', tracks => [
+        { title => 'Dirty Diana' },
+        { title => 'Smooth Criminal'},
+        { title => 'Leave Me Alone' }],
+      },
+    ]
+  });
 
-  my %albums = (
-    'Thriller' => 'Michael Jackson',
-    'Bad' => 'Michael Jackson',
-    'The Marshall Mathers LP' => 'Eminem',
-  );
-
-  my @cds;
-  foreach my $lp (keys %albums) {
-    my $artist = $schema->resultset('Artist')->find({
-      name => $albums{$lp}
-    });
-    push @cds, [$lp, $artist->id];
-  }
-
-  $schema->populate('Cd', [
-    [qw/title artist_fk/],
-    @cds,
-  ]);
-
-  my %tracks = (
-    'Beat It'         => 'Thriller',
-    'Billie Jean'     => 'Thriller',
-    'Dirty Diana'     => 'Bad',
-    'Smooth Criminal' => 'Bad',
-    'Leave Me Alone'  => 'Bad',
-    'Stan'            => 'The Marshall Mathers LP',
-    'The Way I Am'    => 'The Marshall Mathers LP',
-  );
-
-  my @tracks;
-  foreach my $track (keys %tracks) {
-    my $cdname = $schema->resultset('Cd')->find({
-      title => $tracks{$track},
-    });
-    push @tracks, [$cdname->id, $track];
-  }
-
-  $schema->populate('Track',[
-    [qw/cd_fk title/],
-    @tracks,
-  ]);
+  $artist_rs->create({
+    name =>'Eminem',
+    cds => [
+      { title => 'The Marshall Mathers LP', tracks => [
+        { title => 'Stan' },
+        { title => 'The Way I Am' }],
+      },
+    ]});
 };
-
