@@ -177,6 +177,44 @@ and just outputs this to a web page.
 
     sub end : ActionClass('RenderView') {}
 
+Here we want to just get all the Artists and send them to our View.  Since in
+MVC it is considered correct to inform a View of a Model in a Read Only manner
+(in other words, your View should not be able to modify the Model) I generally
+use the L<DBIx::Class::ResultClass::HashRefInflator> result class which will
+flatten your results to an array of hashrefs, rather than return a list of
+result objects.  Besides making it impossible for your template authors to
+accidentally modify the model, you get a nice speed bump since inflating an
+array of hashrefs is much faster than creating all those result objects.
+
+Usually I create a resultset method in my base resultset class, and have all
+my custom resultsets inherit from that.  Something like:
+
+    package MusicBase::Schema::ResultSet;
+    use base 'DBIx::Class::ResultSet;
+
+    sub all_as_array {
+      shift->search({},{ result_class =>
+          'DBIx::Class::ResultClass::HashRefInflator' })
+      ->all;
+    }
+
+    sub all_as_arrayref { [shift->all_as_array] }
+
+I would have C<MusicBase::Schema::ResultSet::Artist> inherit from
+C<MusicBase::Schema::ResultSet> instead of L<DBIx::Class::ResultSet> as it does
+now.  Then I could have written:
+
+    sub index :Path :Args(0) {
+      my ($self, $ctx) = @_;
+      $ctx->stash( artists =>
+        $ctx->model('Schema::Artist')->all_as_arrayref );
+    }
+
+This is a common enough pattern for me that it is worth the trouble to create
+the base class.  Additionally, if you have lots of L<DBIx::Class> components to
+load it helps to create a central base class, since that speeds things up at
+load time.
+
 And here's the template for the webpage: C<share/html/index.tt>
 
     <html>
@@ -303,7 +341,8 @@ Then open C<share/etc/musicbase_web_test.pl> and add the following:
     use DBIx::Class::Migration::Population;
     use Test::DBIx::Class
       -schema_class=>'MusicBase::Schema',
-      -traits=>['Testmysqld'];
+      -traits=>['Testmysqld'],
+      -replicants=>2;
 
     {
       'Model::Schema' => {
@@ -325,7 +364,11 @@ the C<all_tables> fixture set.
 
 Another thing a bit different is that we are using the 'Testmysqld' trait which
 means that we will build a testing MySQL database (good idea to test on the
-server you are eventually deploying to).
+server you are eventually deploying to).  Additionally, and just to show you
+some of the features, we will create two database 'slave' replicants using
+MySQL native replication.  If you plan to use replication in production, as
+many of you do, I highly recommend running tests in a replicated setup, to make
+sure your code is replication safe.
 
 Maybe its evil to abuse configuration files this way, but it works for me :)
 Your thoughts or examples of better ways welcomed!  Sometimes I even do the

@@ -1,7 +1,8 @@
 use DBIx::Class::Migration::Population;
 use Test::DBIx::Class
   -schema_class=>'MusicBase::Schema',
-  -traits=>['Testmysqld'];
+  -traits=>['Testmysqld'],
+  -replicants=>2;
 
 {
   'Model::Schema' => {
