@@ -63,9 +63,7 @@ has target_dir => (is=>'ro', lazy_build=>1);
       filename => $INC{$file_name.".pm"});
 
     $class =~s/::/-/g;
-    my $target_dir = dist_dir($class);
-    mkpath $target_dir unless -d $target_dir;
-    return $target_dir;
+    return dist_dir($class);
   }
 
 has dbic_dh_args => (is=>'ro', isa=>'HashRef', default=>sub { +{} });
@@ -465,13 +463,13 @@ database that is listed in configuration:
 
 =head2 target_dir
 
-Accepts Str.  Required.
+Accepts Str.  Required (lazy builds to your distribution C</share> directory).
 
 This is the directory we store our migration and fixture files.  Inside this
 directory we will create a C<fixtures> and C<migrations> sub-directory.
 
 Although you can specify the directory, if you leave it undefined, we will use
-L<File::ShareDir::ProjectDistDir> to locate the C<share> directory for your
+L<File::ShareDir::ProjectDistDir> to locate the C</share> directory for your
 project and place the files there.  This is the recommended approach, and is
 considered a community practice in regards to where to store your distribution
 non code files.  Please see L<File::ShareDir::ProjectDistDir> as well as
@@ -481,6 +479,9 @@ This uses whatever is in L</schema_class> to determine your project (and look
 for a C<share> directory, which you'll need to create in your project root).
 If you dont' have a L</schema_class> defined, you must have a L</schema>,
 and we'll infer the class via C<< ref($self->schema) >>.
+
+B<NOTE:> You'll need to make the C</share> directory if you are going to use
+the default option.  We don't automatically create it for you.
 
 =head2 schema_loader_class
 
