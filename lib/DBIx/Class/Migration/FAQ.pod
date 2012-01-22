@@ -1,0 +1,85 @@
+package DBIx::Class::Migration::Tutorial::FAQ;
+
+1;
+
+=head1 NAME
+
+DBIx::Class::Migration::Tutorial::FAQ - Answers to Frequently Asked Questions
+
+=head1 When I run the commandline, I see a lot of debugging output
+
+    SV = IV(0x7fb4e24dc858) at 0x7fb4e24dc868
+      REFCNT = 1
+      FLAGS = (ROK,READONLY)
+      RV = 0x7fb4e0b0ddf8
+        SV = PVHV(0x7fb4e24c48a0) at 0x7fb4e0b0ddf8
+          REFCNT = 1
+          FLAGS = (OBJECT,SHAREKEYS)
+          STASH = 0x7fb4e2174a80	"DBI::db"
+          ARRAY = 0x0
+          KEYS = 0
+          FILL = 0
+          MAX = 7
+          RITER = -1
+
+There's some debugging code somewhere in the L<DBIx::Class::DeploymentHander>
+dependency chain.  We've looked and can't find it :(  A case of beer at the
+next YAPC we meet at to whoever can figure it out.
+
+ALthough you see this, there's nothing wrong.  The command will work as in
+the documentation.  The only issue is that if there's a lot of debugging scroll
+by, you might need to page up in your terminal to catch any real error
+messages.
+
+=head1 Contributing
+
+Contributing to the project is easy.  First you'd fork the project over at 
+Github (L<https://github.com/jjn1056/DBIx-Class-Migration>), clone the repo
+down to your work environment and install project dependencies:
+
+    cpanm Dist::Zilla
+    dzil authordeps | cpanm
+    dzil listdeps | cpanm
+
+You should first have a Modern Perl setup, including L<local::lib>.  If you
+need help installing Perl and getting started, please take a look at the
+Learning Perl website: L<http://learn.perl.org/installing/>
+
+=head1 Dist::Zilla?
+
+I realize L<Dist::Zilla> seems to invoke feelings on nearly religious vigor
+(both for and against).  After considering the options I felt using it, but
+carefully constraining the use of plugins to the default set was a better
+option than what I've done on other projects, which is to have a custom wrapper
+on top of L<Module::Install> (you can peek at that if you want over here:
+L<https://github.com/jjn1056/Maker> if you want).  I've decided I'd rather not
+continue to spend my limited time dealing with dependency and installation 
+management tools, when there's a rational solution that many people already
+embrace available. The only other option is to continue to build and maintain
+code for this purpose that nobody else uses, and possibly nobody else
+understands.
+
+If a better option with equal or greater maturity and community acceptance
+emerges, I'll entertain changing.
+
+If the requirement of typing C<cpanm Dist::Zilla> and using the C<dzil> command
+line tool for a limited number of build jobs prevents you from contributing,
+I think you are unreasonably stubborn.
+
+If you do contribute to the project, please be aware that I'm not likely to
+accept patches that include significant changes to the way I'm using
+L<Dist::Zilla>, including using plugins to weave pod, automagically guess
+dependencies and generate tests.  I'd prefer to stick to the most simple and
+standard Perl practices for building and installing code for the present.
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+
