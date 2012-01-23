@@ -728,7 +728,8 @@ John Napiorkowski L<email:jjnapiork@cpan.org>
 =head1 SEE ALSO
 
 L<DBIx::Class::DeploymentHandler>, L<DBIx::Class::Fixtures>, L<DBIx::Class>,
-L<DBIx::Class::Schema::Loader>, L<Moose>.
+L<DBIx::Class::Schema::Loader>, L<Moose>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Population>, L<dbic-migration>, L<SQL::Translator>.
 
 =head1 COPYRIGHT & LICENSE
 
@@ -748,12 +749,9 @@ list-migration-history
 delete fixture/migration version
 list-fixture-sets
 ?? From version? ??
-add ENV support for instantiation
 Dzil and module install plugins
 shell version
 path DBIC-Fixtures to inflate-deflate
-something to make testing easier
-catalyst example
 
 ?? patch DH to abstract the filesysteem storage and get methods for 'last/next version'
 ?? patch DBIC-deploymenthander for autoversions

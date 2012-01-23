@@ -21,7 +21,18 @@ for good approachs to common problems.  Thanks!
 
 =head1 NEXT STEPS
 
-End of tutorial.
+You might find looking at L<DBIx::Class::Migration::FAQ> useful in debugging
+some of the more common error messages that I've seen while preparing this
+tutorial.
+
+Also, at this point reviewing the API level documentation for
+L<DBIx::Class::Migration> and L<DBIx::Class::Migration::Script> useful.  For
+more on some of the testing stuff we covered see L<DBIx::Class::Migration::Population>
+and L<Test::DBIx::Class>.
+
+Lastly, its definitely a good idea to revew the documention for both
+L<DBIx::Class::DeploymentHandler> and L<DBIx::Class::Fixtures> if you have not
+already.  Looking at L<SQL::Translator> may not be a bad idea either.
 
 =head1 AUTHOR
 
