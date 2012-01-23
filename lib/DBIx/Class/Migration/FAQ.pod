@@ -1,10 +1,10 @@
-package DBIx::Class::Migration::Tutorial::FAQ;
+package DBIx::Class::Migration::FAQ;
 
 1;
 
 =head1 NAME
 
-DBIx::Class::Migration::Tutorial::FAQ - Answers to Frequently Asked Questions
+DBIx::Class::Migration::FAQ - Answers to Frequently Asked Questions
 
 =head1 When I run the commandline, I see a lot of debugging output
 
