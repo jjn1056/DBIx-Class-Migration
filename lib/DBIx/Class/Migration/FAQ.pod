@@ -91,10 +91,12 @@ Not everyone loves using an ORM.  Personally I've found L<DBIx::Class> to be
 the only ORM that gets enough out of my way that I prefer it over plain SQL,
 and I highly recommend you give it a go.  However if you don't want to, or can
 not convince your fellow programs (yet :) ), here's one way to still use this
-migrations and fixtures system.
+migrations and fixtures system.  Strictly speaking, we are stilling using
+L<DBIx::Class> behind the scenes, just you don't have to know about it or
+use it.
 
-You use L<DBIx::Class::Schema::Loader> in a namespace for your application,
-like:
+You use a subclass of L<DBIx::Class::Schema::Loader> in a namespace for your
+application, like:
 
     package MyApp::Schema;
 
@@ -111,7 +113,7 @@ like:
 
     1;
 
-You'd put that in C<lib/MyApp::Schema> along with your other application code.
+You'd put that in C<lib/MyApp/Schema.pm> along with your other application code.
 then just use C<MyApp::Schema> as is discussed in the documentation.  This will
 dynamically build a schema for you, as long as you set the schema arguments to
 connect to your actual database.  Then everytime someone changes the database
