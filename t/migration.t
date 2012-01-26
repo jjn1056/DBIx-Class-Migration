@@ -80,6 +80,7 @@ ok $schema->resultset('Country')->find({code=>'fra'}),
 $migration->drop_tables;
 
 NEW_SCOPE_FOR_SCHEMA: {
+
   my $migration = DBIx::Class::Migration->new(
     schema_class=>'Local::Schema');
     
@@ -97,7 +98,7 @@ NEW_SCOPE_FOR_SCHEMA: {
 
 }
 
-done_testing();
+done_testing;
 
 END {
   rmtree catfile($migration->target_dir, 'migrations');

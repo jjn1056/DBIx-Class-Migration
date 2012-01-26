@@ -292,8 +292,11 @@ sub dump_named_sets {
   (my $self = shift)->dbic_dh->version_storage_is_installed
     || die "No Database to dump!";
 
+  my $schema = $self->schema_loader
+    ->schema_from_database($self->_infer_schema_class);
+
   $self->build_dbic_fixtures->dump_config_sets({
-    schema => $self->schema,
+    schema => $schema,
     configs => [map { "$_.json" } @_],
     directory_template => sub {
       my ($fixture, $params, $set) = @_;
@@ -308,8 +311,11 @@ sub dump_all_sets {
   (my $self = shift)->dbic_dh->version_storage_is_installed
     || die "No Database to dump!";
 
+  my $schema = $self->schema_loader
+    ->schema_from_database($self->_infer_schema_class);
+
   $self->build_dbic_fixtures->dump_all_config_sets({
-    schema => $self->schema,
+    schema => $schema,
     directory_template => sub {
       my ($fixture, $params, $set) = @_;
       $set =~s/\.json//;
@@ -321,9 +327,11 @@ sub dump_all_sets {
 
 sub populate {
   (my $self = shift)->dbic_dh->version_storage_is_installed
-    || die "No Database to dump!";
-  my $version_to_populate = $self->dbic_dh->database_version ||
-    $self->dbic_dh->to_version;
+    || die "No Database to populate!";
+  my $version_to_populate = $self->dbic_dh->database_version;
+
+  my $schema = $self->schema_loader
+    ->schema_from_database($self->_infer_schema_class);
 
   foreach my $set(@_) {
     my $target_dir = _prepare_fixture_data_dir($self->target_dir,
@@ -331,7 +339,7 @@ sub populate {
 
     $self->build_dbic_fixtures->populate({
       no_deploy => 1,
-      schema => $self->schema,
+      schema => $schema,
       directory => $target_dir,
     });
 
@@ -340,7 +348,8 @@ sub populate {
 }
 
 sub make_schema {
-  my $self = shift;
+  (my $self = shift)->dbic_dh->version_storage_is_installed
+    || die "No Database to make Schema from!";
   my $schema = $self->schema_loader
     ->generate_dump(
       $self->_infer_schema_class,
@@ -510,7 +519,7 @@ You'll probably need to review the docs for that and understand how configuratio
 rules work in order to best take advantage of the system.
 
 Defaults to L<DBIx::Class::Fixtures>.  You'll probably not need to change this
-unless you have some usual needs regarding fixtures.
+unless you have some unusual needs regarding fixtures.
 
 =head2 deployment_handler_class
 
