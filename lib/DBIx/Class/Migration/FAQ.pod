@@ -85,6 +85,45 @@ yourself:
 
 Patches to fix this, or suggestions welcomed.
 
+=head1 Can I use this even if I don't want to use DBIx::Class?
+
+Not everyone loves using an ORM.  Personally I've found L<DBIx::Class> to be
+the only ORM that gets enough out of my way that I prefer it over plain SQL,
+and I highly recommend you give it a go.  However if you don't want to, or can
+not convince your fellow programs (yet :) ), here's one way to still use this
+migrations and fixtures system.
+
+You use L<DBIx::Class::Schema::Loader> in a namespace for your application,
+like:
+
+    package MyApp::Schema;
+
+    use strict;
+    use warnings;
+
+    use base 'DBIx::Class::Schema::Loader';
+
+    our $VERSION = 1;
+
+    __PACKAGE__->naming('current');
+    __PACKAGE__->use_namespaces(1);
+    __PACKAGE__->loader_options( );
+
+    1;
+
+You'd put that in C<lib/MyApp::Schema> along with your other application code.
+then just use C<MyApp::Schema> as is discussed in the documentation.  This will
+dynamically build a schema for you, as long as you set the schema arguments to
+connect to your actual database.  Then everytime someone changes the database
+you just up the C<$VERSION> and take it from there.  Obviously this is a bit
+more manual effort, but at least you can have the ability to populate to any
+given version, manage fixtures, do some sane testing, etc.  Maybe you'll even
+be able to convince people to try out L<DBIx::Class>!
+
+By the way, if you wanted, you can always dump the generated version of your
+classes using C<make_schema> (see L<DBIx::Class::Migrations/make_schema> and
+L<DBIx::Class::Migrations::Script/make_schema>).
+
 =head1 Error: "`' is not a module name"
 
 Sorry this error is vague and I am working on a fix.  You will get this if you
