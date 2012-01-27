@@ -12,18 +12,17 @@ sub opts {
   debug => ($ENV{DBIC_MIGRATION_DEBUG}||0);
 }
 
-sub merge_opts { opts(), @_ };
+sub _merge_opts { opts(), @_ };
 
 sub _make_schema_at {
   my ($self, $name, %extra_opts) = @_;
   my $schema = $self->schema->clone;
   DBIx::Class::Schema::Loader::make_schema_at
-    $name, {merge_opts(%extra_opts)}, [ sub {$schema->storage->dbh} ];
+    $name, {_merge_opts(%extra_opts)}, [ sub {$schema->storage->dbh} ];
 }
 
-  my $_cnt = 0;
-  sub next_cnt { $_cnt++ }
-  sub _as_unique_ns { shift . next_cnt() }
+sub _next_cnt { our $_cnt++ }
+sub _as_unique_ns { shift . _next_cnt() }
 
 sub schema_from_database {
   my ($self, $ns) = @_;
