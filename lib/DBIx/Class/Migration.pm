@@ -326,17 +326,14 @@ sub dump_all_sets {
 }
 
 sub populate_set_to_schema {
-  my ($self, $set, $version, $schema) = @_;
-  my $target_dir = _prepare_fixture_data_dir(
-    $self->target_dir, $version, $set);
-
+  my ($self, $target_set, $schema) = @_;
   $self->build_dbic_fixtures->populate({
     no_deploy => 1,
     schema => $schema,
-    directory => $target_dir,
+    directory => $target_set,
   });
 
-  print "Restored set $set to database\n";
+  print "Restored set $target_set to database\n";
 }
 
 sub populate {
@@ -348,7 +345,9 @@ sub populate {
     ->schema_from_database($self->_infer_schema_class);
 
   foreach my $set(@_) {
-    $self->populate_set_to_schema($set, $version, $schema);
+    my $target_set = _prepare_fixture_data_dir(
+      $self->target_dir, $version, $set);
+    $self->populate_set_to_schema($target_set, $schema);
   }
 }
 
