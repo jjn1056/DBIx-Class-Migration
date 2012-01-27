@@ -325,25 +325,30 @@ sub dump_all_sets {
   });
 }
 
+sub populate_set_to_schema {
+  my ($self, $set, $version, $schema) = @_;
+  my $target_dir = _prepare_fixture_data_dir(
+    $self->target_dir, $version, $set);
+
+  $self->build_dbic_fixtures->populate({
+    no_deploy => 1,
+    schema => $schema,
+    directory => $target_dir,
+  });
+
+  print "Restored set $set to database\n";
+}
+
 sub populate {
   (my $self = shift)->dbic_dh->version_storage_is_installed
     || die "No Database to populate!";
-  my $version_to_populate = $self->dbic_dh->database_version;
 
+  my $version = $self->dbic_dh->database_version;
   my $schema = $self->schema_loader
     ->schema_from_database($self->_infer_schema_class);
 
   foreach my $set(@_) {
-    my $target_dir = _prepare_fixture_data_dir($self->target_dir,
-      $version_to_populate, $set);
-
-    $self->build_dbic_fixtures->populate({
-      no_deploy => 1,
-      schema => $schema,
-      directory => $target_dir,
-    });
-
-    print "Restored set $set to database\n";
+    $self->populate_set_to_schema($set, $version, $schema);
   }
 }
 
