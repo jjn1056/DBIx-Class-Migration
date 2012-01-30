@@ -139,7 +139,7 @@ deployed database that matches the current schema.
 
 =head1 SEE ALSO
 
-L<App::DBIx::Class::Migration>, L<DBIx::Class::Manual::Example>
+L<DBIx::Class::Migration>, L<DBIx::Class::Manual::Example>
 
 =head1 AUTHOR
 

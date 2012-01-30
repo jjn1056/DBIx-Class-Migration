@@ -553,7 +553,7 @@ version to the seed version.
 
 =head1 SEE ALSO
 
-L<App::DBIx::Class::Migration>
+L<DBIx::Class::Migration>
 
 =head1 AUTHOR
 

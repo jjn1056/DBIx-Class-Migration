@@ -109,6 +109,6 @@ done_testing;
 END {
   rmtree catfile($migration->target_dir, 'migrations');
   rmtree catfile($migration->target_dir, 'fixtures');
-  rmtree catfile($migration->target_dir, 'local-schema');
+  #rmtree catfile($migration->target_dir, 'local-schema');
 }
 

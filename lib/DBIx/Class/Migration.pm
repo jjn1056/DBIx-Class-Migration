@@ -423,6 +423,27 @@ various internals.
 
 This class defines the following attributes.
 
+=head2 db_sandbox_class
+
+Unless you already have a database setup and running (as you probably do in
+production) we need to auto create a database 'sandbox' that is isolated to
+your development local.  This class is a delegate that performs this job.
+
+This must point to a class that expects C<target_dir> and C<schema_class> for
+initialization arguments and must define a method C<make_sandbox> that returns
+an array which can be sent to L<DBIx::Class::Schema/connect>.
+
+This defaults to L<DBIx::Class::Migration::SqliteSandbox>.  Currently we have
+support for mysql and Postgresql via L<DBIx::Class::Migration::MySQLSandbox>
+and L<DBIx::Class::Migration::PgSandbox>, but you will need to side install
+L<Test::mysqld> and L<Test::postgresql>.
+
+=head2 db_sandbox
+
+This is an instantiated object as defined by L</db_sandbox_class>.  It is a
+delegate for the work of automatically creating a local database sandbox that
+is useful for developers and for quickly bootstrapping a project.
+
 =head2 schema_class
 
 Accepts Str.  Not Required (but if missing, you need to populate L</schema>).

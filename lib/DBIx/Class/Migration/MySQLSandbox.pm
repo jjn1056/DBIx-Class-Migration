@@ -1,5 +1,4 @@
-package # Hide from PAUSE
-  DBIx::Class::Migration::MySQLSandbox;
+package DBIx::Class::Migration::MySQLSandbox;
 
 use Moose;
 use Test::mysqld;
@@ -93,4 +92,76 @@ sub make_sandbox {
 }
 
 __PACKAGE__->meta->make_immutable;
+
+=head1 NAME
+
+DBIx::Class::Migration::MySQLSandbox - Autocreate a mysql sandbox
+
+=head1 SYNOPSIS
+
+    use DBIx::Class::Migration;
+
+    my $migration = DBIx::Class::Migration->new(
+      schema_class=>'Local::Schema',
+      db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
+
+    $migration->prepare;
+    $migration->install;
+
+=head1 DESCRIPTION
+
+This automatically creates a mysql sandbox in your C<target_dir> that you can
+use for initial prototyping, development and demonstration.  If you want to
+use this, you will need to add L<Test::mysqld> to your C<Makefile.PL> or your
+C<dist.ini> file, and get that installed properly.  It also requires that you
+have MySQL installed locally (although MySQL does not need to be running, as
+long as we can find in $PATH the binary installation).  If your copy of MySQL
+is not installed in a normal location, you might need to locally alter $PATH
+so that we can find it.
+
+In addition to the MySQL sandbox, we create three helper scripts C<start>,
+C<stop> and C<use> which can be used to start, stop and open shell level access
+to you mysql sandbox.
+
+These helper scripts will be located in a child directory of your C<target_dir>
+(which defaults to C<share> under your project root directory).  For example:
+
+    [target_dir]/[schema_class]/bin/[start|stop|use]
+
+If your schema class is C<MyApp::Schema> you should see helper scripts like
+
+    /MyApp-Web
+      /lib
+        /MyApp
+          Schema.pm
+          /Schema
+            ...
+      /share
+        /migrations
+        /fixtures
+        /myapp-schema
+          /bin
+            start
+            stop
+            use
+
+This give you a system for installing a sandbox locally for development,
+starting and stopping it for use (for example in a web application like one you
+might create with L<Catalyst>) and for using it by openning a native C<mysql>
+shell (such as if you wish to review the database manually, and run native SQL
+queries).
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBD::mysql>, L<Test::mysqld>.
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
 

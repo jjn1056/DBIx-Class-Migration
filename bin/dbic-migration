@@ -22,7 +22,7 @@ should review those docs and see the L<DBIx::Class::Migration::Tutorial>.
 
 =head1 SEE ALSO
 
-L<App::DBIx::Class::Migration>
+L<DBIx::Class::Migration>
 
 =head1 AUTHOR
 

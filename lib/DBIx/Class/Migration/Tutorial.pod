@@ -161,7 +161,7 @@ L<DBIx::Class::Migration::Tutorial::Conclusion> reviews some key concepts.
 
 =head1 SEE ALSO
 
-L<App::DBIx::Class::Migration>, L<DBIx::Class::Manual::Example>,
+L<:DBIx::Class::Migration>, L<DBIx::Class::Manual::Example>,
 L<DBIx::Class::DeploymentHandler>, and L<DBIx::Class::Fixtures>.
 
 =head1 AUTHOR
