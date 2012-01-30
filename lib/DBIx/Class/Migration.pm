@@ -401,7 +401,15 @@ L<DBIx::Class::Migration> defines some logic which combines both
 L<DBIx::Class::DeploymentHandler> and L<DBIx::Class::Fixtures>, along with
 a standard tutorial, to give you a simple and straightforward approach to
 solving the problem of how to best create database versions, migrations and
-testing data.  It offers code and advice based on my experience of using
+testing data.  Additionally it builds on tools like L<Test::mysqld> and
+L<Test::postgresql> along with L<DBD::Sqlite> in order to assist you in quickly
+creating a local development database sandbox.  It offers some integration
+points to testing your database, via tools like L<Test::DBIx::Class> in order to
+make testing your database driven logic less painful.  Lastly, we offer some
+thoughts on good development patterns in using databases with application
+frameworks like L<Catalyst>.
+
+L<DBIx::Class::Migration> offers code and advice based on my experience of using
 L<DBIx::Class> for several years, which hopefully can help you bootstrap out of
 the void.  The solutions given should work for you if you want to use L<DBIx::Class>
 and have database migrations, but don't really know what to do next.  These

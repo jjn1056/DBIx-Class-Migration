@@ -82,6 +82,8 @@ ok $schema->resultset('Country')->find({code=>'fra'}),
 
 $migration->drop_tables;
 
+my $cleanup_dir = $migration->target_dir;
+
 $migration = undef;
 
 NEW_SCOPE_FOR_SCHEMA: {
@@ -107,8 +109,8 @@ NEW_SCOPE_FOR_SCHEMA: {
 done_testing;
 
 END {
-  rmtree catfile($migration->target_dir, 'migrations');
-  rmtree catfile($migration->target_dir, 'fixtures');
-  #rmtree catfile($migration->target_dir, 'local-schema');
+  rmtree catfile($cleanup_dir, 'migrations');
+  rmtree catfile($cleanup_dir, 'fixtures');
+  rmtree catfile($cleanup_dir, 'local-schema');
 }
 

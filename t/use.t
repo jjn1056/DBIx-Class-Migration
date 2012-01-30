@@ -1,4 +1,4 @@
-use Test::Most tests=>5;
+use Test::Most tests=>6;
 
 BEGIN {
   use_ok 'DBIx::Class::Migration';
@@ -6,5 +6,7 @@ BEGIN {
   use_ok 'DBIx::Class::Migration::Script';
   use_ok 'DBIx::Class::Migration::Population';
   use_ok 'DBIx::Class::Migration::SqliteSandbox';
+  use_ok 'DBIx::Class::Migration::MySQLSandbox';
+
 }
 

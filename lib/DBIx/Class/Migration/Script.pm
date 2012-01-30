@@ -3,6 +3,7 @@ package DBIx::Class::Migration::Script;
 use Moose;
 use MooseX::Attribute::ENV;
 use DBIx::Class::Migration;
+use Moose::Util::TypeConstraints qw(enum);
 
 with 'MooseX::Getopt';
 
@@ -10,6 +11,8 @@ sub ENV_PREFIX {
   $ENV{DBIC_MIGRATION_ENV_PREFIX}
     || 'DBIC_MIGRATION';
 }
+
+sub SANDBOX_TYPES { qw(sqlite mysql postgresql) }
 
 has includes => (
   traits => ['Getopt'],
@@ -43,6 +46,11 @@ has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
 
 has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef',
   predicate=>'has_databases', cmd_aliases => 'database');
+
+has sandbox_type =>  (traits => [ 'Getopt' ], is => 'ro',
+  predicate=>'has_sandbox_type', isa=>enum( +[SANDBOX_TYPES] ),
+  default=>'sqlite');
+
 
 has fixture_sets => (
   traits => [ 'Getopt' ],
@@ -88,12 +96,22 @@ sub _build_migration {
   my $self = shift;
   my %dbic_dh_args = $self->_prepare_dbic_dh_args;
   my %args = (%dbic_dh_args ? (dbic_dh_args => \%dbic_dh_args) : ());
+
   if($self->has_schema) {
     $args{schema} = $self->schema;
   } else {
     my @schema_args = $self->_prepare_schema_args;
     $args{schema_class} = $self->schema_class;
     $args{schema_args} = \@schema_args if @schema_args;
+  }
+
+  if($self->has_sandbox_type) {
+    my $base = 'DBIx::Class::Migration::';
+    for my $type ($self->sandbox_type) {
+      $args{db_sandbox_class} = $base . 'SqliteSandbox' if $type eq 'sqlite';
+      $args{db_sandbox_class} = $base . 'MySQLSandbox' if $type eq 'mysql';
+      $args{db_sandbox_class} = $base . 'PostgresqlSandbox' if $type eq 'postgresql';
+    }
   }
 
   return DBIx::Class::Migration->new(%args);
@@ -313,6 +331,31 @@ Accepts ArrayRef.  Not Required. Defaults to ['all_tables'].
 This defines a list of fixture sets that we use for dumping or populating
 fixtures.  Defaults to the C<['all_tables']> set, which is the one set we build
 automatically for each version of the database we prepare deployments for.
+
+=head2 sandbox_type
+
+Accepts Enum (sqlite, mysql or postgresql).  Required, defaults to 'sqlite'.
+
+If you don't have a database already running, we will automatically create a
+database 'sandbox' in your L</target_dir> that is suitable for development and
+rapid prototyping.  This is intended for developers and intended to make life
+more simple, particularly for beginners who might not have all the knowledged
+needed to setup a database for development purposes.
+
+By default this sandbox is a file based L<DBD::Sqlite> database, which is an
+easy option since changes are good this is already installed on your development
+computer (and if not it is trivial to install).  
+
+You can change this to either 'postgresql' or 'mysql', which will create a 
+sandbox using either L<DBIx::Class::Migration::MySQLSandbox> or 
+L<DBIx::Class::Migration::PostgresqlSandbox> (which in term require the separate
+installation of either L<Test::mysqld> or L<Test::postgresql>).  If you are
+using one of those open source databases in production, its probably a good
+idea to use them in development as well, since there are enough small
+differences between them that could make your code break if you used sqlite for
+development and postgresql in production.  However this requires a bit more
+setup effort, so when you are starting off just sticking to the default sqlite
+is probably the easiest thing to do.
 
 =head1 COMMANDS
 
