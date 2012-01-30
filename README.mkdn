@@ -35,7 +35,15 @@ rather than a toolkit with a set of example scripts.
 [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) and [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures), along with
 a standard tutorial, to give you a simple and straightforward approach to
 solving the problem of how to best create database versions, migrations and
-testing data.  It offers code and advice based on my experience of using
+testing data.  Additionally it builds on tools like [Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld) and
+[Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql) along with [DBD::Sqlite](http://search.cpan.org/perldoc?DBD::Sqlite) in order to assist you in quickly
+creating a local development database sandbox.  It offers some integration
+points to testing your database, via tools like [Test::DBIx::Class](http://search.cpan.org/perldoc?Test::DBIx::Class) in order to
+make testing your database driven logic less painful.  Lastly, we offer some
+thoughts on good development patterns in using databases with application
+frameworks like [Catalyst](http://search.cpan.org/perldoc?Catalyst).
+
+[DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) offers code and advice based on my experience of using
 [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) for several years, which hopefully can help you bootstrap out of
 the void.  The solutions given should work for you if you want to use [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class)
 and have database migrations, but don't really know what to do next.  These
