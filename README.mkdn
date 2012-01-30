@@ -7,8 +7,7 @@ DBIx::Class::Migration - Make database migrations possible
     use DBIx::Class::Migration;
 
     my $migration = DBIx::Class::Migration->new(
-      schema_class => 'MyApp::Schema';
-    );
+      schema_class => 'MyApp::Schema');
 
     $migration->prepare;
     $migration->install;
@@ -19,8 +18,7 @@ Alternatively:
     use MyApp::Schema;
 
     my $migration = DBIx::Class::Migration->new(
-      schema => MyApp::Schema->connect(@connect_opts);
-    );
+      schema => MyApp::Schema->connect(@connect_opts));
 
 # DESCRIPTION
 
@@ -58,6 +56,27 @@ various internals.
 # ATTRIBUTES
 
 This class defines the following attributes.
+
+## db_sandbox_class
+
+Unless you already have a database setup and running (as you probably do in
+production) we need to auto create a database 'sandbox' that is isolated to
+your development local.  This class is a delegate that performs this job.
+
+This must point to a class that expects `target_dir` and `schema_class` for
+initialization arguments and must define a method `make_sandbox` that returns
+an array which can be sent to ["connect" in DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema#connect).
+
+This defaults to [DBIx::Class::Migration::SqliteSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::SqliteSandbox).  Currently we have
+support for mysql and Postgresql via [DBIx::Class::Migration::MySQLSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::MySQLSandbox)
+and [DBIx::Class::Migration::PgSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::PgSandbox), but you will need to side install
+[Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld) and [Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql).
+
+## db_sandbox
+
+This is an instantiated object as defined by ["db_sandbox_class"](#db_sandbox_class).  It is a
+delegate for the work of automatically creating a local database sandbox that
+is useful for developers and for quickly bootstrapping a project.
 
 ## schema_class
 
@@ -114,13 +133,13 @@ database that is listed in configuration:
 
 ## target_dir
 
-Accepts Str.  Required.
+Accepts Str.  Required (lazy builds to your distribution `/share` directory).
 
 This is the directory we store our migration and fixture files.  Inside this
 directory we will create a `fixtures` and `migrations` sub-directory.
 
 Although you can specify the directory, if you leave it undefined, we will use
-[File::ShareDir::ProjectDistDir](http://search.cpan.org/perldoc?File::ShareDir::ProjectDistDir) to locate the `share` directory for your
+[File::ShareDir::ProjectDistDir](http://search.cpan.org/perldoc?File::ShareDir::ProjectDistDir) to locate the `/share` directory for your
 project and place the files there.  This is the recommended approach, and is
 considered a community practice in regards to where to store your distribution
 non code files.  Please see [File::ShareDir::ProjectDistDir](http://search.cpan.org/perldoc?File::ShareDir::ProjectDistDir) as well as
@@ -130,6 +149,9 @@ This uses whatever is in ["schema_class"](#schema_class) to determine your proje
 for a `share` directory, which you'll need to create in your project root).
 If you dont' have a ["schema_class"](#schema_class) defined, you must have a ["schema"](#schema),
 and we'll infer the class via `ref($self->schema)`.
+
+__NOTE:__ You'll need to make the `/share` directory if you are going to use
+the default option.  We don't automatically create it for you.
 
 ## schema_loader_class
 
@@ -158,7 +180,7 @@ You'll probably need to review the docs for that and understand how configuratio
 rules work in order to best take advantage of the system.
 
 Defaults to [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures).  You'll probably not need to change this
-unless you have some usual needs regarding fixtures.
+unless you have some unusual needs regarding fixtures.
 
 ## deployment_handler_class
 
@@ -376,7 +398,8 @@ John Napiorkowski [email:jjnapiork@cpan.org](email:jjnapiork@cpan.org)
 # SEE ALSO
 
 [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler), [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures), [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class),
-[DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader), [Moose](http://search.cpan.org/perldoc?Moose).
+[DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader), [Moose](http://search.cpan.org/perldoc?Moose), [DBIx::Class::Migration::Script](http://search.cpan.org/perldoc?DBIx::Class::Migration::Script),
+[DBIx::Class::Migration::Population](http://search.cpan.org/perldoc?DBIx::Class::Migration::Population), [dbic-migration](http://search.cpan.org/perldoc?dbic-migration), [SQL::Translator](http://search.cpan.org/perldoc?SQL::Translator).
 
 # COPYRIGHT & LICENSE
 
