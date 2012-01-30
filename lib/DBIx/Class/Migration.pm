@@ -12,6 +12,21 @@ use DBIx::Class::Migration::SchemaLoader;
 use MooseX::Types::LoadableClass 'LoadableClass';
 use Class::Load 'load_class';
 
+has db_sandbox_class => (
+  is => 'ro',
+  default => 'DBIx::Class::Migration::SqliteSandbox',
+  isa => LoadableClass,
+  coerce => 1);
+
+has db_sandbox => (is=>'ro', lazy_build=>1);
+
+  sub _build_db_sandbox {
+    my ($self) = @_;
+    return $self->db_sandbox_class
+      ->new(target_dir=>$self->target_dir,
+        schema_class=>$self->_infer_schema_class);
+  }
+
 has schema_class => (
   is => 'ro',
   predicate=>'has_schema_class',
@@ -21,21 +36,8 @@ has schema_class => (
 
 has schema_args => (is=>'ro', isa=>'ArrayRef', lazy_build=>1);
 
-  sub _generate_filename_for_default_db {
-    my ($schema_class) = @_;
-    $schema_class =~ s/::/-/g;
-    return lc($schema_class);
-  }
-
-  sub _generate_dsn {
-    my ($schema_class, $target_dir) = @_;
-    my $filename = _generate_filename_for_default_db($schema_class);
-    'DBI:SQLite:'. catfile($target_dir, "$filename.db");
-  }
-
   sub _build_schema_args {
-    my $self = shift;
-    [ _generate_dsn($self->schema_class, $self->target_dir), '', '' ];
+    +[ shift->db_sandbox->make_sandbox ];
   }
 
 has schema => (is=>'ro', lazy_build=>1, predicate=>'has_schema');
