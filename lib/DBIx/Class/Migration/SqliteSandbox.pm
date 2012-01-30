@@ -59,6 +59,21 @@ or L<DBIx::Class::Migration::PgSandbox>.
 
 Nothing else is required to install in order to use this default option.
 
+Since Sqlite is a simple, single file database that doesn't run persistently
+we don't create any helper scripts.  If you want to access the database directly
+you can do so with the C<sqlite3> commandline tool which you should get when
+you get L<DBD::Sqlite>.  To access the sandbox database:
+
+    sqlite3 [target_dir]/[schema_class].db
+
+For example, if your C<schema_class> is C<MyApp::Schema> and your sandbox is in
+the default C<share>:
+
+    sqlite3  MyApp-Web/share/myapp-schema.db
+
+You can also follow the tutorial L<DBIx::Class::Migration::Tutorial> since the
+bulk of the tutorial uses the sqlite sandbox.
+
 =head1 SEE ALSO
 
 L<DBIx::Class::Migration>, L<DBD::Sqlite>.

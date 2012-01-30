@@ -357,6 +357,10 @@ development and postgresql in production.  However this requires a bit more
 setup effort, so when you are starting off just sticking to the default sqlite
 is probably the easiest thing to do.
 
+YOu should review the documenation at L<DBIx::Class::Migration::MySQLSandbox> or 
+L<DBIx::Class::Migration::PostgresqlSandbox> because those delegates also build
+some helper scripts, intended to help you use a sandbox.
+
 =head1 COMMANDS
 
     dbic_migration -Ilib install
