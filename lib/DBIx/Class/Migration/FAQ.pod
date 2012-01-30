@@ -72,6 +72,23 @@ L<Dist::Zilla>, including using plugins to weave pod, automagically guess
 dependencies and generate tests.  I'd prefer to stick to the most simple and
 standard Perl practices for building and installing code for the present.
 
+=head1 I don't want my database sandbox files in my source control repository
+
+Having the database sandboxes automatically created in the C<share> directory
+is a nice feature, but can clutter your repository history.  You really don't
+need that in the source control, since installing and controlling your database
+is something each developer who checks out the project should do.
+
+If you are using C<git> you can modify your C<.gitignore>.  If you sandbox is
+C<share/myapp-schema.db> or (if you are using the mysql or postgresql sandboxes)
+C<share/myapp-schema/> you can add these lines to your C<.gitignore>
+
+    share/musicbase-schema/*
+    share/musicbase-schema.db
+
+Other source control systems have similiar approaches (recipies welcome for 
+sharing).
+
 =head1 Error: "Failed to find share dir for dist..."
 
 BY default we expect to find a C</share> directory in your primary project root
