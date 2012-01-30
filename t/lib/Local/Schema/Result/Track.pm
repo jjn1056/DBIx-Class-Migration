@@ -5,6 +5,7 @@ __PACKAGE__->table('track');
 __PACKAGE__->add_columns(
   'track_id' => {
     data_type => 'integer',
+    is_auto_increment => 1,
   },
   'cd' => {
     data_type => 'integer',

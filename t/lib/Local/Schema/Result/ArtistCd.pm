@@ -6,6 +6,7 @@ __PACKAGE__->add_columns(
   artist_fk => {
     data_type => 'integer',
     is_foreign_key => 1,
+    is_auto_increment => 1,
   },
   cd_fk => {
     data_type => 'integer',

@@ -6,6 +6,7 @@ __PACKAGE__->table('artist');
 __PACKAGE__->add_columns(
   artist_id => {
     data_type => 'integer',
+    is_auto_increment => 1,
   },
   country_fk => {
     data_type => 'integer',

@@ -5,6 +5,7 @@ __PACKAGE__->table('cd');
 __PACKAGE__->add_columns(
   'cd_id' => {
     data_type => 'integer',
+    is_auto_increment => 1,
   },
   'title' => {
     data_type => 'varchar',

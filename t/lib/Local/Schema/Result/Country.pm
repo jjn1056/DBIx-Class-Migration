@@ -5,6 +5,7 @@ __PACKAGE__->table('country');
 __PACKAGE__->add_columns(
   'country_id' => {
     data_type => 'integer',
+    is_auto_increment => 1,
   },
   'code' => {
     data_type => 'char',
