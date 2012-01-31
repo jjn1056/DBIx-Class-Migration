@@ -47,9 +47,9 @@ has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
 has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef',
   predicate=>'has_databases', cmd_aliases => 'database');
 
-has sandbox_type =>  (traits => [ 'Getopt' ], is => 'ro',
+has sandbox_type =>  (traits => [ 'Getopt', 'ENV' ], is => 'ro',
   predicate=>'has_sandbox_type', isa=>enum( +[SANDBOX_TYPES] ),
-  default=>'sqlite');
+  default=>'sqlite', cmd_aliases => 'T', env_prefix=>ENV_PREFIX,);
 
 
 has fixture_sets => (
@@ -361,6 +361,9 @@ YOu should review the documenation at L<DBIx::Class::Migration::MySQLSandbox> or
 L<DBIx::Class::Migration::PostgresqlSandbox> because those delegates also build
 some helper scripts, intended to help you use a sandbox.
 
+Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+DBIC_MIGRATION_SANDBOX_TYPE
+
 =head1 COMMANDS
 
     dbic_migration -Ilib install
@@ -565,6 +568,40 @@ My recommendation is to create a core 'seed' set, of default database values,
 such as role types, default users, lists of countries, etc. and then create a
 'demo' or 'dev' set that contains extra information useful to populate a
 database so that you can run test cases and develop against.
+
+=head3 sandbox_type
+
+Alias: T
+Value: Enum of sqlite|mysql|postgresql (defaults to sqlite)
+
+If you don't have a target database for your migrations (as you might not for
+your development setup, or during initial prototyping) we automatically create
+a local database sandbox in your L</target_dir>.  By default this is a
+L<DBD::Sqlite> single file database, since this is easy to get installed (you
+probably already have it) and is easy to work with.  However, we can also create
+database sandboxes for mysql and postgresql (although you will need to get the
+L<Test::mysqld> and/or L<Test::postgresql> as well as the correcct DBD installed).
+
+This is handy as you move toward a real production target and know the eventual
+database for production.  If you choose to create a postgresql or mysql database
+sandbox, they will automatically be created in your L</target_dir>, along with
+some helper scripts. See L<DBIx::Class::Migration::PostgresqlSandbox> and
+L<DBIx::Class::Migration::MySQLSandbox> for more documentation.
+
+Assuming you've prepared migrations for an alternative sandbox, such as MySQL:
+
+    dbic_migration install --schema_class MyApp::Schema --sandbox_type mysql
+
+Would install it.  Like some of the other option flags you can specify with an
+%ENV setting:
+
+    export DBIC_MIGRATION_SANDBOX_TYPE=mysql
+
+This would be handy if you are always going to target one of the alternative
+sandbox types.
+
+The default sqlite sandbox is documented at L<DBIx::Class::Migration::SQLiteSandbox>
+although this single file database is pretty straightforward to use.
 
 =head1 EXAMPLES
 

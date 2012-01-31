@@ -395,6 +395,10 @@ authors of [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::F
 sets of data.  Lastly, thanks to the [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) cabal for all the work done
 in making the [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) ORM so amazingly powerful.
 
+Additionally thanks to the creators / maintainers for [Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld) and
+[Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql), which made it easy to create developer level sandboxes for
+these popular open source databases.
+
 As usual, thanks to the [Moose](http://search.cpan.org/perldoc?Moose) cabal for making Perl programming fun and
 beautiful.  Lastly, a shout-out to the [Dist::Zilla](http://search.cpan.org/perldoc?Dist::Zilla) cabal for making it so I
 don't need to write my own build and deployment tools.
@@ -407,7 +411,8 @@ John Napiorkowski [email:jjnapiork@cpan.org](email:jjnapiork@cpan.org)
 
 [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler), [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures), [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class),
 [DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader), [Moose](http://search.cpan.org/perldoc?Moose), [DBIx::Class::Migration::Script](http://search.cpan.org/perldoc?DBIx::Class::Migration::Script),
-[DBIx::Class::Migration::Population](http://search.cpan.org/perldoc?DBIx::Class::Migration::Population), [dbic-migration](http://search.cpan.org/perldoc?dbic-migration), [SQL::Translator](http://search.cpan.org/perldoc?SQL::Translator).
+[DBIx::Class::Migration::Population](http://search.cpan.org/perldoc?DBIx::Class::Migration::Population), [dbic-migration](http://search.cpan.org/perldoc?dbic-migration), [SQL::Translator](http://search.cpan.org/perldoc?SQL::Translator),
+[Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld), [Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql).
 
 # COPYRIGHT & LICENSE
 

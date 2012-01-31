@@ -762,6 +762,10 @@ authors of L<DBIx::Class::Fixtures> for giving me a foundation for managing
 sets of data.  Lastly, thanks to the L<DBIx::Class> cabal for all the work done
 in making the L<DBIx::Class> ORM so amazingly powerful.
 
+Additionally thanks to the creators / maintainers for L<Test::mysqld> and
+L<Test::postgresql>, which made it easy to create developer level sandboxes for
+these popular open source databases.
+
 As usual, thanks to the L<Moose> cabal for making Perl programming fun and
 beautiful.  Lastly, a shout-out to the L<Dist::Zilla> cabal for making it so I
 don't need to write my own build and deployment tools.
@@ -774,7 +778,8 @@ John Napiorkowski L<email:jjnapiork@cpan.org>
 
 L<DBIx::Class::DeploymentHandler>, L<DBIx::Class::Fixtures>, L<DBIx::Class>,
 L<DBIx::Class::Schema::Loader>, L<Moose>, L<DBIx::Class::Migration::Script>,
-L<DBIx::Class::Migration::Population>, L<dbic-migration>, L<SQL::Translator>.
+L<DBIx::Class::Migration::Population>, L<dbic-migration>, L<SQL::Translator>,
+L<Test::mysqld>, L<Test::postgresql>.
 
 =head1 COPYRIGHT & LICENSE
 
@@ -796,7 +801,7 @@ list-fixture-sets
 ?? From version? ??
 Dzil and module install plugins
 shell version
-path DBIC-Fixtures to inflate-deflate
+add ability to exclude some tables from drop/delete
 
 ?? patch DH to abstract the filesysteem storage and get methods for 'last/next version'
 ?? patch DBIC-deploymenthander for autoversions
