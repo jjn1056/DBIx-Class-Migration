@@ -119,6 +119,17 @@ long as we can find in $PATH the binary installation).  If your copy of MySQL
 is not installed in a normal location, you might need to locally alter $PATH
 so that we can find it.
 
+For example, on my Mac, C<mysqld> is located at C</usr/local/mysql/bin/mysqld>
+so I could do something like this:
+
+    PATH=/usr/local/mysqlbin:$PATH [command]
+
+and alter the C<$PATH> for one time running, or I could change the C<$PATH> 
+permanently by editing my C<.bashrc> file (typically located in C<$HOME>).
+
+NOTE: You might find installing L<DBD::mysql> to be easier if you edit the
+C<$PATH> before trying to install it.
+
 In addition to the MySQL sandbox, we create three helper scripts C<start>,
 C<stop> and C<use> which can be used to start, stop and open shell level access
 to you mysql sandbox.
@@ -147,7 +158,7 @@ If your schema class is C<MyApp::Schema> you should see helper scripts like
 
 This give you a system for installing a sandbox locally for development,
 starting and stopping it for use (for example in a web application like one you
-might create with L<Catalyst>) and for using it by openning a native C<mysql>
+might create with L<Catalyst>) and for using it by opening a native C<mysql>
 shell (such as if you wish to review the database manually, and run native SQL
 queries).
 

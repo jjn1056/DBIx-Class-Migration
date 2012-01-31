@@ -15,10 +15,10 @@ has test_postgresql => (is=>'ro', lazy_build=>1);
     catdir($self->target_dir, lc($schema_class));
   }
 
-sub _build_postgresql {
+sub _build_test_postgresql {
   my $base_dir = (my $self = shift)->_generate_sandbox_dir;
   my $auto_start = -d $base_dir ? 1:2;
-  return Test::mysqld->new(
+  return Test::postgresql->new(
     auto_start => $auto_start,
     base_dir => $base_dir);
 }
@@ -29,12 +29,15 @@ sub _write_start {
   open( my $fh, '>', catfile($bin, 'start'))
     || die "Cannot open $bin/start: $!";
 
-  my $mysqld = $self->test_mysqld->{mysqld};
-  my $my_cnf = catfile($base_dir, 'etc', 'my.cnf');
+  my $test_postgresql = $self->test_postgresql;
+  my $postmaster = $test_postgresql->{postmaster};
+  my $data = catdir($base_dir, 'data');
+  my $port = $test_postgresql->{port};
+
   print $fh <<START;
 #!/usr/bin/env sh
 
-$mysqld --defaults-file=$my_cnf &
+$postmaster -p $port -D $data &
 START
 
   close($fh);
@@ -48,11 +51,14 @@ sub _write_stop {
   open( my $fh, '>', catfile($bin, 'stop'))
     || die "Cannot open $bin/stop: $!";
 
-  my $PIDFILE = $self->test_mysqld->{my_cnf}->{'pid-file'};
+  my $test_postgresql = $self->test_postgresql;
+  my $postmaster = $test_postgresql->{postmaster};
+  my $pid = catdir($base_dir, 'data','postmaster.pid');
+
   print $fh <<STOP;
 #!/usr/bin/env sh
 
-kill \$(cat $PIDFILE)
+kill -INT `head -1 $pid`
 STOP
 
   close($fh);
@@ -66,14 +72,15 @@ sub _write_use {
   open( my $fh, '>', catfile($bin, 'use'))
     || die "Cannot open $bin/use: $!";
 
-  my $SOCKET = $self->test_postgresql->{my_cnf}->{socket};
-  my $mysqld = $self->test_postgresql->{mysqld};
-  $mysqld =~s/d$//; ## ug. sorry :(
+  my $test_postgresql = $self->test_postgresql;
+  my $postmaster = $test_postgresql->{postmaster};
+  my $psql = catfile($postmaster,'..','psql'); # ugg!
+  my $port = $test_postgresql->{port};
 
   print $fh <<USE;
 #!/usr/bin/env sh
 
-$mysqld --socket=$SOCKET -u root test
+$psql -h localhost --user postgres --port $port -d template1
 USE
 
   close($fh);
@@ -83,12 +90,15 @@ USE
 
 
 sub make_sandbox {
-  my $base_dir = (my $self = shift)->test_postgresql->base_dir;
+  my $self = shift;
+
   $self->_write_start;
   $self->_write_stop;
   $self->_write_use;
 
-  return "DBI:mysql:test;mysql_socket=$base_dir/tmp/mysql.sock",'root','';
+  my $port = $self->test_postgresql->port;
+  return "DBI:Pg:dbname=template1;host=127.0.0.1;port=$port",'postgres','';
+
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -117,7 +127,17 @@ C<dist.ini> file, and get that installed properly.  It also requires that you
 have Postgresql installed locally (although Postgresql does not need to be running, as
 long as we can find in $PATH the binary installation).  If your copy of Postgresql
 is not installed in a normal location, you might need to locally alter $PATH
-so that we can find it.
+so that we can find it. For example, on my Mac, the path to Postgresql binaries
+are at C</Library/PostgreSQL/bin> so you can alter the PATH for a single command
+like so:
+
+    PATH=Library/PostgreSQL/bin:$PATH [command]
+
+Or, if you are using Postgresql a lot, you can edit your C<.bashrc> to make the
+above permanent.
+
+NOTE: You might find installing L<DBD::mysql> to be easier if you edit the
+C<$PATH> before trying to install it.
 
 In addition to the Postgresql sandbox, we create three helper scripts C<start>,
 C<stop> and C<use> which can be used to start, stop and open shell level access
@@ -147,7 +167,7 @@ If your schema class is C<MyApp::Schema> you should see helper scripts like
 
 This give you a system for installing a sandbox locally for development,
 starting and stopping it for use (for example in a web application like one you
-might create with L<Catalyst>) and for using it by openning a native C<mysql>
+might create with L<Catalyst>) and for using it by opening a native C<psql>
 shell (such as if you wish to review the database manually, and run native SQL
 queries).
 

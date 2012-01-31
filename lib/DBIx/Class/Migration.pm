@@ -112,6 +112,7 @@ has deployment_handler_class => (
     my $storage_specific_class = ref($storage);
     my $inferred_storage = ($storage =~m/DBI::(.+)\=/)[0] || 'SQLite';
     $inferred_storage = 'MySQL' if $inferred_storage eq 'mysql'; #Ugg
+    $inferred_storage = 'PostgreSQL' if $inferred_storage eq 'Pg';
     return $inferred_storage;
   }
 
