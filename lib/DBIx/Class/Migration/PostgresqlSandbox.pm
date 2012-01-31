@@ -74,7 +74,8 @@ sub _write_use {
 
   my $test_postgresql = $self->test_postgresql;
   my $postmaster = $test_postgresql->{postmaster};
-  my $psql = catfile($postmaster,'..','psql'); # ugg!
+  my $psql = $postmaster;
+  $psql =~s/postmaster$/psql/; # ugg
   my $port = $test_postgresql->{port};
 
   print $fh <<USE;
