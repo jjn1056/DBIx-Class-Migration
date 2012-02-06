@@ -107,7 +107,7 @@ Patches to fix this, or suggestions welcomed.
 Not everyone loves using an ORM.  Personally I've found L<DBIx::Class> to be
 the only ORM that gets enough out of my way that I prefer it over plain SQL,
 and I highly recommend you give it a go.  However if you don't want to, or can
-not convince your fellow programs (yet :) ), here's one way to still use this
+not convince your fellow programers (yet :) ), here's one way to still use this
 migrations and fixtures system.  Strictly speaking, we are stilling using
 L<DBIx::Class> behind the scenes, just you don't have to know about it or
 use it.
@@ -157,7 +157,7 @@ or by exporting the %ENV:
     export DBIC_MIGRATION_SCHEMA_CLASS=MyApp::Schema
 
 Or, if you have a custom version of L<DBIx::Class::Migration::Script> as
-discussed in the tutorial, you are not providing a good schema_class value.
+discussed in the tutorial, you are not providing a good C<schema_class> value.
 
 =head1 Error: "Attribute (schema_class) does not pass the type constraint"
 

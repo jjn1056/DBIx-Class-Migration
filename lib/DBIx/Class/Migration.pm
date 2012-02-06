@@ -436,20 +436,27 @@ This class defines the following attributes.
 
 =head2 db_sandbox_class
 
+Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::MySQLSandbox').
+
 Unless you already have a database setup and running (as you probably do in
 production) we need to auto create a database 'sandbox' that is isolated to
-your development local.  This class is a delegate that performs this job.
+your development local.  This class is a delegate that performs this job if you
+don't want to go to the trouble of installing and setting up a local database
+yourself.
 
 This must point to a class that expects C<target_dir> and C<schema_class> for
 initialization arguments and must define a method C<make_sandbox> that returns
 an array which can be sent to L<DBIx::Class::Schema/connect>.
 
 This defaults to L<DBIx::Class::Migration::SqliteSandbox>.  Currently we have
-support for mysql and Postgresql via L<DBIx::Class::Migration::MySQLSandbox>
+support for MySQL and Postgresql via L<DBIx::Class::Migration::MySQLSandbox>
 and L<DBIx::Class::Migration::PgSandbox>, but you will need to side install
-L<Test::mysqld> and L<Test::postgresql>.
+L<Test::mysqld> and L<Test::postgresql> (In other words you'd need to add
+these C<Test::*> namespace modules to your C<Makefile.PL> or C<dist.ini>).
 
 =head2 db_sandbox
+
+Accepts: Object.  Not required.
 
 This is an instantiated object as defined by L</db_sandbox_class>.  It is a
 delegate for the work of automatically creating a local database sandbox that
@@ -524,7 +531,7 @@ L<File::ShareDir> for more information.
 
 This uses whatever is in L</schema_class> to determine your project (and look
 for a C<share> directory, which you'll need to create in your project root).
-If you dont' have a L</schema_class> defined, you must have a L</schema>,
+If you don't have a L</schema_class> defined, you must have a L</schema>,
 and we'll infer the class via C<< ref($self->schema) >>.
 
 B<NOTE:> You'll need to make the C</share> directory if you are going to use
@@ -545,8 +552,11 @@ init arguments to L<DBIx::Class::Schema::Loader>.
 
 =head2 schema_loader
 
+Accepts Object.  Required but lazy builds.
+
 This is a factory that provider autoloaded schema based on the current schema's
-database.
+database.  It is automatically created and you are unlikely to need to set this
+manually.
 
 =head2 dbic_fixture_class
 
@@ -715,11 +725,11 @@ installed to the database
 =head2 drop_tables
 
 Drops all the tables in the connected database with no backup or recovery.  For
-real! (Make sure you are not connected to Prod, for example)
+real! (Make sure you are not connected to Prod, for example).
 
 =head2 delete_table_rows
 
-does a C<delete> on each table in the database, which clears out all your data
+Does a C<delete> on each table in the database, which clears out all your data
 but preserves tables.  For Real!  You might want this if you need to load
 and unload fixture sets during testing, or perhaps to get rid of data that
 accumulated in the database while running an app in development, before dumping
@@ -727,12 +737,12 @@ fixtures.
 
 =head2 dump_named_sets
 
-Given an array of set names, dump them for the current database version
+Given an array of fixture set names, dump them for the current database version.
 
 =head2 dump_all_sets
 
 Takes no arguments just dumps all the sets we can find for the current database
-version
+version.
 
 =head2 make_schema
 
