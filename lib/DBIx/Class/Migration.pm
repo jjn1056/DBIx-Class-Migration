@@ -246,13 +246,15 @@ sub drop_tables {
     ->schema_from_database($self->_infer_schema_class);
 
   $schema->storage->with_deferred_fk_checks(sub {
-    my $txn = $schema->txn_scope_guard;
     foreach my $source ($schema->sources) {
       my $table = $schema->source($source)->name;
       print "Dropping table $table\n";
-      $schema->storage->dbh->do("drop table $table");
+      if(ref($schema->storage) =~m/Pg$/) {
+        $schema->storage->dbh->do("drop table $table CASCADE");
+      } else {
+        $schema->storage->dbh->do("drop table $table");
+      }
     }
-    $txn->commit;
   });
 }
 
