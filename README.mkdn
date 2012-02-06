@@ -67,20 +67,27 @@ This class defines the following attributes.
 
 ## db_sandbox_class
 
+Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::MySQLSandbox').
+
 Unless you already have a database setup and running (as you probably do in
 production) we need to auto create a database 'sandbox' that is isolated to
-your development local.  This class is a delegate that performs this job.
+your development local.  This class is a delegate that performs this job if you
+don't want to go to the trouble of installing and setting up a local database
+yourself.
 
 This must point to a class that expects `target_dir` and `schema_class` for
 initialization arguments and must define a method `make_sandbox` that returns
 an array which can be sent to ["connect" in DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema#connect).
 
 This defaults to [DBIx::Class::Migration::SqliteSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::SqliteSandbox).  Currently we have
-support for mysql and Postgresql via [DBIx::Class::Migration::MySQLSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::MySQLSandbox)
+support for MySQL and Postgresql via [DBIx::Class::Migration::MySQLSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::MySQLSandbox)
 and [DBIx::Class::Migration::PgSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::PgSandbox), but you will need to side install
-[Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld) and [Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql).
+[Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld) and [Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql) (In other words you'd need to add
+these `Test::*` namespace modules to your `Makefile.PL` or `dist.ini`).
 
 ## db_sandbox
+
+Accepts: Object.  Not required.
 
 This is an instantiated object as defined by ["db_sandbox_class"](#db_sandbox_class).  It is a
 delegate for the work of automatically creating a local database sandbox that
@@ -155,7 +162,7 @@ non code files.  Please see [File::ShareDir::ProjectDistDir](http://search.cpan.
 
 This uses whatever is in ["schema_class"](#schema_class) to determine your project (and look
 for a `share` directory, which you'll need to create in your project root).
-If you dont' have a ["schema_class"](#schema_class) defined, you must have a ["schema"](#schema),
+If you don't have a ["schema_class"](#schema_class) defined, you must have a ["schema"](#schema),
 and we'll infer the class via `ref($self->schema)`.
 
 __NOTE:__ You'll need to make the `/share` directory if you are going to use
@@ -176,8 +183,11 @@ init arguments to [DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?D
 
 ## schema_loader
 
+Accepts Object.  Required but lazy builds.
+
 This is a factory that provider autoloaded schema based on the current schema's
-database.
+database.  It is automatically created and you are unlikely to need to set this
+manually.
 
 ## dbic_fixture_class
 
@@ -346,11 +356,11 @@ installed to the database
 ## drop_tables
 
 Drops all the tables in the connected database with no backup or recovery.  For
-real! (Make sure you are not connected to Prod, for example)
+real! (Make sure you are not connected to Prod, for example).
 
 ## delete_table_rows
 
-does a `delete` on each table in the database, which clears out all your data
+Does a `delete` on each table in the database, which clears out all your data
 but preserves tables.  For Real!  You might want this if you need to load
 and unload fixture sets during testing, or perhaps to get rid of data that
 accumulated in the database while running an app in development, before dumping
@@ -358,12 +368,12 @@ fixtures.
 
 ## dump_named_sets
 
-Given an array of set names, dump them for the current database version
+Given an array of fixture set names, dump them for the current database version.
 
 ## dump_all_sets
 
 Takes no arguments just dumps all the sets we can find for the current database
-version
+version.
 
 ## make_schema
 
