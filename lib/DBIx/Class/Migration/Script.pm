@@ -154,9 +154,13 @@ sub run {
   $self->${\"cmd_${cmd}"};
 }
 
+sub run_with_options {
+  $_[0]->new_with_options($_[0]->_defaults)->run;
+}
+
 sub run_if_script {
   my $class = shift;
-  caller(1) ? 1 : $class->new_with_options($class->_defaults)->run;
+  caller(1) ? $class : $class->run_with_options;
 }
 
 __PACKAGE__->meta->make_immutable;
