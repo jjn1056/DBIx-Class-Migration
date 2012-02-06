@@ -4,10 +4,11 @@ use Moose;
 use Test::postgresql;
 use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath';
+use POSIX qw(SIGINT);
 
 has target_dir => (is=>'ro', required=>1);
 has schema_class => (is=>'ro', required=>1);
-has test_postgresql => (is=>'ro', lazy_build=>1);
+has test_postgresql => (is=>'ro', isa=>'Object', lazy_build=>1);
 
   sub _generate_sandbox_dir {
     my $schema_class = (my $self = shift)->schema_class;
@@ -18,9 +19,17 @@ has test_postgresql => (is=>'ro', lazy_build=>1);
 sub _build_test_postgresql {
   my $base_dir = (my $self = shift)->_generate_sandbox_dir;
   my $auto_start = -d $base_dir ? 1:2;
-  return Test::postgresql->new(
+  my %config = (
     auto_start => $auto_start,
-    base_dir => $base_dir);
+    base_dir => $base_dir,
+    initdb_args => $Test::postgresql::Defaults{initdb_args},
+    postmaster_args => $Test::postgresql::Defaults{postmaster_args});
+
+  if(my $testdb = Test::postgresql->new(%config)) {
+    return $testdb;
+  } else {
+    die $Test::postgresql::errstr;
+  }
 }
 
 sub _write_start {
@@ -89,7 +98,6 @@ USE
   chmod oct("0755"), catfile($bin, 'use');
 }
 
-
 sub make_sandbox {
   my $self = shift;
 
@@ -101,6 +109,11 @@ sub make_sandbox {
   return "DBI:Pg:dbname=template1;host=127.0.0.1;port=$port",'postgres','';
 
 }
+
+## I have to stop the database manually, not sure why, something borks 
+## postgresql when SQLT->translate in DBIC-DH is called.
+
+sub DEMOLISH { shift->test_postgresql->stop(SIGINT) }
 
 __PACKAGE__->meta->make_immutable;
 
@@ -137,7 +150,7 @@ like so:
 Or, if you are using Postgresql a lot, you can edit your C<.bashrc> to make the
 above permanent.
 
-NOTE: You might find installing L<DBD::mysql> to be easier if you edit the
+NOTE: You might find installing L<DBD::Pg> to be easier if you edit the
 C<$PATH> before trying to install it.
 
 In addition to the Postgresql sandbox, we create three helper scripts C<start>,

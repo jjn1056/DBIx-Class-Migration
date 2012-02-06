@@ -5,7 +5,7 @@ use Test::Most;
 use DBIx::Class::Migration;
 use File::Spec::Functions 'catfile';
 use File::Path 'rmtree';
-use Test::Requires qw(Test::mysqld);
+use Test::Requires qw(Test::postgresql);
 
 ok(
   my $migration = DBIx::Class::Migration->new(
@@ -38,14 +38,15 @@ ok -d catfile($target_dir, 'migrations'), 'got migrations';
 ok -e catfile($target_dir, 'migrations','PostgreSQL','deploy','1','001-auto.sql'), 'found DDL';
 
 open(
-  my $perl_run, 
-  ">", 
+  my $perl_run,
+  ">",
   catfile($target_dir, 'migrations', 'PostgreSQL', 'deploy', '1', '002-artists.pl')
 ) || die "Cannot open: $!";
 
 print $perl_run <<END;
   sub {
-    shift->resultset('Country')
+    my \$schema = shift;
+    \$schema->resultset('Country')
       ->populate([
       ['code'],
       ['bel'],
@@ -59,7 +60,7 @@ close($perl_run);
 
 $migration->install;
 
-ok $schema->resultset('Country')->find({code=>'fra'}),
+ok $schema->resultset('Country')->find({code=>'bel'}),
   'got some previously inserted data';
 
 $migration->dump_all_sets;
@@ -92,7 +93,7 @@ NEW_SCOPE_FOR_SCHEMA: {
     schema_class=>'Local::Schema',
     db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
   'created migration with schema_class');
-    
+
   $migration->install;
 
   ok $schema->resultset('Country')->find({code=>'fra'}),
@@ -109,8 +110,8 @@ NEW_SCOPE_FOR_SCHEMA: {
 done_testing;
 
 END {
-#  rmtree catfile($cleanup_dir, 'migrations');
-#  rmtree catfile($cleanup_dir, 'fixtures');
-#  rmtree catfile($cleanup_dir, 'local-schema');
+  rmtree catfile($cleanup_dir, 'migrations');
+  rmtree catfile($cleanup_dir, 'fixtures');
+  rmtree catfile($cleanup_dir, 'local-schema');
 }
 
