@@ -155,12 +155,14 @@ sub run {
 }
 
 sub run_with_options {
-  $_[0]->new_with_options($_[0]->_defaults)->run;
+  my ($class, %options) = @_;
+  $class->new_with_options($class->_defaults, %options)
+    ->run;
 }
 
 sub run_if_script {
   my $class = shift;
-  caller(1) ? $class : $class->run_with_options;
+  caller(1) ? $class : $class->run_with_options(@_);
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -606,6 +608,64 @@ sandbox types.
 
 The default sqlite sandbox is documented at L<DBIx::Class::Migration::SQLiteSandbox>
 although this single file database is pretty straightforward to use.
+
+=head1 OPTIONAL METHODS FOR SUBCLASSES
+
+If you decide to make a custom subclass of L<DBIx::Class::Migration::Script>,
+(you might do this for example to better integrate your migrations with an
+existing framework, like L<Catalyst>) you may defined the following option
+methods.
+
+=head2 default
+
+Returns a Hash of instantiation values.
+
+Merges some predefined values when instantiating.  For example:
+
+    package MusicBase::Schema::MigrationScript;
+
+    use Moose;
+    use MusicBase::Web;
+
+    extends 'DBIx::Class::Migration::Script';
+
+    sub defaults {
+      schema => MusicBase::Web->model('Schema')->schema,
+    }
+
+    __PACKAGE__->meta->make_immutable;
+    __PACKAGE__->run_if_script;
+
+This would create a version of your script that already includes the target
+C<schema>.  In this example we will let L<Catalyst> configuration handle which
+database to run deployments against.
+
+=head1 ADDITIONAL INFORMATION FOR SUBCLASSERS
+
+The following methods are documented of interest to subclassers.
+
+=head2 run_if_script
+
+Class method that detects if your module is being called as a script.  Place it
+at the end of your subclass:
+
+    __PACKAGE__->run_if_script;
+
+This returns true in the case you are using the class as a module, and calls
+L</run_with_options> otherwise.  Adding this lets you invoke your class module
+as a script from the commandline (saving you the trouble of writing a thin
+script wrapper).
+
+    perl -Ilib lib/MyApp/Schema/MigrationScript.pm --status
+
+=head2 run_with_options
+
+Given a Hash of initial arguments, merges those with the results of values passed
+on the commandline (via L<MooseX::Getopt>) and run.
+
+=head2 run
+
+Actually runs commands.
 
 =head1 EXAMPLES
 
