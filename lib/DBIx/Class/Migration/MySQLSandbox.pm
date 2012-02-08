@@ -83,12 +83,19 @@ USE
 
 
 sub make_sandbox {
-  my $base_dir = (my $self = shift)->test_mysqld->base_dir;
-  $self->_write_start;
-  $self->_write_stop;
-  $self->_write_use;
+  my $self = shift;
+  my $base_dir = $self->_generate_sandbox_dir;
 
-  return "DBI:mysql:test;mysql_socket=$base_dir/tmp/mysql.sock",'root','';
+  if( -e catfile($base_dir, 'tmp', 'mysqld.pid')) {
+    return "DBI:mysql:test;mysql_socket=$base_dir/tmp/mysql.sock",'root','';
+  } elsif($self->test_mysqld) {
+    $self->_write_start;
+    $self->_write_stop;
+    $self->_write_use;
+    return "DBI:mysql:test;mysql_socket=$base_dir/tmp/mysql.sock",'root','';
+  } else {
+    die "can't start a mysql sandbox";
+  }
 }
 
 __PACKAGE__->meta->make_immutable;

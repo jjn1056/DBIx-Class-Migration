@@ -149,9 +149,6 @@ sandbox (opens a mysql shell) or if you want to let you application use the sand
 (for example later on if you are using L<Catalyst> you'd want to start the sandbox
 so that you can expose to to your web application).
 
-Please kind in mind that currently you can't run migration commands on an already
-running database.
-
 You'd install the database and fixtures like so:
 
     dbic-migration -Ilib -Tmysql install
