@@ -89,6 +89,15 @@ C<share/myapp-schema/> you can add these lines to your C<.gitignore>
 Other source control systems have similiar approaches (recipies welcome for 
 sharing).
 
+=head1 What's the command to run migrations on an existing database?
+
+    dbic-migration -Ilib status \
+      --dsn="DBI:mysql:database=test;host=127.0.0.1;port=5142" \
+      --user msandbox \
+      --password msandbox
+
+Would be the general approach.
+
 =head1 Error: "Failed to find share dir for dist..."
 
 BY default we expect to find a C</share> directory in your primary project root
@@ -142,6 +151,11 @@ be able to convince people to try out L<DBIx::Class>!
 By the way, if you wanted, you can always dump the generated version of your
 classes using C<make_schema> (see L<DBIx::Class::Migrations/make_schema> and
 L<DBIx::Class::Migrations::Script/make_schema>).
+
+=head1 I am using MySQL and when the migration fails, it doesn't ROLLBACK
+
+That's because MySQL does not support transaction DDL.  Even if you have a
+transaction, MySQL will silently COMMIT when it bumps into some DDL.
 
 =head1 Error: "`' is not a module name"
 

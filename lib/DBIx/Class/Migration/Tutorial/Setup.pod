@@ -24,7 +24,8 @@ you know enough to perform this next task using some other tool.
 
 Most Perl projects use commandline tools, rather than a GUI IDE.  You should
 open a terminal with a commandline interface of choice, change to a directory
-where you like to store project files, and proceed.
+where you like to store project files (such as C<$HOME> or C<$HOME/Desktop>)
+and proceed.
 
 =head1 Install Dist::Zilla
 
@@ -35,7 +36,7 @@ where you like to store project files, and proceed.
     dzil new MusicBase
     cd MusicBase
 
-You should now have a directory structure like this
+You should now have a directory structure like this:
 
     /MusicBase
       dist.ini
@@ -49,7 +50,7 @@ C<dist.ini> in your editor of choice and alter it to look like this:
     author  = John Napiorkowski <jjnapiork@cpan.org>
     license = Perl_5
     copyright_holder = John Napiorkowski
-    copyright_year   = 2011
+    copyright_year   = 2012
     abstract = Tutorial Application for DBIx-Class-Migration
 
     version = 0.001
@@ -94,8 +95,21 @@ follows:
 As you can see, this is just a stub of POD to help give someone general
 context.
 
+Going forward, when I say 'do something in your project home directory', I mean
+inside this new C<MusicBase> directory which you just made.
+
 Congrats, you have a basic Perl project setup!  If you are using a source
 control tool, you should probably commit.
+
+=head1 Install your dependencies
+
+You listed a few dependencies in the C<dist.ini> file you modified above.  Let's
+get those installed now:
+
+    dzil listdeps | cpanm
+
+Managing your project dependencies via your C<dist.ini> file (or C<Makefile.PL>
+if you prefer) is considered a community approved best practice.
 
 =head1 DBIx::Class Application Version 1
 
@@ -103,7 +117,7 @@ In this section you'll setup a first version of the L<MusicBase> DBIC files.
 
 The working application we are going to design is called L<MusicBase> which
 is an application that tracks what Artists have made what CDs and which
-Tracks are part of which CD.  Here's the general model
+Tracks are part of which CD.  Here's the general model:
 
     -- An Artist has zero or more Cds.
     -- Each Cd belongs to a single Artist
@@ -116,7 +130,7 @@ Cds and the Tracks.
 You also have some business logic that requires you to return the set of
 Artists that have more than one Cd published.  Let's model that!
 
-From your appliation home directory (the directory that contains your
+From your application home directory (the directory that contains your
 C<dist.ini> file) perform the following commands:
 
     mkdir lib/MusicBase
@@ -135,6 +149,10 @@ current good practices.  Lets add in some code to our file stubs.
 Change C<lib/MusicBase/Schema.pm> to match the following:
 
     package MusicBase::Schema;
+
+    use strict;
+    use warnings;
+
     use base 'DBIx::Class::Schema';
 
     our $VERSION = 1;
@@ -146,6 +164,10 @@ Change C<lib/MusicBase/Schema.pm> to match the following:
 Change C<lib/MusicBase/Schema/Result/Artist.pm>
 
     package MusicBase::Schema::Result::Artist;
+
+    use strict;
+    use warnings;
+
     use base 'DBIx::Class::Core';
 
     __PACKAGE__->table('artist');
@@ -168,6 +190,10 @@ Change C<lib/MusicBase/Schema/Result/Artist.pm>
 Change C<lib/MusicBase/Schema/Result/CD.pm>
 
     package MusicBase::Schema::Result::Cd;
+
+    use strict;
+    use warnings;
+
     use base qw/DBIx::Class::Core/;
 
     __PACKAGE__->table('cd');
@@ -198,6 +224,10 @@ Change C<lib/MusicBase/Schema/Result/CD.pm>
 Change C<lib/MusicBase/Schema/Result/Track.pm>
 
     package MusicBase::Schema::Result::Track;
+
+    use strict;
+    use warnings;
+
     use base qw/DBIx::Class::Core/;
 
     __PACKAGE__->table('track');
@@ -223,6 +253,10 @@ Change C<lib/MusicBase/Schema/Result/Track.pm>
 Change C<lib/MusicBase/Schema/ResultSet/Artist.pm>
 
     package MusicBase::Schema::ResultSet::Artist;
+
+    use strict;
+    use warnings;
+
     use base 'DBIx::Class::ResultSet';
 
     sub has_more_than_one_cds {
@@ -243,10 +277,6 @@ Change C<lib/MusicBase/Schema/ResultSet/Artist.pm>
 
 That completes creating your basic L<DBIx::Class> structure.
 
-=head1 Install your dependencies
-
-    dzil listdeps | cpanm
-
 =head1 Basic Test Case
 
 You should create a basic test case just to make sure you didn't make any
@@ -256,6 +286,8 @@ serious errors or forgot something while creating the files.
     touch t/use.t
 
 Change C<t/use.t> as follows
+
+    #!/usr/bin/env perl
 
     use Test::Most tests=>1;
 
@@ -270,7 +302,8 @@ Then run your test case.
 You should expect the one test to pass.  If it fails, please review your
 classes since you probably introduced a typo or syntax error.
 
-If your tests pass, that' great you've completed the first part of the tutorial!
+If your tests pass, that's great you've completed the first part of the
+tutorial!
 
 =head1 SUMMARY
 

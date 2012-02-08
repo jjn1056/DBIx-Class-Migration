@@ -14,9 +14,6 @@ point you'll need a more production oriented database.  By the end of this
 tutorial you should have the basics of adding support for MySQL to your 
 migrations.  We'll add MySQL migrations for version 3.
 
-If you need assisting getting MySQL installed, I recommend stopping now and
-taking a look at L<MySQL::Sandbox>.
-
 =head1 Add Version 3 Migrations for Mysql
 
 Since we build out migrations from the current Schema, you can only prepare
@@ -72,33 +69,93 @@ DDL to deploy our MySQL database.
 
 So far you've only done C<install> and C<upgrade> to the default SQlite database
 (under C<share>).  If you want to run those commands against MySQL, obviously 
-you'll need a running MySQL instance.  In this tutorial I won't review how to
-install and setup MySQL, although if you need some help with this I'd recommend
-L<MySQL::Sandbox>.  For the remainder of this section I will assume you have a
-running MySQL instance like the following:
+you'll need a running MySQL instance.  We can build a MySQL sandbox for you in
+the C<target_dir>, similarly to how we did for Sqlite.  To do this you need to
+set the C<sandbox_type> flag.  Also, you should add L<Test::mysqld> to your
+C<dist.ini> file, and get that installed (you'll need to install MySQL on your
+development computer, but it doesn't need to be running, just 'findable' in
+your C<$PATH>:
 
-    dbic-migration -Ilib status \
-      --dsn="DBI:mysql:database=test;host=127.0.0.1;port=5142" \
-      --user msandbox \
-      --password msandbox
+C<dist.ini>
 
-Which is pretty much the default if you use L<MySQL::Sandbox>.  You'd expect
-to see:
+    name    = DBIx-Class-Migration
+    author  = John Napiorkowski <jjnapiork@cpan.org>
+    license = Perl_5
+    copyright_holder = John Napiorkowski
+    copyright_year   = 2012
+    abstract = Tutorial Application for DBIx-Class-Migration
 
+    version = 0.001
+
+    [@Basic]
+    [Prereqs]
+    DBIx::Class = 0
+    DBIx::Class::Migration = 0
+    DBD::mysql = 0
+    Test::mysqld = 0
+
+
+    [Prereqs / TestRequires]
+    Test::Most = 0
+    Test::DBIx::Class = 0
+
+and install:
+
+     dzil listdeps | cpanm
+
+If you have any trouble, you'll need to resolve that before moving on with the
+tutorial.  In my experience, L<DBD::mysql> installs easily if you make sure
+C<$PATH> can find the Mysql C<bin> area (C<mysql_config>, etc).
+
+Assuming you get MySQL properly installed, lets build a sandbox:
+
+    $dbic-migration -Ilib -Tmysql status
     Schema is 3
     Database is not currently installed
 
+Just like with the C<schema_class> flag, you can set an %ENV variable to set
+your sandbox type for the shell:
+
+    ## example
+    export DBIC_MIGRATION_SANDBOX_TYPE=mysql
+
+We won't do this, since we'd like to continue controlling if we are using the
+default sqlite sandbox or our new mysql sandbox.
+
+Once you run that command you'll see a new directory in your C<target_dir>,
+which in this tutorial is under C<share>:
+
+    /share
+        /fixtures
+        /migrations
+        /musicbase-schema
+        musicbase-schema.db
+
+that new C<share/musicbase-schema> directory contains the actual mysql sandbox
+files.  You should probably set your repository to ignore this directory, since
+it is unlikely you want those shared with other developers.
+
+BTW, if you peek inside C<share/musicbase-schema/bin> you'll spot a couple of
+helper scripts:
+
+    /bin
+      start
+      stop
+      use
+
+C<start> and C<stop> starts and stops the sandbox (by default we stop the sandbox
+when your migration command exits).  You'll use this if you want to C<use> the 
+sandbox (opens a mysql shell) or if you want to let you application use the sandbox
+(for example later on if you are using L<Catalyst> you'd want to start the sandbox
+so that you can expose to to your web application).
+
+Please kind in mind that currently you can't run migration commands on an already
+running database.
+
 You'd install the database and fixtures like so:
 
-    dbic-migration -Ilib install \
-      --dsn="DBI:mysql:database=test;host=127.0.0.1;port=5142" \
-      --user msandbox \
-      --password msandbox
-
-    dbic-migration -Ilib populate \
-      --dsn="DBI:mysql:database=test;host=127.0.0.1;port=5142" \
-      --user msandbox \
-      --password msandbox
+    dbic-migration -Ilib -Tmysql install
+    dbic-migration -Ilib -Tmysql populate
 
 That would give you:
 
@@ -107,27 +164,9 @@ That would give you:
 
 Now you database is ready to use!
 
-    dbic-migration -Ilib status \
-      --dsn="DBI:mysql:database=test;host=127.0.0.1;port=5142" \
-      --user msandbox \
-      --password msandbox
-
+    $ dbic-migration -Ilib -Tmysql status
     Schema is 3
     Database is 3
-
-You just like when you used DBIC_MIGRATION_SCHEMA_CLASS to make it less verbose
-when working on a given schema, you can set the following C<%ENV>:
-
-    DBIC_MIGRATION_DSN
-    DBIC_MIGRATION_USER
-    DBIC_MIGRATION_PASSWORD
-
-Or any mix of the above.  Just be careful you know what %ENV you are pointing
-to before installing a database (don't pull a github and blow away your
-production :) ).
-
-Another option to streamline using migrations againsts various databases will
-nbe explored in the next section!
 
 =head1 SUMMARY
 

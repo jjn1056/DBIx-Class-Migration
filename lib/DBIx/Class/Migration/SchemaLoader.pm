@@ -1,5 +1,4 @@
-package  ## Hide from PAUSE
-  DBIx::Class::Migration::SchemaLoader;
+package  DBIx::Class::Migration::SchemaLoader;
 
 use Moose;
 use DBIx::Class::Schema::Loader;
@@ -39,3 +38,43 @@ sub generate_dump {
 }
 
 1;
+
+=head1 NAME
+
+DBIx::Class::Migration::SchemaLoader - Schema Loader Factory
+
+=head1 SYNOPSIS
+
+    For internal use only
+
+=head1 DESCRIPTION
+
+Often when running migrations we need to auto generate a L<DBIx::Class::Schema>
+directly from the existing database.  This class performs that function.
+
+There are no end user bits here, but we do expose an C<%ENV> variable which
+turns on L<DBIx::Class::Schema::Loader> debugging mode.  This can be useful
+since the generated schema will get dumped to STDOUT, helping you sort out
+any confusion about your classes and relationships.
+
+    export DBIC_MIGRATION_DEBUG=1
+
+Or run it one time:
+
+    DBIC_MIGRATION_DEBUG=1 dbic-migration [command]
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Schema::Loader>.
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+

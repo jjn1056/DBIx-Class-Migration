@@ -14,7 +14,7 @@ L<DBIx::Class::Migration>.  Although reviewing those docs would be helpful, I wo
 not consider it required for the tutorial.  However, I would expect you are
 familiar with L<DBIx::Class> and that you are aware of the dependent projects
 L<DBIx::Class::DeploymentHandler> and L<DBIx::Class::Fixtures>.  Having some
-knowledge of L<SQLT> would also be valuable.
+knowledge of L<SQL::Translator> would also be valuable.
 
 I also assume you are familiar with the general problems of creating database
 migrations, such as generating DDL diff files, etc.  This of course assumes you
@@ -26,7 +26,7 @@ first, and review its documentation.
 
 This tutorial identifies the problem we are trying to solve, walks though
 increasingly complicated examples using these tools, and offers some advice
-as to the limit of the tools values.  We will also give some examples of how
+as to the limit of the tool's value.  We will also give some examples of how
 to make your migrations play well with common web application development
 frameworks such as L<Catalyst> and how to use them with testing tools such
 as L<Test::DBIx::Class>
@@ -36,7 +36,7 @@ prepare and install migrations, create custom deployment steps (and modify
 the stubs created during the prepare phase) as well as perform standard
 development workflows for testing and roundtripping a database.
 
-All code mentioned can be found the C</examples/tutorial> directory
+All code mentioned can be found the C</examples/MusicBase> directory
 contained in the distribution installation files.  Additionally, we will use
 as a starting point a database as similar as possible to the one described
 in L<DBIx::Class::Manual::Example> so that if you are still new to
@@ -50,16 +50,18 @@ ability manage database versions (how your database changes over time).  You
 need to be able to upgrade seemlessly from one version to another.  You need
 to be able to manage database and system data, and how they change over time.
 Additionally you may need to be able to create subsets of data for testing,
-and the ability to reset the databse to a given state at any time.
+and the ability to reset the database to a given state at any time.
 
 There's a lot of frameworks that claim to make this easy.  Generally this is
 partially achieve by limiting the scope of changes allowed, and reducing your
 ability to take maximum advantage of your database features.  I'm not going to
-make that claim, because L<DBIx::Class> is an ORM that maximized your ability
-to be flexible and model databases using best practices.  What I will try to
-claim is that we can make solving the problem of database change possible,
-standard, and managed.  This should reduce your stress, enable you to be more
-productive and not fear the need to change your tables.
+make that claim, since L<DBIx::Class::Migration> is part of the L<DBIx::Class>
+software ecosystem, and since that is an ORM that maximized your ability
+to be flexible and model databases using best practices, we desire to follow
+that ethos.  What I will try to claim is that we can make solving the problem
+of database change possible, standard, and managed.  This should reduce your
+stress, enable you to be more productive and not fear the need to change your
+tables.
 
 L<DBIx::Class::Migration> is build on top of L<DBIx::Class::DeploymentHander>,
 which is a tool to create deployment files of full databases and database diffs
@@ -97,24 +99,24 @@ from a database.  Is linked to a version and produces L</fixtures>
 Subsets of information from your database, linked to a version, in the form of
 individual files.
 
-=head2 deployment
+=head2 migration
 
 SQL and Perl files associated with a given version, or an upgrade or downgrade
 between versions.
 
-=head2 migration
+=head2 deployment
 
 fixture configurations, fixtures and deployment files for a given version, and
 how to upgrade or downgrade to that version.
 
-=head1 NEXT STEPS
+=head1 NEXT STEPS: TABLE OF CONTENTS
 
 Here's the next steps in the tutorial.  It goes without saying that you should
 have a good working installation of Perl, and a dedicated L<local::lib>.  Please
 see L<App::perlbrew> for help setting up such a perl installation.
 
 I also assume you have SQLite installed and parts of the advanced tutorial will
-assume you have MySQL availabe.  Please see L<MySQL::Sandbox> for some help in
+assume you have MySQL available.  Please see L<MySQL::Sandbox> for some help in
 getting a development instance of MySQL running.
 
 =head2 STEP 1: Setup Project Files
@@ -146,7 +148,7 @@ of a migration before you are ready to set it in stone.
 
 =head2 STEP 6: Migrations for Additional Databases
 
-L<DBIx::Class::Migration::Tutorial::AddMySQL> So far we've been building
+L<DBIx::Class::Migration::Tutorial::AddMySQL>. So far we've been building
 migrations for just one database: SQLite.  Let's build migrations for MySQL
 
 

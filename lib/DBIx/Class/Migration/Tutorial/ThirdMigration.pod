@@ -37,7 +37,11 @@ Artist and Cd so that we can express the idea of 'many to many'.
 And then open that in your text editor, enter the following code:
 
     package MusicBase::Schema::Result::ArtistCd;
-    use base qw/DBIx::Class::Core/;
+
+    use strict;
+    use warnings;
+
+    use base 'DBIx::Class::Core';
 
     __PACKAGE__->table('artist_cd');
     __PACKAGE__->add_columns(
@@ -60,16 +64,20 @@ And then open that in your text editor, enter the following code:
 
     1;
 
-So if you are familiar with L<DBIx::Class> you'll already know this is the
-classic pattern.  We have a bridge table where each row points to one Artist
-and on CD row, and no duplications are allowed (the Same Artist can't be linked
-to the same CD twice, for example).
+So if you are familiar with L<DBIx::Class> you'll already know this is a normal 
+pattern.  We have a bridge table where each row points to one Artist and on CD
+row, and no duplications are allowed (the Same Artist can't be linked to the 
+same CD twice, for example).
 
 Now we need to change the Artist and CD Result classes.  Open your editor on
 C<lib/MusicBase/Schema/Result/Artist.pm>:
 
     package MusicBase::Schema::Result::Artist;
-    use base qw/DBIx::Class::Core/;
+
+    use strict;
+    use warnings;
+
+    use base 'DBIx::Class::Core';
 
     __PACKAGE__->table('artist');
 
@@ -108,7 +116,11 @@ Now we need to change the Cd.  Open C<lib/MusicBase/Schema/Result/Cd.pm>
 and make the following change:
 
     package MusicBase::Schema::Result::Cd;
-    use base qw/DBIx::Class::Core/;
+
+    use strict;
+    use warnings;
+
+    use base 'DBIx::Class::Core';
 
     __PACKAGE__->table('cd');
     __PACKAGE__->add_columns(
@@ -137,14 +149,20 @@ and make the following change:
 Changes here are a bit deeper.  First we removed the C<artist_fk> column since
 we no longer constrain each Cd to a single Artist.  Then we removed the 
 relationship directly to Artist (since we no longer have that) and replaced it
-with a new relationship C<artist_cd_rs> which connects us to the ArtistCD
+with a new relationship C<artist_cd_rs> which connects us to the C<ArtistCD>
 bridge table.  Last, we added another pseudo relationship so that you can
 easily cross the bridge table and get all the Artists related to a given Cd.
+
+If any of this is confusing to you, you should stop now and review the
+L<DBIx::Class> manual, covering relationships.
 
 As always, you should remember to up the C<$VERSION> in your
 C<MusicBase::Schema>:
 
     package MusicBase::Schema;
+
+    use strict;
+    use warnings;
     use base 'DBIx::Class::Schema';
 
     our $VERSION = 3;
@@ -286,11 +304,16 @@ C<001-auto.sql>, having to do with creating the new table and indexes over:
 
     COMMIT;
 
-Now we need to populate that with existing data:
+Feel free to add additional SQL style comments, in order to help anyone down
+the road understand what you are doing! 
+
+Now we need to populate that with existing data.  We will make a separate
+upgrade step for that:
 
     touch share/migrations/SQLite/upgrade/2-3/002-populate_artist_cd.sql
 
-Here's the SQL to enter:
+Open C<share/migrations/SQLite/upgrade/2-3/002-populate_artist_cd.sql> and
+here's the SQL to enter:
 
     ;
     BEGIN;
@@ -339,7 +362,7 @@ C<001-auto.sql>:
 Again, since SQLite doesn't have any DDL alter to remove FK's we need to
 roundtrip the data via a temporary table.  If you had a million+ rows you
 might worry about this approach :)  Again, I will accept this DDL change for
-the scope of our limited requirement
+the scope of our limited requirement.
 
 So, that's all the changes.  Like last time, remember to remove the suggested
 upgrade script:
@@ -360,14 +383,16 @@ Next step will be to perform the upgrade.
 SO the database is in the expected state.  If you've been messing with the data
 you might which to 'clean' things up, with something like:
 
+    ## optional step to 'clean up' database
     $ dbic-migration -Ilib delete_table_rows
     $ dbic-migration -Ilib populate
-    Reading configurations from /Users/johnn/Desktop/MusicBase/share/fixtures/2/conf
+    Reading configurations from ...MusicBase/share/fixtures/2/conf
     Restored set all_tables to database
 
-As you might notice above, even though the schema is version two, we installed
+As you might notice above, even though the schema is version 2, we installed
 fixtures from version one.  The tool will always try to match fixture populates
-to the current database version.
+to the current database version.  And remember, if you don't tell C<populate>
+which fixture set to restore, it will always use the C<all_tables> set.
 
 Let's go ahead with the upgrade:
 
@@ -412,13 +437,12 @@ This really isn't a problem at all.  Its actually very easy to step back and
 redo your version.  You could handle this in two ways.  Either you've been very
 good and making sure you made good downgrades (we didn't :) ) or you can force
 install the database to an arbitrary older version and start again with the
-C<prepare> command.  We will take this second option for this tutorial, and I
-will cover downgrades as a special example later.
+C<prepare> command.  We will take this second option for this tutorial.
 
 So for the purposes of our tutorial, lets say that suddenly we realize our
 design for the C<country> table is terrible wrong.  We've been putting real
 country names in the table, and in English, but now we want to internationalize
-our site.  That means we should avoid english words in our seed data, and
+our site.  That means we should avoid English words in our seed data, and
 instead use normalized codes that our UI layer can use and leverage existing
 internationalization and localization tools against.  So we need to change that
 country table, and do so in a way to make sure we keep our existing country
@@ -428,7 +452,7 @@ get to it!
 
 Changes to be made:
 
-    1 - Change Country table to use codes not english names
+    1 - Change Country table to use codes not English names
     2 - Update the table data to match above
     3 - Add new countries to list
     4 - Add one additional artist
@@ -436,7 +460,10 @@ Changes to be made:
 Let's start by altering C<lib/MusicBase/Schema/Result/Country.pm>
 
     package MusicBase::Schema::Result::Country;
-    use base qw/DBIx::Class::Core/;
+
+    use strict;
+    use warnings;
+    use base 'DBIx::Class::Core';
 
     __PACKAGE__->table('country');
     __PACKAGE__->add_columns(
@@ -552,6 +579,7 @@ And open that new file in your editor, add the following:
     INSERT INTO country_temp_alter SELECT country_id, 'mex' FROM country where name='Mexico';
     -- End Match
 
+    ;
     DROP TABLE country;
 
     CREATE TABLE country (
@@ -573,6 +601,8 @@ So I basically just took that change and swapped:
 
 with the three separate INSERTs so I could properly map the English country
 names to the new 3 character country codes.  Otherwise I've kept the rest.
+This again is a good example of how your diff should both change the database
+and alter your data in a consistent manner.
 
 Don't forget to delete the C<001-auto.sql> file:
 
@@ -615,7 +645,7 @@ your editor and add the following:
 
 You might notice that the relationship names in C<006-new_artist.pl> don't
 exactly match those in our schema.  As I mentioned before, this is because the
-schema that is passed as the first (and only) argument to your anonymous 
+C<$schema> that is passed as the first (and only) argument to your anonymous 
 subroutinues is NOT the schema that comes from L<MusicBase::Schema> but instead
 it is generated directly from the database using L<DBIx::Class::Schema::Loader>
 This is because your schema is going to change a lot, we can't rely on it always
@@ -624,10 +654,15 @@ being backwardly compatible with every version of the database.
 If you every get confused about what the auto generated schema looks like, you
 can always use the C<make_schema> command:
 
+    ## example command, don't need to run as part of the tutorial
     dbic-migration -Ilib make_schema
 
 And that will dump the current database version generated schema to
-C<share/dumped_db>
+C<share/dumped_db>.  You can also set a debugging %ENV variable which will
+dump to STDOUT the generated classes:
+
+    ## example command, don't need to run as part of the tutorial
+    export DBIC_MIGRATION_DEBUG=1
 
 Everything is ready to go.  Lets run the upgrade:
 
@@ -650,7 +685,7 @@ As before, let's peek inside the database for a quick sanity check:
     4|bel
     5|deu
     6|fra
-    sqlite> .tables
+    sqlite> .q
 
 Of course, we really should have some test cases!  But first, don't forget to
 dump your fixtures:
@@ -665,6 +700,8 @@ check your existing ones.  First, add a test for the 2 to 3 migration:
     touch t/upgrade-2to3.t
 
 Then open that in you text editor, add the following:
+
+    #!/usr/bin/env perl
 
     use Test::Most;
     use DBIx::Class::Migration::Population;
@@ -721,6 +758,10 @@ you didn't bother to use an ORM!)
 Open C<lib/MusicBase/Schema/ResultSet/Artist.pm> and make the following change:
 
     package MusicBase::Schema::ResultSet::Artist;
+
+    use strict;
+    use warnings;
+
     use base 'DBIx::Class::ResultSet';
 
     sub has_more_than_one_cds {

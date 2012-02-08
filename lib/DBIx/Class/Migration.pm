@@ -204,17 +204,15 @@ sub _copy_from_to {
 
 sub prepare_up_down_grades {
   my ($self, $previous, $schema_version) = @_;
-  if($self->dbic_dh->version_storage_is_installed) {
-    if($self->dbic_dh->database_version < $schema_version) {
-      $self->prepare_upgrade;
-      $self->prepare_downgrade;
-    } else {
+  $self->dbic_dh->version_storage_is_installed
+    || die "No Database to create up or downgrades from!";
+
+  if($self->dbic_dh->database_version < $schema_version) {
+    $self->prepare_upgrade;
+    $self->prepare_downgrade;
+  } else {
       print "Your Database version must be lower than than your schema version\n";
       print "in order to prepare upgrades / downgrades\n";
-    }
-  } else {
-    print "There is not current database deployed, so I can't prepare upgrades\n";
-    print "or downgrades\n";
   }
 }
 
@@ -224,19 +222,19 @@ sub prepare {
     || die "Your Schema has no version!";
 
   $self->prepare_install;
-
   my $fixture_conf_dir = _prepare_fixture_conf_dir(
     $self->target_dir, $schema_version);
 
   my @sources = _filter_private_sources($self->schema->sources);
   _create_all_fixture_set( catfile($fixture_conf_dir,'all_tables.json'), @sources);
-
   if(my $previous = _has_previous_version($schema_version)) {
     $self->prepare_up_down_grades($previous, $schema_version);
     my $previous_fixtures_conf = _prepare_fixture_conf_dir(
       $self->target_dir, $previous);
-
     _copy_from_to($previous_fixtures_conf, $fixture_conf_dir);
+  } else {
+    print "There is not current database deployed, so I can't prepare upgrades\n";
+    print "or downgrades\n";
   }
 }
 
@@ -376,7 +374,8 @@ DBIx::Class::Migration - Make database migrations possible
     use DBIx::Class::Migration;
 
     my $migration = DBIx::Class::Migration->new(
-      schema_class => 'MyApp::Schema');
+      schema_class => 'MyApp::Schema',
+      schema_args => \@connect_opts);
 
     $migration->prepare;
     $migration->install;
