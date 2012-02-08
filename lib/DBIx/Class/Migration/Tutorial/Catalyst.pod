@@ -14,7 +14,7 @@ with web development and for testing.
 This is not a L<Catalyst> tutorial.  You should be familar with the L<Catalyst>
 web development framework, and have read the L<Catalyst::Manual>.  Although
 we will build a minimal L<Catalyst> application we are focused on database
-integration as well as explore some strategies for testing and would not
+integration as well as exploring some strategies for testing and would not
 consider this application to represent overall best practices.
 
 Reviewing the documentation for L<Catalyst::Test> would be valuable, as well as
@@ -29,7 +29,7 @@ Update you C<dist.ini> file:
     author  = John Napiorkowski <jjnapiork@cpan.org>
     license = Perl_5
     copyright_holder = John Napiorkowski
-    copyright_year   = 2011
+    copyright_year   = 2012
     abstract = Tutorial Application for DBIx-Class-Migration
 
     version = 0.001
@@ -45,7 +45,7 @@ Update you C<dist.ini> file:
     Catalyst::Action::RenderView = 0
     Catalyst::View::TT = 0
     Plack = 0
-`
+
     [Prereqs / TestRequires]
     Test::DBIx::Class = 0
     Test::Most = 0
@@ -78,7 +78,9 @@ Now open C<lib/MusicBase/Web.pm> and change it to look like this:
     package MusicBase::Web;
 
     use Moose;
-    use Catalyst;
+    use Catalyst qw/
+      ConfigLoader
+    /;
 
     extends 'Catalyst';
 
@@ -90,7 +92,7 @@ Now open C<lib/MusicBase/Web.pm> and change it to look like this:
       },
     );
 
-    __PACKAGE__->setup(qw/ConfigLoader/);
+    __PACKAGE__->setup;
     __PACKAGE__->meta->make_immutable;
 
 This is a pretty plain and straight Catalyst application class.  The only thing
@@ -153,7 +155,16 @@ the extra flexibility.
 
 I'm setting a few things here, but for our discussion the most important one is
 the C<Model::Schema> section, where I point our model to the SQLite database
-we've been using all along.
+we've been using all along.  If you instead wanted to use the MySQL sandbox,
+you can look at the C<connect> info in C<share/musicbase-schema/bin/use> to
+help you develop that.  For our example, the Mysql sandbox would look like
+this:
+
+    connect_info => {
+      dsn => 'DBI:mysql:test;mysql_socket=__path_to(share,musicbase-schema,tmp,mysql.sock)__',
+      user => 'root',
+      password => '',
+    }
 
 Let's setup a trivial controller that pulls a few rows out of the database
 and just outputs this to a web page.
@@ -176,6 +187,8 @@ and just outputs this to a web page.
     }
 
     sub end : ActionClass('RenderView') {}
+
+    __PACKAGE__->meta->make_immutable;
 
 Here we want to just get all the Artists and send them to our View.  Since in
 MVC it is considered correct to inform a View of a Model in a Read Only manner
@@ -252,7 +265,7 @@ can cooperate: Running migrations and Running Tests.
 Although you can just use L<dbic-migration> directly with you L<Catalyst>
 application, since L<Catalyst> already does a great job of managing
 configuration, let's learn how to subclass L<DBIx::Class::Migration::Script>
-and customize it for your application.  That way you don't need to set ENV
+and customize it for your application.  That way you don't need to set C<ENV>
 or pass option flags to the C<dbic-migration> commandline tool (and easily
 make a mistake and upgrade the wrong database :) ).
 
@@ -277,7 +290,7 @@ change it to look like this:
 
 Basically you've made a subclass of L<DBIx::Class::Migration::Script> but you
 are setting the C<schema> to always be whatever L<Catalyst> thinks it is.  Now
-you can use L<Catalyst>s build in configuration management to decide what
+you can use L<Catalyst>s built in configuration management to decide what
 database you are running migrations on.  For example you can run this straight
 out (remember to remove the ENV var DBIC_MIGRATION_SCHEMA_CLASS, if you have it
 set now for running the tutorial)
@@ -297,7 +310,10 @@ example:
 
 Would grab the connected schema for your qa enviroment specific configuration
 and give you the status on that (assuming you can ping it from your logged
-in terminal).
+in terminal).  This integration is very useful since you can use whatever your
+L<Catalyst> application thinks is the current database as the target of the
+migration.  You can use other bits of configuration info as well, such as a
+custom C<target_dir> etc.
 
 B<Alternative>: If subclasing L<DBIx::Class::Migration::Script> seems like an
 overly heavy handed solution, or running the *.pm file like a script just
@@ -320,6 +336,9 @@ And then use it like:
 
     perl -Ilib script/my-dbic-migration status
 
+B<NOTE>: In this case you need to invoke the perl interp with C<-Ilib> so that
+we can find C<MusicBase::Web>
+
 If you have a bunch of files in C</script> or if you need to be able to run
 your custom migration tool after installation, this could be a good option.
 
@@ -327,7 +346,7 @@ your custom migration tool after installation, this could be a good option.
 
 We've seen how using tools like L<Test::DBIx::Class> together with L<DBIx::Class::Migration>
 can really simplify your unit level testing effort.  Using them you don't
-need to spend a lot of time setting up dedicated testing databases and 
+need to spend a lot of time setting up dedicated testing databases and
 managing configuration sets (that need to change over time).  However if you
 want to write tests that check your actual web pages (for example you want to
 test things like if a page shows the correct results and if web forms work)
@@ -361,15 +380,16 @@ Then open C<share/etc/musicbase_web_test.pl> and add the following:
 So what is going to happen here is if you start the application pointing to
 this configuration (with CATALYST_CONFIG_LOCAL_SUFFIX=test) when the application
 runs it will automatically create a clean new database and populate it with
-the C<all_tables> fixture set.
+the C<all_tables> fixture set.  Just for fun, we will create a test instance
+of Mysql.  Please note this will be a temporary sandbox, and will be deleted
+when your L<Catalyst> application exits.  It is not the same as the MySQL
+sandbox we created in C<share/musicbase-schema/*>.
 
-Another thing a bit different is that we are using the 'Testmysqld' trait which
-means that we will build a testing MySQL database (good idea to test on the
-server you are eventually deploying to).  Additionally, and just to show you
-some of the features, we will create two database 'slave' replicants using
-MySQL native replication.  If you plan to use replication in production, as
-many of you do, I highly recommend running tests in a replicated setup, to make
-sure your code is replication safe.
+Additionally, and just to show yousome of the features of L<Test::DBIx::Class>
+we will create two database 'slave' replicants using MySQL native replication.
+If you plan to use replication in production, as many of you do, I highly
+recommend running tests in a replicated setup, to make sure your code is
+replication safe.
 
 Maybe its evil to abuse configuration files this way, but it works for me :)
 Your thoughts or examples of better ways welcomed!  Sometimes I even do the
@@ -381,6 +401,8 @@ Let's write a test case:
     touch t/web.t
 
 And open C<t/web.t> in your editor:
+
+    #!/usr/bin/env perl
 
     use Test::Most;
     use Catalyst::Test 'MusicBase::Web';
@@ -403,6 +425,9 @@ was one of the artist, so we'd expect to find him in the <$content> from the
 Root controller (since that's just a list of all the Artist names).  So you'd
 probably want a bit more testing on this page, but this should give you the
 idea.
+
+Since the above test builds and breaks down a full MySQL sandbox, it might not
+run instantly, just FYI.
 
 =head1 SUMMARY
 
