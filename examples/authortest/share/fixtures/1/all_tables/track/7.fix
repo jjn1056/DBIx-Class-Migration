@@ -1,5 +1,0 @@
-$HASH1 = {
-           cd_fk    => 2,
-           title    => 'Dirty Diana',
-           track_id => 7
-         };

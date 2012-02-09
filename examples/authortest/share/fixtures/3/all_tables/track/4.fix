@@ -1,5 +1,0 @@
-$HASH1 = {
-           cd_fk    => 2,
-           title    => 'Leave Me Alone',
-           track_id => 4
-         };
