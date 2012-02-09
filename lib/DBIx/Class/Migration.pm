@@ -426,8 +426,9 @@ L<DBIx::Class::Migration::Script> are built.  In the future hopefully there
 will be other interfaces for particular needs, such as testing.
 
 Please see L<DBIx::Class::Migration::Tutorial> for more approachable
-documentation.  The remainder of this POD is API level documentation on the
-various internals.
+documentation.  If you want to read a high level feature overview, see
+L<DBIx::Class::Migration::Features>.  The remainder of this POD is API level
+documentation on the various internals.
 
 =head1 ATTRIBUTES
 
