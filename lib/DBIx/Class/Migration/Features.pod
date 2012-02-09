@@ -17,6 +17,9 @@ Standard workflows for creating database versions, updates and downgrades
 between versions, management of seed data as well as testing and development
 fixtures are offered.
 
+You can start prototyping with an easy Sqlite database and move up to Mysql
+or Postgresql with a single switch.
+
 =head1 Database Installation
 
 Given an application where its database has evolved over many versions, you
@@ -42,9 +45,18 @@ Data can be properly converted between database versions
 Integrates with testing tools like L<Test::DBIx::Class> to make testing your
 database logic simple.
 
+=head1 Easy Creation of Developer level Database sandboxes
+
+Automatically create a developer controlled, local database for rapid prototyping
+and easy administration.  Supports Sqlite, MySQL and Postgresql sandboxes.
+
 =head1 Framework Integration
 
 Plays nice with popular web application development frameworks like L<Catalyst>
+
+=head1 Straightforward subclassing
+
+Core code designed to be easily subclasses for local customizations
 
 =head1 Tutorial and Documentation
 
