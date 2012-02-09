@@ -59,8 +59,9 @@ top of [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Cla
 will be other interfaces for particular needs, such as testing.
 
 Please see [DBIx::Class::Migration::Tutorial](http://search.cpan.org/perldoc?DBIx::Class::Migration::Tutorial) for more approachable
-documentation.  The remainder of this POD is API level documentation on the
-various internals.
+documentation.  If you want to read a high level feature overview, see
+[DBIx::Class::Migration::Features](http://search.cpan.org/perldoc?DBIx::Class::Migration::Features).  The remainder of this POD is API level
+documentation on the various internals.
 
 # ATTRIBUTES
 
