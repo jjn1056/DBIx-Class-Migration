@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 (require DBIx::Class::Migration::Script)
-  ->new_with_options->run;
+  ->run_with_options;
 
 =head1 NAME
 
