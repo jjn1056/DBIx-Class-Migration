@@ -704,16 +704,15 @@ Then open that in you text editor, add the following:
     #!/usr/bin/env perl
 
     use Test::Most;
-    use DBIx::Class::Migration::Population;
     use Test::DBIx::Class
       -schema_class=>'MusicBase::Schema',
+      -fixture_class => '::Population',
       qw(Artist Country);
 
     plan skip_all => 'not correct schema version'
       if Schema->schema_version != 3;
 
-    (my $population = DBIx::Class::Migration::Population->new(
-      schema=>Schema()))->populate('all_tables');
+    fixtures_ok ['all_tables'];
 
     is Country->count, 6,
       'Correct Number of Tests';

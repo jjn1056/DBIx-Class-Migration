@@ -12,7 +12,8 @@ Let's take an interlude from creating migrations and turn to writing test
 cases for your database.
 
 It would help if you are familiar with L<Test::Most> and L<Test::DBIx::Class>
-and with general Perl testing procedures
+and with general Perl testing procedures.  You could also benefit from reviewing
+our fixtures hook class L<Test::DBIx::Class::FixtureCommand::Population>.
 
 =head1 Test your 1-2 Upgrade
 
@@ -27,16 +28,15 @@ Then open the new files in the editor of choice and enter the following code:
     #!/usr/bin/env perl
 
     use Test::Most;
-    use DBIx::Class::Migration::Population;
     use Test::DBIx::Class
       -schema_class=>'MusicBase::Schema',
+      -fixture_class => '::Population',
       qw(Artist Country);
 
     plan skip_all => 'not correct schema version'
       if Schema->schema_version != 2;
 
-    (my $population = DBIx::Class::Migration::Population->new(
-      schema=>Schema()))->populate('all_tables');
+    fixtures_ok ['all_tables'];
 
     is Country->count, 3, 'Correct Number of Countries';
     ok Artist->first->has_country, 'Artist has a country';
@@ -46,10 +46,13 @@ Then open the new files in the editor of choice and enter the following code:
 This creates a basic test case that only runs for version 2 of the schema (this
 is just testing that the version 2 update was correct after all).  It uses
 L<Test::DBIx::Class> to automatically deploy a temporary test database (by
-default it creates a C<SQlite> in memory database) which reflects the current 
+default it creates a C<SQlite> in-memory database) which reflects the current 
 schema and then we populate the C<all_tables> fixtures using the utility class
 L<DBIx::Class::Migration::Population> which is part of the L<DBIx::Class::Migration>
-distribution.  Before we can run the test case, we need to update our C<dist.ini>
+distribution.  (In this case, since we are using L<Test::DBIx::Class>, we are
+using the fixture hook L<Test::DBIx::Class::FixtureCommand::Population>).
+
+Before we can run the test case, we need to update our C<dist.ini>
 file.  Open this is a text editor and change it to look like this:
 
     name    = DBIx-Class-Migration
@@ -132,13 +135,12 @@ Then open C<t/more-than-1.t> in your text editor and add this code:
     #!/usr/bin/env perl
 
     use Test::Most;
-    use DBIx::Class::Migration::Population;
     use Test::DBIx::Class
       -schema_class=>'MusicBase::Schema',
+      -fixture_class => '::Population',
       qw(Artist);
 
-    (my $population = DBIx::Class::Migration::Population->new(
-      schema=>Schema()))->populate('all_tables');
+    fixtures_ok ['all_tables'];
 
     ok my $more_than_one_rs =  Artist->has_more_than_one_cds,
      'Got some artists';

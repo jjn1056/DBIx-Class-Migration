@@ -324,8 +324,6 @@ For example, something in C<script/my-dbic-migration>
 
     #!/usr/bin/env perl
 
-    use strict;
-    use warnings;
     use MusicBase::Web;
     use DBIx::Class::Migration::Script;
 
