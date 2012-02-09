@@ -100,14 +100,17 @@ USE
 
 sub make_sandbox {
   my $self = shift;
+  my $base_dir = $self->_generate_sandbox_dir;
 
-  $self->_write_start;
-  $self->_write_stop;
-  $self->_write_use;
-
-  my $port = $self->test_postgresql->port;
-  return "DBI:Pg:dbname=template1;host=127.0.0.1;port=$port",'postgres','';
-
+  if($self->test_postgresql) {
+    $self->_write_start;
+    $self->_write_stop;
+    $self->_write_use;
+    my $port = $self->test_postgresql->port;
+    return "DBI:Pg:dbname=template1;host=127.0.0.1;port=$port",'postgres','';
+  } else {
+    die "can't start a postgresql sandbox";
+  }
 }
 
 ## I have to stop the database manually, not sure why, something borks 

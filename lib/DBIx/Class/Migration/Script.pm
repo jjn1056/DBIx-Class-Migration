@@ -12,7 +12,17 @@ sub ENV_PREFIX {
     || 'DBIC_MIGRATION';
 }
 
-sub SANDBOX_TYPES { qw(sqlite mysql postgresql) }
+use constant {
+  SANDBOX_SQLITE => 'sqlite',
+  SANDBOX_MYSQL => 'mysql',
+  SANDBOX_POSTGRESQL => 'postgresql',
+};
+
+sub SANDBOX_TYPES {
+  SANDBOX_SQLITE,
+  SANDBOX_MYSQL,
+  SANDBOX_POSTGRESQL
+}
 
 has includes => (
   traits => ['Getopt'],
@@ -49,8 +59,7 @@ has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef',
 
 has sandbox_type =>  (traits => [ 'Getopt', 'ENV' ], is => 'ro',
   predicate=>'has_sandbox_type', isa=>enum( +[SANDBOX_TYPES] ),
-  default=>'sqlite', cmd_aliases => 'T', env_prefix=>ENV_PREFIX,);
-
+  default=>'sqlite', cmd_aliases => 'T', env_prefix=>ENV_PREFIX);
 
 has fixture_sets => (
   traits => [ 'Getopt' ],
@@ -108,9 +117,9 @@ sub _build_migration {
   if($self->has_sandbox_type) {
     my $base = 'DBIx::Class::Migration::';
     for my $type ($self->sandbox_type) {
-      $args{db_sandbox_class} = $base . 'SqliteSandbox' if $type eq 'sqlite';
-      $args{db_sandbox_class} = $base . 'MySQLSandbox' if $type eq 'mysql';
-      $args{db_sandbox_class} = $base . 'PostgresqlSandbox' if $type eq 'postgresql';
+      $args{db_sandbox_class} = $base . 'SqliteSandbox' if $type eq SANDBOX_SQLITE;
+      $args{db_sandbox_class} = $base . 'MySQLSandbox' if $type eq SANDBOX_MYSQL;
+      $args{db_sandbox_class} = $base . 'PostgresqlSandbox' if $type eq SANDBOX_POSTGRESQL;
     }
   }
 
@@ -609,6 +618,9 @@ sandbox types.
 The default sqlite sandbox is documented at L<DBIx::Class::Migration::SQLiteSandbox>
 although this single file database is pretty straightforward to use.
 
+If you are declaring the value in a subclass, you can use the pre-defined
+constants to avoid typos (see L</CONSTANTS>).
+
 =head1 OPTIONAL METHODS FOR SUBCLASSES
 
 If you decide to make a custom subclass of L<DBIx::Class::Migration::Script>,
@@ -666,6 +678,23 @@ on the commandline (via L<MooseX::Getopt>) and run.
 =head2 run
 
 Actually runs commands.
+
+=head1 CONSTANTS
+
+The following constants are defined but not exported.  These are used to give
+a canonical value for the L</sandbox_type> attribute.
+
+=head2 SANDBOX_SQLITE
+
+sqlite
+
+=head2 SANDBOX_MYSQL
+
+mysql
+
+=head2 SANDBOX_POSTGRESQL
+
+postgresql
 
 =head1 EXAMPLES
 

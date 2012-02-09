@@ -83,6 +83,11 @@ An instance of a subclass of L<DBIx::Class::Schema>
 a database such as SQLite or MySQL, that is running and available to accept
 commands.
 
+=head2 database sandbox
+
+An automatically generated, developer controlled installation of your database.
+This is suitable for development, but not for a higher environment.
+
 =head2 version
 
 An integer which represents a snapshot of a schema or database that is frozen
