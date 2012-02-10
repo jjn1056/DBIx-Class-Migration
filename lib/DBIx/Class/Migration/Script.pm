@@ -3,7 +3,6 @@ package DBIx::Class::Migration::Script;
 use Moose;
 use MooseX::Attribute::ENV;
 use DBIx::Class::Migration;
-use Moose::Util::TypeConstraints qw(enum);
 
 with 'MooseX::Getopt';
 
@@ -13,16 +12,10 @@ sub ENV_PREFIX {
 }
 
 use constant {
-  SANDBOX_SQLITE => 'sqlite',
-  SANDBOX_MYSQL => 'mysql',
-  SANDBOX_POSTGRESQL => 'postgresql',
+  SANDBOX_SQLITE => 'SqliteSandbox',
+  SANDBOX_MYSQL => 'MySQLSandbox',
+  SANDBOX_POSTGRESQL => 'PostgresqlSandbox',
 };
-
-sub SANDBOX_TYPES {
-  SANDBOX_SQLITE,
-  SANDBOX_MYSQL,
-  SANDBOX_POSTGRESQL
-}
 
 has includes => (
   traits => ['Getopt'],
@@ -57,9 +50,9 @@ has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
 has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef',
   predicate=>'has_databases', cmd_aliases => 'database');
 
-has sandbox_type =>  (traits => [ 'Getopt', 'ENV' ], is => 'ro',
-  predicate=>'has_sandbox_type', isa=>enum( +[SANDBOX_TYPES] ),
-  default=>'sqlite', cmd_aliases => 'T', env_prefix=>ENV_PREFIX);
+has sandbox_class =>  (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+  predicate=>'has_sandbox_class', default=>SANDBOX_SQLITE, 
+  cmd_aliases => ['T','sb'], env_prefix=>ENV_PREFIX);
 
 has fixture_sets => (
   traits => [ 'Getopt' ],
@@ -72,7 +65,7 @@ has fixture_sets => (
     map { 'cmd_'.$_ => $_ } qw(
       version status prepare install upgrade
       downgrade drop_tables delete_table_rows
-      dump_all_sets make_schema);
+      dump_all_sets make_schema dump);
   }
 
 has migration => (
@@ -114,13 +107,9 @@ sub _build_migration {
     $args{schema_args} = \@schema_args if @schema_args;
   }
 
-  if($self->has_sandbox_type) {
-    my $base = 'DBIx::Class::Migration::';
-    for my $type ($self->sandbox_type) {
-      $args{db_sandbox_class} = $base . 'SqliteSandbox' if $type eq SANDBOX_SQLITE;
-      $args{db_sandbox_class} = $base . 'MySQLSandbox' if $type eq SANDBOX_MYSQL;
-      $args{db_sandbox_class} = $base . 'PostgresqlSandbox' if $type eq SANDBOX_POSTGRESQL;
-    }
+  if($self->has_sandbox_class) {
+    my ($plus, $class) = ($self->sandbox_class=~/^(\+)*(.+)$/);
+    $args{db_sandbox_class} = $plus ? $class : "DBIx::Class::Migration::$class";
   }
 
   return DBIx::Class::Migration->new(%args);
@@ -347,9 +336,9 @@ This defines a list of fixture sets that we use for dumping or populating
 fixtures.  Defaults to the C<['all_tables']> set, which is the one set we build
 automatically for each version of the database we prepare deployments for.
 
-=head2 sandbox_type
+=head2 sandbox_class
 
-Accepts Enum (sqlite, mysql or postgresql).  Required, defaults to 'sqlite'.
+Accepts String.  Not required.  Defaults to 'SqliteSandbox'
 
 If you don't have a database already running, we will automatically create a
 database 'sandbox' in your L</target_dir> that is suitable for development and
@@ -361,8 +350,8 @@ By default this sandbox is a file based L<DBD::Sqlite> database, which is an
 easy option since changes are good this is already installed on your development
 computer (and if not it is trivial to install).  
 
-You can change this to either 'postgresql' or 'mysql', which will create a 
-sandbox using either L<DBIx::Class::Migration::MySQLSandbox> or 
+You can change this to either 'PostgresqlSandbox' or 'MySQLSandbox', which will
+create a sandbox using either L<DBIx::Class::Migration::MySQLSandbox> or 
 L<DBIx::Class::Migration::PostgresqlSandbox> (which in term require the separate
 installation of either L<Test::mysqld> or L<Test::postgresql>).  If you are
 using one of those open source databases in production, its probably a good
@@ -377,7 +366,17 @@ L<DBIx::Class::Migration::PostgresqlSandbox> because those delegates also build
 some helper scripts, intended to help you use a sandbox.
 
 Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
-DBIC_MIGRATION_SANDBOX_TYPE
+DBIC_MIGRATION_SANDBOX_CLASS
+
+If you need to create your own custom database sandboxes, please see:
+L<DBIx::Class::Migration::Sandbox> which is the role your sandbox factory needs
+tp complete.  You can signify your custom sandbox by using the full package name
+with a '+' prepended.  For example:
+
+    sandbox_class => '+MyApp::Schema::CustomSandbox'
+
+You should probably look at the existing sandbox code for thoughts on what a
+good sandbox would do.
 
 =head1 COMMANDS
 
@@ -584,10 +583,10 @@ such as role types, default users, lists of countries, etc. and then create a
 'demo' or 'dev' set that contains extra information useful to populate a
 database so that you can run test cases and develop against.
 
-=head3 sandbox_type
+=head3 sandbox_class
 
 Alias: T
-Value: Enum of sqlite|mysql|postgresql (defaults to sqlite)
+Value: String (default: SqliteSandbox)
 
 If you don't have a target database for your migrations (as you might not for
 your development setup, or during initial prototyping) we automatically create
@@ -605,12 +604,12 @@ L<DBIx::Class::Migration::MySQLSandbox> for more documentation.
 
 Assuming you've prepared migrations for an alternative sandbox, such as MySQL:
 
-    dbic_migration install --schema_class MyApp::Schema --sandbox_type mysql
+    dbic_migration install --schema_class MyApp::Schema --sandbox_class MySQLSandbox
 
 Would install it.  Like some of the other option flags you can specify with an
 %ENV setting:
 
-    export DBIC_MIGRATION_SANDBOX_TYPE=mysql
+    export DBIC_MIGRATION_SANDBOX_CLASS=MySQLSandbox
 
 This would be handy if you are always going to target one of the alternative
 sandbox types.
@@ -682,19 +681,19 @@ Actually runs commands.
 =head1 CONSTANTS
 
 The following constants are defined but not exported.  These are used to give
-a canonical value for the L</sandbox_type> attribute.
+a canonical value for the L</sandbox_class> attribute.
 
 =head2 SANDBOX_SQLITE
 
-sqlite
+SqliteSandbox
 
 =head2 SANDBOX_MYSQL
 
-mysql
+MySQLSandbox
 
 =head2 SANDBOX_POSTGRESQL
 
-postgresql
+PostgresqlSandbox
 
 =head1 EXAMPLES
 

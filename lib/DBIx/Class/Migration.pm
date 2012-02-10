@@ -11,6 +11,7 @@ use File::ShareDir::ProjectDistDir ();
 use DBIx::Class::Migration::SchemaLoader;
 use MooseX::Types::LoadableClass 'LoadableClass';
 use Class::Load 'load_class';
+use Devel::PartialDump;
 
 has db_sandbox_class => (
   is => 'ro',
@@ -143,6 +144,10 @@ sub status {
   } else {
     print "Database is not currently installed\n";
   }
+}
+
+sub dump {
+  Devel::PartialDump->new->dump(shift);
 }
 
 sub _create_file_at_path {

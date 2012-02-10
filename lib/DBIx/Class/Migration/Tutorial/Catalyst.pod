@@ -329,7 +329,7 @@ For example, something in C<script/my-dbic-migration>
 
     DBIx::Class::Migration::Script
       ->run_with_options(
-        sandbox_type => DBIx::Class::Migration::Script::SANDBOX_MYSQL,
+        sandbox_class => DBIx::Class::Migration::Script::SANDBOX_MYSQL,
         schema => MusicBase::Web->model('Schema')->schema);
 
 
@@ -340,9 +340,11 @@ And then use it like:
 B<NOTE>: In this case you need to invoke the perl interp with C<-Ilib> so that
 we can find C<MusicBase::Web>
 
-If you looked carefully, you can see we are also specifying the C<sandbox_type>
+If you looked carefully, you can see we are also specifying the C<sandbox_class>
 in this example.  You'd do something like this if you wanted to use a sandbox
-other than the default sqlite.
+other than the default sqlite.  In this case we are going to use Mysql as the
+target sandbox for our migrations.  See L<DBIx::Class::Migration::MySQLSandbox>
+for more documentation on the MySQL sandbox.<D-d>
 
 If you have a bunch of files in C</script> or if you need to be able to run
 your custom migration tool after installation, this could be a good option.

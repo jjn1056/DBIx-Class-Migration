@@ -6,8 +6,8 @@ use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath';
 use POSIX qw(SIGINT);
 
-has target_dir => (is=>'ro', required=>1);
-has schema_class => (is=>'ro', required=>1);
+with 'DBIx::Class::Migration::Sandbox';
+
 has test_postgresql => (is=>'ro', isa=>'Object', lazy_build=>1);
 
   sub _generate_sandbox_dir {

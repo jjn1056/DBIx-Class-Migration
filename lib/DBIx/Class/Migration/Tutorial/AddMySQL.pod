@@ -71,7 +71,7 @@ So far you've only done C<install> and C<upgrade> to the default SQlite database
 (under C<share>).  If you want to run those commands against MySQL, obviously 
 you'll need a running MySQL instance.  We can build a MySQL sandbox for you in
 the C<target_dir>, similarly to how we did for Sqlite.  To do this you need to
-set the C<sandbox_type> flag.  Also, you should add L<Test::mysqld> to your
+set the C<sandbox_class> flag.  Also, you should add L<Test::mysqld> to your
 C<dist.ini> file, and get that installed (you'll need to install MySQL on your
 development computer, but it doesn't need to be running, just 'findable' in
 your C<$PATH>:
@@ -109,7 +109,7 @@ C<$PATH> can find the Mysql C<bin> area (C<mysql_config>, etc).
 
 Assuming you get MySQL properly installed, lets build a sandbox:
 
-    $dbic-migration -Ilib -Tmysql status
+    $dbic-migration -Ilib --sb MySQLSandbox status
     Schema is 3
     Database is not currently installed
 
@@ -117,7 +117,7 @@ Just like with the C<schema_class> flag, you can set an %ENV variable to set
 your sandbox type for the shell:
 
     ## example
-    export DBIC_MIGRATION_SANDBOX_TYPE=mysql
+    export DBIC_MIGRATION_SANDBOX_CLASS=MySQLSandbox
 
 We won't do this, since we'd like to continue controlling if we are using the
 default sqlite sandbox or our new mysql sandbox.
@@ -151,8 +151,8 @@ so that you can expose to to your web application).
 
 You'd install the database and fixtures like so:
 
-    dbic-migration -Ilib -Tmysql install
-    dbic-migration -Ilib -Tmysql populate
+    dbic-migration -Ilib --sb MySQLSandbox install
+    dbic-migration -Ilib --sb MySQLSandbox populate
 
 That would give you:
 
@@ -161,7 +161,7 @@ That would give you:
 
 Now you database is ready to use!
 
-    $ dbic-migration -Ilib -Tmysql status
+    $ dbic-migration -Ilib --sb MySQLSandbox status
     Schema is 3
     Database is 3
 
