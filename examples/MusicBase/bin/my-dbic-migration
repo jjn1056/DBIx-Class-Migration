@@ -1,0 +1,11 @@
+#!/usr/bin/env perl
+
+use Modern::Perl;
+use MusicBase::Web;
+use DBIx::Class::Migration::Script;
+
+DBIx::Class::Migration::Script
+  ->run_with_options(
+    sandbox_class => DBIx::Class::Migration::Script::SANDBOX_MYSQL,
+    schema => MusicBase::Web->model('Schema')->schema);
+

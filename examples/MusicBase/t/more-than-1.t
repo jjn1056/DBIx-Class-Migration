@@ -1,13 +1,12 @@
 #!/usr/bin/env perl
 
 use Test::Most;
-use DBIx::Class::Migration::Population;
 use Test::DBIx::Class
   -schema_class=>'MusicBase::Schema',
+  -fixture_class => '::Population',
   qw(Artist);
 
-(my $population = DBIx::Class::Migration::Population->new(
-  schema=>Schema()))->populate('all_tables');
+fixtures_ok ['all_tables'];
 
 ok my $more_than_one_rs =  Artist->has_more_than_one_cds,
  'Got some artists';

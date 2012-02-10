@@ -1,5 +1,3 @@
-## Add Belgium, Germany, France
-#
 sub {
   shift->resultset('Country')
     ->populate([

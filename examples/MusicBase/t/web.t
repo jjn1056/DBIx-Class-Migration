@@ -1,3 +1,5 @@
+#!/usr/bin/env perl
+
 use Test::Most;
 use Catalyst::Test 'MusicBase::Web';
 

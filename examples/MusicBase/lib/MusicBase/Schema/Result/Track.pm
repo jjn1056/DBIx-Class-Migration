@@ -1,4 +1,8 @@
 package MusicBase::Schema::Result::Track;
+
+use strict;
+use warnings;
+
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('track');
@@ -20,4 +24,3 @@ __PACKAGE__->belongs_to(
   {'foreign.cd_id'=>'self.cd_fk'});
 
 1;
-

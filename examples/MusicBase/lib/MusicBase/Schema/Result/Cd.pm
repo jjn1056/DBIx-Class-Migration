@@ -1,5 +1,9 @@
 package MusicBase::Schema::Result::Cd;
-use base qw/DBIx::Class::Core/;
+
+use strict;
+use warnings;
+
+use base 'DBIx::Class::Core';
 
 __PACKAGE__->table('cd');
 __PACKAGE__->add_columns(

@@ -1,3 +1,4 @@
+
 sub {
   shift->resultset('Country')
     ->populate([
@@ -6,5 +7,4 @@ sub {
       ['Mexico'],
       ['USA'],
   ]);
-}
-
+};

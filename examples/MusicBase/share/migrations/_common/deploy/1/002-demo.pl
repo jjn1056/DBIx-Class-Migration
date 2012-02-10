@@ -1,6 +1,7 @@
 sub {
+
   my $artist_rs = shift->resultset('Artist');
-  
+
   $artist_rs->create({
     name =>'Michael Jackson',
     cds => [
@@ -24,4 +25,6 @@ sub {
         { title => 'The Way I Am' }],
       },
     ]});
+
 };
+

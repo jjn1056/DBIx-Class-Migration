@@ -1,4 +1,3 @@
-;
 BEGIN;
 
 CREATE TEMPORARY TABLE artist_temp_alter (
@@ -24,3 +23,5 @@ INSERT INTO artist SELECT artist_id, 1, name FROM artist_temp_alter;
 DROP TABLE artist_temp_alter;
 
 COMMIT;
+
+

@@ -1,4 +1,8 @@
 package MusicBase::Schema::ResultSet::Artist;
+
+use strict;
+use warnings;
+
 use base 'DBIx::Class::ResultSet';
 
 sub has_more_than_one_cds {

@@ -7,6 +7,6 @@ CREATE TABLE country (
 );
 
 CREATE UNIQUE INDEX country_name ON country (name);
-;
 
+;
 COMMIT;

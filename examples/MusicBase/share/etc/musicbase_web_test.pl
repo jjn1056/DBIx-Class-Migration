@@ -16,4 +16,3 @@ use Test::DBIx::Class
     ],
   },
 };
-

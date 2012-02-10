@@ -1,11 +1,13 @@
 package MusicBase::Web;
 
+our $VERSION = '0.01';
+
 use Moose;
-use Catalyst;
+use Catalyst qw/
+  ConfigLoader
+/;
 
 extends 'Catalyst';
-
-our $VERSION = '0.01';
 
 __PACKAGE__->config(
   'Plugin::ConfigLoader' => {
@@ -13,5 +15,5 @@ __PACKAGE__->config(
   },
 );
 
-__PACKAGE__->setup(qw/ConfigLoader/);
+__PACKAGE__->setup;
 __PACKAGE__->meta->make_immutable;
