@@ -69,7 +69,10 @@ has target_dir => (is=>'ro', lazy_build=>1);
     return dist_dir($class);
   }
 
-has dbic_dh_args => (is=>'ro', isa=>'HashRef', default=>sub { +{} });
+has dbic_dh_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
+
+  sub _build_dbic_dh_args { +{} }
+
 has dbic_dh => (
   is => 'ro',
   init_arg => undef,
