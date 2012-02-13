@@ -56,34 +56,45 @@ has target_dir => (is=>'ro', lazy_build=>1);
       $self->schema_class : ref($self->schema);
   }
 
+  sub _filename_from_class {
+    (my $filename_part = shift) =~s/::/\//g;
+    return $INC{$filename_part.".pm"};
+  }
+
+  sub _class_to_distname {
+    (my $dist = shift) =~s/::/-/g;
+    return $dist;
+  }
+
   sub _build_target_dir {
-    my $self = shift;
-    my $class = $self->_infer_schema_class;
-    my $file_name = $class;
-    $file_name =~s/::/\//g;
+    my $class = shift->_infer_schema_class;
 
     File::ShareDir::ProjectDistDir->import('dist_dir',
-      filename => $INC{$file_name.".pm"});
+      filename => _filename_from_class($class));
 
-    $class =~s/::/-/g;
-    return dist_dir($class);
+    return dist_dir(
+      _class_to_distname($class));
   }
 
 has dbic_dh_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
 
   sub _build_dbic_dh_args { +{} }
 
+  sub dbic_dh_handles {
+    qw/
+      prepare_install
+      prepare_upgrade
+      prepare_downgrade
+      install
+      upgrade
+      downgrade/;
+  }
+
 has dbic_dh => (
   is => 'ro',
   init_arg => undef,
   lazy_build => 1,
-  handles => [qw/
-    prepare_install
-    prepare_upgrade
-    prepare_downgrade
-    install
-    upgrade
-    downgrade/]);
+  handles => [dbic_dh_handles()]);
 
 has schema_loader_class => (
   is => 'ro',
@@ -95,7 +106,8 @@ has schema_loader => (is=>'ro', lazy_build=>1);
 
   sub _build_schema_loader {
     my $self = shift;
-    $self->schema_loader_class->new(schema=>$self->schema);
+    $self->schema_loader_class->new(
+      schema=>$self->schema);
   }
 
 has dbic_fixture_class => (
@@ -137,6 +149,8 @@ has deployment_handler_class => (
     })
   }
 
+sub dump { Devel::PartialDump->new->dump(shift) }
+
 sub version { print "Application version is $VERSION\n" }
 
 sub status {
@@ -147,10 +161,6 @@ sub status {
   } else {
     print "Database is not currently installed\n";
   }
-}
-
-sub dump {
-  Devel::PartialDump->new->dump(shift);
 }
 
 sub _create_file_at_path {
@@ -770,7 +780,7 @@ deployment info (this is different from L</drop_tables> which does delete it.)
 
 Because of the awesomeness of CPAN and the work of many others, all this
 functionality is provided with a few hundred lines of code.  In fact, I spent
-a lot more time writing docs and tests than anything else. Here are  some
+a lot more time writing docs and tests than anything else. Here are some
 particular projects / people I'd like to thank:
 
 First, thanks to C<mst> for providing me a big chunk of code that served to
