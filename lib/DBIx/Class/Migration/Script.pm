@@ -77,9 +77,8 @@ has migration => (
     my $self = shift;
     my @schema_args;
     if($self->dsn) {
-      push @schema_args, $self->dsn;
-      push @schema_args, $self->username;
-      push @schema_args, $self->password;
+      push @schema_args, ($self->dsn,
+       $self->username, $self->password);
     }
     return @schema_args;
   }
