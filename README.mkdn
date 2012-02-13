@@ -395,7 +395,7 @@ deployment info (this is different from ["drop_tables"](#drop_tables) which does
 
 Because of the awesomeness of CPAN and the work of many others, all this
 functionality is provided with a few hundred lines of code.  In fact, I spent
-a lot more time writing docs and tests than anything else. Here are  some
+a lot more time writing docs and tests than anything else. Here are some
 particular projects / people I'd like to thank:
 
 First, thanks to `mst` for providing me a big chunk of code that served to
