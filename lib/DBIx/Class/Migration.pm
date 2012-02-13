@@ -122,14 +122,26 @@ has deployment_handler_class => (
   isa => LoadableClass,
   coerce=>1);
 
-  sub _infer_database_from_schema {
-    my $storage = shift->storage;
-    $storage->ensure_connected;
-    my $storage_specific_class = ref($storage);
-    my $inferred_storage = ($storage =~m/DBI::(.+)\=/)[0] || 'SQLite';
-    $inferred_storage = 'MySQL' if $inferred_storage eq 'mysql'; #Ugg
-    $inferred_storage = 'PostgreSQL' if $inferred_storage eq 'Pg';
+  sub _infer_database_from_storage {
+    return (ref(shift) =~m/DBI::(.+)$/)[0];
+  }
+
+  sub _normalize_inferred_storage {
+    my $inferred_storage = shift;
+    return 'MySQL' if $inferred_storage eq 'mysql';
+    return 'PostgreSQL' if $inferred_storage eq 'Pg';
     return $inferred_storage;
+  }
+
+  sub _infer_database_from_schema {
+    (my $storage = shift->storage)
+      ->ensure_connected;
+    if(my $inferred_storage = _infer_database_from_storage($storage)) {
+      return _normalize_inferred_storage($inferred_storage);
+    } else {
+      print "Cannot infer target database, defaulting to SQLite\n";
+      return 'SQLite';
+    }
   }
 
   sub _build_dbic_dh {
@@ -191,9 +203,12 @@ sub _filter_private_sources { grep {$_!~/^__/} @_ }
 
 sub _prepare_fixture_conf_dir {
   my ($dir, $version) = @_;
-  my $fixture_conf_dir = catdir($dir, 'fixtures', $version, 'conf');
+  my $fixture_conf_dir = catdir($dir,
+    'fixtures', $version, 'conf');
+
   mkpath($fixture_conf_dir)
     unless -d $fixture_conf_dir;
+
   return $fixture_conf_dir;
 }
 
@@ -244,7 +259,9 @@ sub prepare {
     $self->target_dir, $schema_version);
 
   my @sources = _filter_private_sources($self->schema->sources);
-  _create_all_fixture_set( catfile($fixture_conf_dir,'all_tables.json'), @sources);
+  my $all_tables_path = catfile($fixture_conf_dir,'all_tables.json');
+  _create_all_fixture_set($all_tables_path, @sources);
+
   if(my $previous = _has_previous_version($schema_version)) {
     $self->prepare_up_down_grades($previous, $schema_version);
     my $previous_fixtures_conf = _prepare_fixture_conf_dir(
