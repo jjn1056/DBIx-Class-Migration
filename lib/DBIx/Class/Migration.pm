@@ -351,8 +351,7 @@ sub populate_set_to_schema {
   $self->build_dbic_fixtures->populate({
     no_deploy => 1,
     schema => $schema,
-    directory => $target_set,
-  });
+    directory => $target_set });
 
   print "Restored set $target_set to database\n";
 }
