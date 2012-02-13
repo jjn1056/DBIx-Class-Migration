@@ -299,8 +299,8 @@ sub delete_table_rows {
   $schema->storage->with_deferred_fk_checks(sub {
     my $txn = $schema->txn_scope_guard;
     foreach my $source ($schema->sources) {
-      next if $source eq 'DbixClassDeploymenthandlerVersion';
-      next if $source =~ m/^__/;
+      next if ($source eq 'DbixClassDeploymenthandlerVersion' ||
+        $source =~ m/^__/);
       $schema->resultset($source)->delete;
     }
     $txn->commit;
@@ -316,14 +316,14 @@ sub _prepare_fixture_data_dir {
 }
 
 sub build_dbic_fixtures {
-    my $self = shift;
-    my $dbic_fixtures = $self->dbic_fixture_class;
-    my $conf_dir = _prepare_fixture_conf_dir($self->target_dir,
-      $self->dbic_dh->database_version);
+  my $dbic_fixtures = (my $self = shift)->dbic_fixture_class;
+  my $conf_dir = _prepare_fixture_conf_dir($self->target_dir,
+    $self->dbic_dh->database_version);
 
-    print "Reading configurations from $conf_dir\n";
-    $dbic_fixtures->new({
-      config_dir => $conf_dir});
+  print "Reading configurations from $conf_dir\n";
+  $dbic_fixtures->new({
+    debug => ($ENV{DBIC_MIGRATION_DEBUG}||0),
+    config_dir => $conf_dir});
 }
 
 sub dump_named_sets {
