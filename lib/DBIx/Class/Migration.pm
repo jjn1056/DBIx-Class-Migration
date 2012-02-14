@@ -116,6 +116,12 @@ has dbic_fixture_class => (
   isa => LoadableClass,
   coerce=>1);
 
+has dbic_fixtures_extra_args => ( is=>'ro', lazy_build=>1);
+
+  sub _build_dbic_fixtures_extra_args { 
+    return +{};
+  }
+
 has deployment_handler_class => (
   is => 'ro',
   default => 'DBIx::Class::DeploymentHandler',
@@ -321,9 +327,13 @@ sub build_dbic_fixtures {
     $self->dbic_dh->database_version);
 
   print "Reading configurations from $conf_dir\n";
-  $dbic_fixtures->new({
+
+  my $init_args = {
+    config_dir => $conf_dir,
     debug => ($ENV{DBIC_MIGRATION_DEBUG}||0),
-    config_dir => $conf_dir});
+    %{$self->dbic_fixtures_extra_args}};
+
+  $dbic_fixtures->new($init_args);
 }
 
 sub dump_named_sets {
@@ -601,6 +611,14 @@ rules work in order to best take advantage of the system.
 
 Defaults to L<DBIx::Class::Fixtures>.  You'll probably not need to change this
 unless you have some unusual needs regarding fixtures.
+
+=head2 dbic_fixtures_extra_args
+
+Accepts HashRef. Required, but Defaults to Empty Hashref
+
+Allows you to pass some additional arguments when creating instances of
+L</dbic_fixture_class>.  These arguments can be used to override the default
+initial arguments.
 
 =head2 deployment_handler_class
 

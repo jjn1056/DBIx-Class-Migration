@@ -54,6 +54,12 @@ has sandbox_class =>  (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
   predicate=>'has_sandbox_class', default=>SANDBOX_SQLITE, 
   cmd_aliases => ['T','sb'], env_prefix=>ENV_PREFIX);
 
+has dbic_fixture_class => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str',
+  predicate=>'has_dbic_fixture_class');
+
+has dbic_fixtures_extra_args => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
+  predicate=>'has_dbic_fixtures_extra_args');
+
 has fixture_sets => (
   traits => [ 'Getopt' ],
   is=>'ro',
@@ -117,6 +123,12 @@ sub _build_migration {
     my ($plus, $class) = ($self->sandbox_class=~/^(\+)*(.+)$/);
     $args{db_sandbox_class} = $plus ? $class : "DBIx::Class::Migration::$class";
   }
+
+  $args{dbic_fixture_class} = $self->dbic_fixture_class
+    if $self->has_dbic_fixture_class;
+
+  $args{dbic_fixtures_extra_args} = $self->dbic_fixtures_extra_args
+    if $self->has_dbic_fixtures_extra_args;
 
   return $self->migration_class->new(%args);
 }
@@ -394,6 +406,20 @@ don't expose this attribute to the commandline, so if you are smart enough to
 do the subclassing (and sure you need to do that), I will assume you will also
 either subclass L<L<DBIx::Class::Migration:Script> or override then default
 value using some standard technique.
+
+=head2 dbic_fixture_class
+
+Accepts: Str, Not Required.
+
+You can use this if you need to make a custom subclass of L<DBIx::Class::Fixtures>.
+
+=head2 dbic_fixtures_extra_args
+
+Accepts: HashRef, Not Required.
+
+If provided will add some additional arguments when creating an instance of
+L</dbic_fixture_class>.  You should take a look at the documentation for
+L<DBIx::Class::Fixtures> to understand what additional arguments may be of use.
 
 =head1 COMMANDS
 

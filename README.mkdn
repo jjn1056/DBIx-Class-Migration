@@ -201,6 +201,14 @@ rules work in order to best take advantage of the system.
 Defaults to [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures).  You'll probably not need to change this
 unless you have some unusual needs regarding fixtures.
 
+## dbic_fixtures_extra_args
+
+Accepts HashRef. Required, but Defaults to Empty Hashref
+
+Allows you to pass some additional arguments when creating instances of
+["dbic_fixture_class"](#dbic_fixture_class).  These arguments can be used to override the default
+initial arguments.
+
 ## deployment_handler_class
 
 Accepts Str.  Required
