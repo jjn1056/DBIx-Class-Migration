@@ -2,7 +2,7 @@ package DBIx::Class::Migration::Script;
 
 use Moose;
 use MooseX::Attribute::ENV;
-use DBIx::Class::Migration;
+use MooseX::Types::LoadableClass 'LoadableClass';
 
 with 'MooseX::Getopt';
 
@@ -68,6 +68,13 @@ has fixture_sets => (
       dump_all_sets make_schema dump);
   }
 
+has migration_class => (
+  is => 'ro',
+  traits => [ 'NoGetopt'],
+  default => 'DBIx::Class::Migration',
+  isa => LoadableClass,
+  coerce => 1);
+
 has migration => (
   is => 'ro',
   lazy_build => 1,
@@ -111,7 +118,7 @@ sub _build_migration {
     $args{db_sandbox_class} = $plus ? $class : "DBIx::Class::Migration::$class";
   }
 
-  return DBIx::Class::Migration->new(%args);
+  return $self->migration_class->new(%args);
 }
 
 sub cmd_dump_named_sets {
@@ -376,6 +383,17 @@ with a '+' prepended.  For example:
 
 You should probably look at the existing sandbox code for thoughts on what a
 good sandbox would do.
+
+=head2 migration_class
+
+Accepts String.  Not Required (Defaults: L<DBIx::Class::Migration>)
+
+Should point to the class that does what L<DBIx::Class::Migration> does.  This
+is exposed here for those who need to subclass L<DBIx::Class::Migration>.  We
+don't expose this attribute to the commandline, so if you are smart enough to
+do the subclassing (and sure you need to do that), I will assume you will also
+either subclass L<L<DBIx::Class::Migration:Script> or override then default
+value using some standard technique.
 
 =head1 COMMANDS
 

@@ -55,8 +55,7 @@ difficult architectual issues, you might be better off building something on
 top of [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) directly.
 
 [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) is a base class upon which interfaces like
-[DBIx::Class::Migration::Script](http://search.cpan.org/perldoc?DBIx::Class::Migration::Script) are built.  In the future hopefully there
-will be other interfaces for particular needs, such as testing.
+[DBIx::Class::Migration::Script](http://search.cpan.org/perldoc?DBIx::Class::Migration::Script) are built.  
 
 Please see [DBIx::Class::Migration::Tutorial](http://search.cpan.org/perldoc?DBIx::Class::Migration::Tutorial) for more approachable
 documentation.  If you want to read a high level feature overview, see

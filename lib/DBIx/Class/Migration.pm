@@ -456,8 +456,7 @@ difficult architectual issues, you might be better off building something on
 top of L<DBIx::Class::DeploymentHandler> directly.
 
 L<DBIx::Class::Migration> is a base class upon which interfaces like
-L<DBIx::Class::Migration::Script> are built.  In the future hopefully there
-will be other interfaces for particular needs, such as testing.
+L<DBIx::Class::Migration::Script> are built.  
 
 Please see L<DBIx::Class::Migration::Tutorial> for more approachable
 documentation.  If you want to read a high level feature overview, see
