@@ -407,6 +407,16 @@ sub make_schema {
       catdir($self->target_dir, 'dumped_db'));
 }
 
+sub install_if_needed {
+  my ($self, %callbacks) = @_;
+  if(!$self->dbic_dh->version_storage_is_installed) {
+    $self->install;
+    if(my $on_install = delete($callbacks{on_install})) {
+        $on_install->($self->schema);
+    }
+  }
+}
+
 __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
@@ -808,6 +818,19 @@ the matching sets for that version.
 
 Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
 deployment info (this is different from L</drop_tables> which does delete it.)
+
+=head2 install_if_needed
+
+If the database is not installed, do so.  Accepts a hash of callbacks:
+
+    $migration->install_if_needed(
+      on_install => sub {
+        DBIx::Class::Migration::Population->new(
+          schema=>shift)->populate('all_tables');
+      });
+
+Currently we allow one callback C<on_install> which gets a C<$schema> and is
+run only if we need to install the database.
 
 =head1 THANKS
 

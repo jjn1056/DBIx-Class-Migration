@@ -71,7 +71,8 @@ has fixture_sets => (
     map { 'cmd_'.$_ => $_ } qw(
       version status prepare install upgrade
       downgrade drop_tables delete_table_rows
-      dump_all_sets make_schema dump);
+      dump_all_sets make_schema install_if_needed
+      dump );
   }
 
 has migration_class => (
@@ -500,6 +501,11 @@ deployment info (this is different from L</drop_tables> which does delete it.)
 Creates DBIC schema files from the currently deployed database into your target
 directory.  You can use this to bootstrap your ORM, or if you get confused about
 what the deployment perl run files get for schema.
+
+=head2 install_if_needed
+
+Install the database to the current C<$schema> version if it is not currently
+installed.  Otherwise this is a nop (even if the database is behind the schema).
 
 =head2 Command Flags
 
