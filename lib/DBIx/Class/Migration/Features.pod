@@ -23,7 +23,7 @@ or Postgresql with a single switch.
 =head1 Database Installation
 
 Given an application where its database has evolved over many versions, you
-can install a database to any version in teh history, as well as install
+can install a database to any version in the history, as well as install
 development and fixture data for that version.
 
 =head1 Upgrade / Downgrade Management
@@ -56,7 +56,9 @@ Plays nice with popular web application development frameworks like L<Catalyst>
 
 =head1 Straightforward subclassing
 
-Core code designed to be easily subclasses for local customizations
+Core code designed to be easily subclassed for local customizations.  However,
+subclassing is often unneeded for some customizations since you have the ability
+to control and configure many aspects of the code using init arguments.
 
 =head1 Tutorial and Documentation
 

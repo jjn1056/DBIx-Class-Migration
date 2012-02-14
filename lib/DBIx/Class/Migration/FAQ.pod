@@ -52,7 +52,7 @@ I realize L<Dist::Zilla> seems to invoke feelings on nearly religious vigor
 carefully constraining the use of plugins to the default set was a better
 option than what I've done on other projects, which is to have a custom wrapper
 on top of L<Module::Install> (you can peek at that if you want over here:
-L<https://github.com/jjn1056/Maker> if you want).  I've decided I'd rather not
+L<https://github.com/jjn1056/Maker>).  I've decided I'd rather not
 continue to spend my limited time dealing with dependency and installation
 management tools, when there's a rational solution that many people already
 embrace available. The only other option is to continue to build and maintain
@@ -100,9 +100,12 @@ Would be the general approach.
 
 =head1 Error: "Failed to find share dir for dist..."
 
-BY default we expect to find a C</share> directory in your primary project root
-directory (contains your Makefile.PL or dist.ini, and the lib and t directories
-for example) where we will create migrations.  At this time we can't
+You didn't specify a custom C<--target_dir> but forgot to make the C</share>
+directory in your project application root.
+
+By default we expect to find a C</share> directory in your primary project root
+directory (contains your C<Makefile.PL> or C<dist.ini>, and the C<lib> and C<t>
+directories for example) where we will create migrations.  At this time we can't
 automatically create this C</share> directory in the same way we can create all
 the migration files and directory for you.  You need to create that directory
 yourself:
@@ -204,21 +207,6 @@ I don't know enough about Postgresql to know if the above settings are good,
 but they work for my testing.  Corrections very welcome!  Ideally I'd try to
 find a way to offer a patch to L<Test::postgresql>, although this seems to be
 limited to people using Macs.
-
-=head1 Error: "Failed to find share dir for dist..."
-
-You didn't specify a custom C<--target_dir> but forgot to make the C</share>
-directory in your project application root.
-
-Unless you specify a <--target_dir> the application will default to putting all
-your migration files in the C</share> directory of your application root.
-Although we can automatically create most of the subdirectories, we can't right
-now also automatically create a missing C</share> directory.  You need to create
-it:
-
-    mkdir share
-
-for example does the trick on unix-like systems.
 
 =head1 AUTHOR
 

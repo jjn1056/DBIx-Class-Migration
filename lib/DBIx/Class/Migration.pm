@@ -456,8 +456,8 @@ thoughts on good development patterns in using databases with application
 frameworks like L<Catalyst>.
 
 L<DBIx::Class::Migration> offers code and advice based on my experience of using
-L<DBIx::Class> for several years, which hopefully can help you bootstrap out of
-the void.  The solutions given should work for you if you want to use L<DBIx::Class>
+L<DBIx::Class> for several years, which hopefully can help you bootstrap a new 
+project.  The solutions given should work for you if you want to use L<DBIx::Class>
 and have database migrations, but don't really know what to do next.  These
 solutions should scale upward from a small project to a medium project involving
 many developers and more than one target environment (DEV -> QA -> Production.)
