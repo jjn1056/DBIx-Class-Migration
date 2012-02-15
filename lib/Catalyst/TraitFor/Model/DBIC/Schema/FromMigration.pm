@@ -79,8 +79,6 @@ sub do_install_if_needed {
 
 =head1 NAME
 
-
-
 Catalyst::TraitFor::Model::DBIC::Schema::FromMigration - Use your DB Sandbox to run Catalyst
 
 =head1 SYNOPSIS
