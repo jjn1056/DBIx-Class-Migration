@@ -174,6 +174,9 @@ would look like so:
         $migration->populate('all_tables')}},
     },
 
+In any case, you hopefully noticed that we also run some setup code to install
+the database and populate some fixtures, if they are missing.
+
 B<NOTE>: If you already had a database setup, and are not using the database
 sandbox feature (as you won't when in a production server, or if you are using
 some shared hosting setups, for example) you should setup your C<connect_info>
