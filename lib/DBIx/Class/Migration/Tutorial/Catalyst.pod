@@ -164,18 +164,23 @@ switch to using the MySQL sandbox instead?  The C<Model::Schema> parameters
 would look like so:
 
     'Model::Schema' => {
-    traits => ['FromMigration'],
-    schema_class => 'MusicBase::Schema',
-    extra_migration_args => {
-      db_sandbox_class => 'DBIx::Class::Migration::MySQLSandbox'},
-    install_if_needed => {
-      on_install => sub {
-        my ($schema, $migration) = @_;
-        $migration->populate('all_tables')}},
-    },
+      traits => ['FromMigration'],
+      schema_class => 'MusicBase::Schema',
+      extra_migration_args => {
+        db_sandbox_class => 'DBIx::Class::Migration::MySQLSandbox'},
+      install_if_needed => {
+        on_install => sub {
+          my ($schema, $migration) = @_;
+          $migration->populate('all_tables')}},
+      },
 
 In any case, you hopefully noticed that we also run some setup code to install
 the database and populate some fixtures, if they are missing.
+
+B<NOTE>: If you use the C<FromMigration> trait, we will automatically start and
+stop the database if needed (and you are using a database like MySQL or Postgresql
+that needs starting and stopping).  This startup and teardown can impact the
+startup time of you application.
 
 B<NOTE>: If you already had a database setup, and are not using the database
 sandbox feature (as you won't when in a production server, or if you are using
