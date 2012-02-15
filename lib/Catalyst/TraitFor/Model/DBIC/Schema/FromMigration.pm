@@ -85,6 +85,19 @@ Catalyst::TraitFor::Model::DBIC::Schema::FromMigration - Use your DB Sandbox to 
 
 =head1 SYNOPSIS
 
+Use the trait in your L<Catalyst> configuration:
+
+    'Model::Schema' => {
+      traits => ['FromMigration'],
+      schema_class => 'MusicBase::Schema',
+      extra_migration_args => {
+        db_sandbox_class => 'DBIx::Class::Migration::MySQLSandbox'},
+      install_if_needed => {
+        on_install => sub {
+          my ($schema, $migration) = @_;
+          $migration->populate('all_tables')}},
+      },
+
 =head1 DESCRIPTION
 
 If you are in development and using a database sandbox auto created and
@@ -158,6 +171,20 @@ Accepts Bool|HashRef, Optional
 If this is a true value, run the L<DBIx::Class::Migration/install_if_needed>
 method.  If the value is a Hashref, we will assume it is a hashref of callbacks
 as documented, and use it as an argument (after de-reffing it).
+
+=head1 METHODS
+
+This role exposes the following public methods
+
+=head2 migration
+
+Returns the L<DBIx::Class::Migration> object created to assist setting up
+and managing your database.
+
+=head2 do_install_if_needed
+
+Installs a database and possibly do some data population, if one does not yet
+exist.
 
 =head1 SEE ALSO
 
