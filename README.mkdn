@@ -398,6 +398,21 @@ the matching sets for that version.
 Skips the table `dbix_class_deploymenthandler_versions`, so you don't lose
 deployment info (this is different from ["drop_tables"](#drop_tables) which does delete it.)
 
+## install_if_needed
+
+If the database is not installed, do so.  Accepts a hash of callbacks:
+
+    $migration->install_if_needed(
+      on_install => sub {
+        my ($schema, $local_migration) = @_;
+        DBIx::Class::Migration::Population->new(
+          schema=>shift)->populate('all_tables');
+      });
+
+Currently we allow one callback `on_install` which gets passed two arguments:
+`$schema` and `$self` (the current migration object) and is run only if we
+need to install the database.
+
 # THANKS
 
 Because of the awesomeness of CPAN and the work of many others, all this

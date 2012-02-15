@@ -412,7 +412,7 @@ sub install_if_needed {
   if(!$self->dbic_dh->version_storage_is_installed) {
     $self->install;
     if(my $on_install = delete($callbacks{on_install})) {
-        $on_install->($self->schema);
+        $on_install->($self->schema, $self);
     }
   }
 }
@@ -825,12 +825,14 @@ If the database is not installed, do so.  Accepts a hash of callbacks:
 
     $migration->install_if_needed(
       on_install => sub {
+        my ($schema, $local_migration) = @_;
         DBIx::Class::Migration::Population->new(
           schema=>shift)->populate('all_tables');
       });
 
-Currently we allow one callback C<on_install> which gets a C<$schema> and is
-run only if we need to install the database.
+Currently we allow one callback C<on_install> which gets passed two arguments:
+C<$schema> and C<$self> (the current migration object) and is run only if we
+need to install the database.
 
 =head1 THANKS
 

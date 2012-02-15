@@ -58,8 +58,5 @@ See L<DBIx::Class::Migration> for author information
 =head1 COPYRIGHT & LICENSE
 
 See L<DBIx::Class::Migration> for copyright and license information
-use DBIx::Class::Migration::Script;
-DBIx::Class::Migration::Script
-  ->new_with_options->run;
 
 =cut
