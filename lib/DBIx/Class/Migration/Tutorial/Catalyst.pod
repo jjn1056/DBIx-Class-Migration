@@ -129,19 +129,18 @@ this:
 
     {
       name => 'MusicBase::Web',
-      using_frontend_proxy => 1,
       default_view => 'HTML',
       disable_component_resolution_regex_fallback => 1,
       'Controller::Root' => {
         namespace => '',
       },
       'Model::Schema' => {
+        traits => ['FromMigration'],
         schema_class => 'MusicBase::Schema',
-        connect_info => {
-          dsn => 'DBI:SQLite:__path_to(share,musicbase-schema.db)__',
-          user => '',
-          password => '',
-        },
+        install_if_needed => {
+          on_install => sub {
+            my ($schema, $migration) = @_;
+            $migration->populate('all_tables')}},
       },
       'View::HTML' => {
         INCLUDE_PATH => [ '__path_to(share,html)__' ],
@@ -155,16 +154,30 @@ the extra flexibility.
 
 I'm setting a few things here, but for our discussion the most important one is
 the C<Model::Schema> section, where I point our model to the SQLite database
-we've been using all along.  If you instead wanted to use the MySQL sandbox,
-you can look at the C<connect> info in C<share/musicbase-schema/bin/use> to
-help you develop that.  For our example, the Mysql sandbox would look like
-this:
+we've been using all along.  Since we just want L<Catalyst> to use our database
+sandbox, the easiest way to do this is to use the C<FromMigration> trait, which
+you get for free when you install L<DBIx::Class::Migration>.  You can review
+the documentation at L<Catalyst::TraitFor::Model::DBIC::Schema::FromMigration>.
 
-    connect_info => {
-      dsn => 'DBI:mysql:test;mysql_socket=__path_to(share,musicbase-schema,tmp,mysql.sock)__',
-      user => 'root',
-      password => '',
-    }
+The configuration given would use the SQLite sandbox.  What if you wanted to
+switch to using the MySQL sandbox instead?  The C<Model::Schema> parameters
+would look like so:
+
+    'Model::Schema' => {
+    traits => ['FromMigration'],
+    schema_class => 'MusicBase::Schema',
+    extra_migration_args => {
+      db_sandbox_class => 'DBIx::Class::Migration::MySQLSandbox'},
+    install_if_needed => {
+      on_install => sub {
+        my ($schema, $migration) = @_;
+        $migration->populate('all_tables')}},
+    },
+
+B<NOTE>: If you already had a database setup, and are not using the database
+sandbox feature (as you won't when in a production server, or if you are using
+some shared hosting setups, for example) you should setup your C<connect_info>
+as you normally would in a L<Catalyst> configuration.
 
 Let's setup a trivial controller that pulls a few rows out of the database
 and just outputs this to a web page.
