@@ -1,6 +1,7 @@
 package Catalyst::TraitFor::Model::DBIC::Schema::FromMigration;
 
 use Moose::Role;
+use Catalyst::TraitFor::Model::DBIC::Schema::FromMigration::_MigrationHelper;
 
 has 'migration_helper',
   is => 'bare',
@@ -33,47 +34,6 @@ after BUILD => sub {
   my $self = shift;
   $self->do_install_if_needed;
 };
-
-package Catalyst::TraitFor::Model::DBIC::Schema::FromMigration::_MigrationHelper;
-
-use Moose;
-use DBIx::Class::Migration;
-
-has 'schema_class',
-  is => 'ro';
-
-has 'extra_migration_args',
-  is => 'ro',
-  isa => 'HashRef',
-  default => sub { +{} },
-  auto_deref => 1;
-
-has 'install_if_needed',
-  is => 'ro',
-  isa => 'HashRef|Bool',
-  predicate => 'has_install_if_needed';
-
-has 'migration',
-  is => 'ro',
-  lazy_build => 1;
-
-sub _build_migration {
-  my $self = shift;
-  return DBIx::Class::Migration->new(
-    schema_class => $self->schema_class,
-    $self->extra_migration_args);
-}
-
-sub do_install_if_needed {
-  my $self = shift;
-  if($self->has_install_if_needed) {
-    if(ref $self->install_if_needed) {
-      $self->migration->install_if_needed(%{$self->install_if_needed})
-    } else {
-      $self->migration->install_if_needed;
-    }
-  }
-}
 
 1;
 
@@ -195,8 +155,5 @@ See L<DBIx::Class::Migration> for author information
 =head1 COPYRIGHT & LICENSE
 
 See L<DBIx::Class::Migration> for copyright and license information
-use DBIx::Class::Migration::Script;
-DBIx::Class::Migration::Script
-  ->new_with_options->run;
 
 =cut
