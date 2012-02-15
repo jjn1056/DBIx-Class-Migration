@@ -66,6 +66,17 @@ documentation on the various internals.
 
 This class defines the following attributes.
 
+## db_sandbox_builder_class
+
+Accept Str.  Defaults to 'DBIx::Class::Migration::TargetDirSandboxBuilder'
+
+The name of the helper class which builds the class that builds database
+sandboxs.  By default we build database sandboxes in the ["target_dir"](#target_dir), which
+is what [DBIx::Class::Migration::TargetDirSandboxBuilder](http://search.cpan.org/perldoc?DBIx::Class::Migration::TargetDirSandboxBuilder) does.  We can also
+build database sandboxes in a temporary directory using
+[DBIx::Class::Migration::TempDirSandboxBuilder](http://search.cpan.org/perldoc?DBIx::Class::Migration::TempDirSandboxBuilder).  You might prefer that for
+running tests, for example.
+
 ## db_sandbox_class
 
 Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::MySQLSandbox').
@@ -146,6 +157,18 @@ database that is listed in configuration:
       schema => MyCatalyst::App->model('Schema')->schema,
       %{MyCatalyst::App->config->{extra_migration_init_args}};
     );
+
+## target_dir_builder_class
+
+Accepts:  Str, Defaults to 'DBIx::Class::Migration::ShareDirBuilder'
+This is a class that is used as a helper to build ["target_dir"](#target_dir) should the
+user not provide a value.  Default is [DBIx::Class::Migration::ShareDirBuilder](http://search.cpan.org/perldoc?DBIx::Class::Migration::ShareDirBuilder)
+
+## target_dir_builder
+
+An instance of whatever is in ["target_dir_builder_class"](#target_dir_builder_class).  Used by the lazy
+build method of ["target_dir"](#target_dir) to default a directory where the migrations are
+actually placed.
 
 ## target_dir
 
