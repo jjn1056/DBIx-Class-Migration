@@ -1,18 +1,13 @@
-use DBIx::Class::Migration::Population;
-use Test::DBIx::Class
-  -schema_class=>'MusicBase::Schema',
-  -traits=>['Testmysqld'],
-  -replicants=>2;
-
 {
   'Model::Schema' => {
+    traits => ['FromMigration'],
     schema_class => 'MusicBase::Schema',
-    connect_info => [
-      sub {Schema()->storage->dbh},
-      { on_connect_call => sub {
-        DBIx::Class::Migration::Population->new(
-          schema=>Schema())->populate('all_tables');
-        } },
-    ],
+    extra_migration_args => {
+      db_sandbox_builder_class => 'DBIx::Class::Migration::TempDirSandboxBuilder',
+      db_sandbox_class => 'DBIx::Class::Migration::MySQLSandbox'},
+    install_if_needed => {
+      on_install => sub {
+        my ($schema, $migration) = @_;
+        $migration->populate('all_tables')}},
   },
 };

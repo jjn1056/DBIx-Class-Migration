@@ -11,10 +11,15 @@ with 'DBIx::Class::Migration::Sandbox';
     return lc($schema_class);
   }
 
-  sub _generate_sqlite_dsn {
+  sub _generate_path_for_default_db {
     my ($schema_class, $target_dir) = @_;
     my $filename = _generate_filename_for_default_db($schema_class);
-    'DBI:SQLite:'. catfile($target_dir, "$filename.db");
+    return catfile($target_dir, "$filename.db");
+  }
+
+  sub _generate_sqlite_dsn {
+    my $db_default_path = _generate_path_for_default_db(@_);
+    return "DBI:SQLite:$db_default_path";
   }
 
 sub make_sandbox {

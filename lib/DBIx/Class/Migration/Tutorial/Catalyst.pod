@@ -379,22 +379,17 @@ First, create a enviroment specific configuration for testing:
 
 Then open C<share/etc/musicbase_web_test.pl> and add the following:
 
-    use DBIx::Class::Migration::Population;
-    use Test::DBIx::Class
-      -schema_class=>'MusicBase::Schema',
-      -traits=>['Testmysqld'],
-      -replicants=>2;
-
     {
       'Model::Schema' => {
+        traits => ['FromMigration'],
         schema_class => 'MusicBase::Schema',
-        connect_info => [
-          sub {Schema()->storage->dbh},
-          { on_connect_call => sub {
-            DBIx::Class::Migration::Population->new(
-              schema=>Schema())->populate('all_tables');
-            } },
-        ],
+        extra_migration_args => {
+          db_sandbox_builder_class => 'DBIx::Class::Migration::TempDirSandboxBuilder',
+          db_sandbox_class => 'DBIx::Class::Migration::MySQLSandbox'},
+        install_if_needed => {
+          on_install => sub {
+            my ($schema, $migration) = @_;
+            $migration->populate('all_tables')}},
       },
     };
 
@@ -406,17 +401,23 @@ of Mysql.  Please note this will be a temporary sandbox, and will be deleted
 when your L<Catalyst> application exits.  It is not the same as the MySQL
 sandbox we created in C<share/musicbase-schema/*>.
 
-Additionally, and just to show yousome of the features of L<Test::DBIx::Class>
-we will create two database 'slave' replicants using MySQL native replication.
-If you plan to use replication in production, as many of you do, I highly
-recommend running tests in a replicated setup, to make sure your code is
-replication safe.
+This looks similar to the first configuration file we did, where we use the
+C<FromMigration> trait to hookup your migration deployments.  However, instead
+of running our tests on the database sandbox in C</share> (which you don't want
+to so since that's not going to be a reliable and consistent database for
+testing) we use the following bit:
 
-Maybe its evil to abuse configuration files this way, but it works for me :)
-Your thoughts or examples of better ways welcomed!  Sometimes I even do the
-above during development when I want to rapidly prototype a bunch of possible
-database changes.  In any case, this takes the database testing model we
-explored in an earlier section and just applies it to the L<Catalyst> level.
+    db_sandbox_builder_class => 'DBIx::Class::Migration::TempDirSandboxBuilder',
+
+To instruct the sandbox builder to put the sandbox into a temporary directory
+instead of C</share>.  What will happen here is that (similar to the way that
+we saw with L<Test::DBIx::Class>) we build up a database from scratch, populate
+it with known fixtures, run tests, and then tear it down at the end.  This way
+you get clean and repeatable tests.  The downside is that the buildup / teardown
+can add time to the tests, athough you should be able to run your test cases
+in parallel (using C<prove -j9 ...>, to run up to nine tests at once) to offset
+this issue.
+
 Let's write a test case:
 
     touch t/web.t

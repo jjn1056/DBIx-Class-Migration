@@ -39,22 +39,31 @@ has schema => (is=>'ro', lazy_build=>1, predicate=>'has_schema');
     $self->schema_class->connect(@{$self->schema_args});
   }
 
-has target_dir => (is=>'ro', lazy_build=>1);
+has target_dir_builder_class => (
+  is => 'ro',
+  default => 'DBIx::Class::Migration::ShareDirBuilder',
+  isa => LoadableClass,
+  coerce=>1);
+
+has target_dir_builder => ( is => 'ro', lazy_build => 1);
+
+  sub _infer_schema_class {
+    my $self = shift;
+    return $self->has_schema_class ?
+      $self->schema_class : ref($self->schema);
+  }
+
+  sub _build_target_dir_builder {
+    my $inferred_schema_class = (my $self = shift)
+      ->_infer_schema_class;
+    $self->target_dir_builder_class
+      ->new(schema_class=>$inferred_schema_class);
+  }
+
+has target_dir => (is=>'ro', isa=>'Str', lazy_build=>1);
 
   sub _build_target_dir {
-    my $self = shift;
-    my $class = $self->has_schema_class ?
-      $self->schema_class : ref($self->schema);
-
-    my $file_name = $class;
-    $file_name =~s/::/\//g;
-
-    File::ShareDir::ProjectDistDir->import('dist_dir',
-      filename => $INC{$file_name.".pm"});
-
-    $class =~s/::/-/g;
-    my $target_dir = dist_dir($class);
-    return $target_dir;
+    shift->target_dir_builder->build;
   }
 
 has dbic_fixture_class => (

@@ -7,7 +7,6 @@ use JSON::XS;
 use File::Copy 'cp';
 use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath', 'remove_tree';
-use File::ShareDir::ProjectDistDir ();
 use DBIx::Class::Migration::SchemaLoader;
 use MooseX::Types::LoadableClass 'LoadableClass';
 use Class::Load 'load_class';
@@ -21,11 +20,22 @@ has db_sandbox_class => (
 
 has db_sandbox => (is=>'ro', lazy_build=>1);
 
+has db_sandbox_builder_class => (
+  is => 'ro',
+  default => 'DBIx::Class::Migration::TargetDirSandboxBuilder',
+  isa => LoadableClass,
+  coerce=>1);
+
+has db_sandbox_builder => (is=>'ro', lazy_build=>1);
+
+  sub _build_db_sandbox_builder {
+    my $self = shift;
+    $self->db_sandbox_builder_class
+      ->new(migration=>$self);
+  }
+
   sub _build_db_sandbox {
-    my ($self) = @_;
-    return $self->db_sandbox_class
-      ->new(target_dir=>$self->target_dir,
-        schema_class=>$self->_infer_schema_class);
+    shift->db_sandbox_builder->build;
   }
 
 has schema_class => (
@@ -48,7 +58,13 @@ has schema => (is=>'ro', lazy_build=>1, predicate=>'has_schema');
     $self->schema_class->connect(@{$self->schema_args});
   }
 
-has target_dir => (is=>'ro', lazy_build=>1);
+has target_dir_builder_class => (
+  is => 'ro',
+  default => 'DBIx::Class::Migration::ShareDirBuilder',
+  isa => LoadableClass,
+  coerce=>1);
+
+has target_dir_builder => ( is => 'ro', lazy_build => 1);
 
   sub _infer_schema_class {
     my $self = shift;
@@ -56,24 +72,17 @@ has target_dir => (is=>'ro', lazy_build=>1);
       $self->schema_class : ref($self->schema);
   }
 
-  sub _filename_from_class {
-    (my $filename_part = shift) =~s/::/\//g;
-    return $INC{$filename_part.".pm"};
+  sub _build_target_dir_builder {
+    my $inferred_schema_class = (my $self = shift)
+      ->_infer_schema_class;
+    $self->target_dir_builder_class
+      ->new(schema_class=>$inferred_schema_class);
   }
 
-  sub _class_to_distname {
-    (my $dist = shift) =~s/::/-/g;
-    return $dist;
-  }
+has target_dir => (is=>'ro', isa=>'Str', lazy_build=>1);
 
   sub _build_target_dir {
-    my $class = shift->_infer_schema_class;
-
-    File::ShareDir::ProjectDistDir->import('dist_dir',
-      filename => _filename_from_class($class));
-
-    return dist_dir(
-      _class_to_distname($class));
+    shift->target_dir_builder->build;
   }
 
 has dbic_dh_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
@@ -487,6 +496,17 @@ documentation on the various internals.
 
 This class defines the following attributes.
 
+=head2 db_sandbox_builder_class
+
+Accept Str.  Defaults to 'DBIx::Class::Migration::TargetDirSandboxBuilder'
+
+The name of the helper class which builds the class that builds database
+sandboxs.  By default we build database sandboxes in the L</target_dir>, which
+is what L<DBIx::Class::Migration::TargetDirSandboxBuilder> does.  We can also
+build database sandboxes in a temporary directory using
+L<DBIx::Class::Migration::TempDirSandboxBuilder>.  You might prefer that for
+running tests, for example.
+
 =head2 db_sandbox_class
 
 Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::MySQLSandbox').
@@ -567,6 +587,18 @@ database that is listed in configuration:
       schema => MyCatalyst::App->model('Schema')->schema,
       %{MyCatalyst::App->config->{extra_migration_init_args}};
     );
+
+=head2 target_dir_builder_class
+
+Accepts:  Str, Defaults to 'DBIx::Class::Migration::ShareDirBuilder'
+This is a class that is used as a helper to build L</target_dir> should the
+user not provide a value.  Default is L<DBIx::Class::Migration::ShareDirBuilder>
+
+=head2 target_dir_builder
+
+An instance of whatever is in L</target_dir_builder_class>.  Used by the lazy
+build method of L</target_dir> to default a directory where the migrations are
+actually placed.
 
 =head2 target_dir
 
