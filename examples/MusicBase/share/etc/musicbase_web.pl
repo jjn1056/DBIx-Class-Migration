@@ -11,9 +11,7 @@
     extra_migration_args => {
       db_sandbox_class => 'DBIx::Class::Migration::MySQLSandbox'},
     install_if_needed => {
-      on_install => sub {
-        my ($schema, $migration) = @_;
-        $migration->populate('all_tables')}},
+      default_fixture_sets => ['all_tables']},
   },
   'View::HTML' => {
     INCLUDE_PATH => [ '__path_to(share,html)__' ],

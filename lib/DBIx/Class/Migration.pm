@@ -7,7 +7,6 @@ use JSON::XS;
 use File::Copy 'cp';
 use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath', 'remove_tree';
-use DBIx::Class::Migration::SchemaLoader;
 use MooseX::Types::LoadableClass 'LoadableClass';
 use Class::Load 'load_class';
 use Devel::PartialDump;
@@ -421,7 +420,9 @@ sub install_if_needed {
   if(!$self->dbic_dh->version_storage_is_installed) {
     $self->install;
     if(my $on_install = delete($callbacks{on_install})) {
-        $on_install->($self->schema, $self);
+      $on_install->($self->schema, $self);
+    } elsif( my $default_fixture_sets = delete($callbacks{default_fixture_sets})) {
+      $self->populate(@$default_fixture_sets);
     }
   }
 }
@@ -853,7 +854,8 @@ deployment info (this is different from L</drop_tables> which does delete it.)
 
 =head2 install_if_needed
 
-If the database is not installed, do so.  Accepts a hash of callbacks:
+If the database is not installed, do so.  Accepts a hash of callbacks or
+instructions to perform should installation be needed/
 
     $migration->install_if_needed(
       on_install => sub {
@@ -862,9 +864,26 @@ If the database is not installed, do so.  Accepts a hash of callbacks:
           schema=>shift)->populate('all_tables');
       });
 
+The following callbacks / instructions are permitted
+
+=over 4
+
+=item on_install
+
+Accepts: Coderef
+
+Given a coderef, execute it after the database is installed.  The coderef
+gets passed two arguments: C<$schema> and C<$self> (the current migration
+object).
+
+=item default_fixture_sets
+
+Accepts: Arrayref of fixture sets
+
+After database installation, populate the fixtures in order.
+
+=back
 Currently we allow one callback C<on_install> which gets passed two arguments:
-C<$schema> and C<$self> (the current migration object) and is run only if we
-need to install the database.
 
 =head1 THANKS
 

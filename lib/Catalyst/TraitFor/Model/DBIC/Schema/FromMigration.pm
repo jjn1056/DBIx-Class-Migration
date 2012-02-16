@@ -16,6 +16,7 @@ around BUILDARGS => sub {
 
   my %init_args = (
     schema_class => $args->{schema_class},
+   ($args->{default_fixtures} ? (default_fixtures => delete $args->{default_fixtures}) : ()),
    ($args->{install_if_needed} ? (install_if_needed => delete $args->{install_if_needed}) : ()),
    ($args->{extra_migration_args} ? (extra_migration_args => delete $args->{extra_migration_args}) : ()));
 

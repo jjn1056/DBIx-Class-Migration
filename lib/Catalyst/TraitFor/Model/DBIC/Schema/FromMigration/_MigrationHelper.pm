@@ -12,6 +12,12 @@ has 'extra_migration_args',
   default => sub { +{} },
   auto_deref => 1;
 
+has 'default_fixtures',
+  is => 'ro',
+  isa => 'ArrayRef',
+  auto_deref => 1,
+  predicate => 'has_default_fixtures';
+
 has 'install_if_needed',
   is => 'ro',
   isa => 'HashRef|Bool',
@@ -26,6 +32,13 @@ sub _build_migration {
   return DBIx::Class::Migration->new(
     schema_class => $self->schema_class,
     $self->extra_migration_args);
+}
+
+sub _build_callback_from_default_fixtures {
+  my @fixtures = shift->default_fixtures;
+  return sub {
+    my ($schema, $migration) = @_;
+    $migration->populate(@fixtures)};
 }
 
 sub do_install_if_needed {
