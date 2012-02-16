@@ -36,6 +36,8 @@ Update you C<dist.ini> file:
 
     [@Basic]
     [Prereqs]
+    Moose = 0
+    MooseX::MethodAttributes = 0
     DBIx::Class = 0
     DBIx::Class::Migration = 0
     Catalyst = 0

@@ -31,10 +31,7 @@ around BUILDARGS => sub {
   return $args;
 };
 
-after BUILD => sub {
-  my $self = shift;
-  $self->do_install_if_needed;
-};
+after BUILD => sub { shift->do_install_if_needed };
 
 1;
 
@@ -94,9 +91,7 @@ And using the trait:
         schema_class => 'MusicBase::Schema',
         extra_migration_args => \%args,
         install_if_needed => {
-          on_install => sub {
-            my ($schema, $migration) = @_;
-            $migration->populate('all_tables')}},
+          default_fixture_sets => ['all_tables']},
     )
 
     __PACKAGE__->meta->make_immutable;
