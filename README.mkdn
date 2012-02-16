@@ -423,7 +423,8 @@ deployment info (this is different from ["drop_tables"](#drop_tables) which does
 
 ## install_if_needed
 
-If the database is not installed, do so.  Accepts a hash of callbacks:
+If the database is not installed, do so.  Accepts a hash of callbacks or
+instructions to perform should installation be needed/
 
     $migration->install_if_needed(
       on_install => sub {
@@ -432,9 +433,21 @@ If the database is not installed, do so.  Accepts a hash of callbacks:
           schema=>shift)->populate('all_tables');
       });
 
-Currently we allow one callback `on_install` which gets passed two arguments:
-`$schema` and `$self` (the current migration object) and is run only if we
-need to install the database.
+The following callbacks / instructions are permitted
+
+- on_install
+
+Accepts: Coderef
+
+Given a coderef, execute it after the database is installed.  The coderef
+gets passed two arguments: `$schema` and `$self` (the current migration
+object).
+
+- default_fixture_sets
+
+Accepts: Arrayref of fixture sets
+
+After database installation, populate the fixtures in order.
 
 # THANKS
 
