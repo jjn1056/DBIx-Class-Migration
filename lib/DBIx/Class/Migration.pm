@@ -441,9 +441,6 @@ DBIx::Class::Migration - Make database migrations possible
       schema_class => 'MyApp::Schema',
       schema_args => \@connect_opts);
 
-    $migration->prepare;
-    $migration->install;
-
 Alternatively:
 
     use DBIx::Class::Migration;
@@ -451,6 +448,30 @@ Alternatively:
 
     my $migration = DBIx::Class::Migration->new(
       schema => MyApp::Schema->connect(@connect_opts));
+
+Informational Commands:
+
+    $migration->status;
+
+Preparing and using Migrations:
+
+    $migration->prepare;
+    $migration->install;
+    $migration->upgrade;
+    $migration->downgrade;
+
+Commands for working with Fixtures:
+
+    $migration->dump_named_sets;
+    $migration->dump_all_sets;
+    $migration->populate;
+
+Utility Commands:
+
+    $migration->drop_tables;
+    $migration->delete_table_rows;
+    $migration->make_schema;
+    $migration->install_if_needed;
 
 =head1 DESCRIPTION
 

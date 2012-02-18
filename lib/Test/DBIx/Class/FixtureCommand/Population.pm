@@ -7,19 +7,14 @@ with 'Test::DBIx::Class::Role::FixtureCommand';
  
 sub install_fixtures {
   my ($self, $sets, @rest) = @_;
+  my @sets = ref($sets) ? @$sets : ($sets, @rest);
   my $schema = $self
     ->schema_manager
     ->schema;
 
-  my @sets = ref($sets) ? @$sets : ($sets, @rest);
-  my $population = DBIx::Class::Migration::Population
+  DBIx::Class::Migration::Population
     ->new(schema=>$schema);
-
-  foreach my $set (@sets) {
-    $population->populate($set);
-  }
-
-  return @_;
+    ->populate(@sets);
 }
 
 __PACKAGE__->meta->make_immutable;
