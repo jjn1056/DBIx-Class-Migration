@@ -18,3 +18,47 @@ sub _build_schema {
 }
 
 1;
+
+=head1 NAME
+
+DBIx::Class::Migration::RunScript::Trait::SchemaLoader - Give your Run Script a Schema
+
+=head1 SYNOPSIS
+
+    use DBIx::Class::Migration::RunScript;
+
+    builder {
+      'SchemaLoader',
+      sub {
+        shift->schema->resultset('Country')
+          ->populate([
+          ['code'],
+          ['bel'],
+          ['deu'],
+          ['fra'],
+        ]);
+      };
+    };
+
+=head1 DESCRIPTION
+
+This is a L<Moose::Role> that adds a C<schema> attribute to your 
+L<DBIx::Class::Migration::RunScript>.  This C<schema> is generated via
+L<DBIx::Class::Schema::Loader> so it is consistent to your actual deployed
+database structure (it is not dependent on your actual code).
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>.
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+

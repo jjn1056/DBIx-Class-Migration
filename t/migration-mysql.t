@@ -44,17 +44,21 @@ open(
 ) || die "Cannot open: $!";
 
 print $perl_run <<END;
-  sub {
-    shift->resultset('Country')
-      ->populate([
+
+use DBIx::Class::Migration::RunScript;
+
+migrate {
+  shift->schema
+    ->resultset('Country')
+    ->populate([
       ['code'],
       ['bel'],
       ['deu'],
       ['fra'],
     ]);
-  };
-END
+};
 
+END
 close($perl_run);
 
 $migration->install;
