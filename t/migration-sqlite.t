@@ -35,14 +35,19 @@ ok -d catfile($target_dir, 'migrations'), 'got migrations';
 ok -e catfile($target_dir, 'migrations','SQLite','deploy','1','001-auto.sql'), 'found DDL';
 
 open(
-  my $perl_run, 
-  ">", 
+  my $perl_run,
+  ">",
   catfile($target_dir, 'migrations', 'SQLite', 'deploy', '1', '002-artists.pl')
 ) || die "Cannot open: $!";
 
 print $perl_run <<END;
+
+use DBIx::Class::Migration::RunScript;
+
+builder {
+  'SchemaLoader',
   sub {
-    shift->resultset('Country')
+    shift->schema->resultset('Country')
       ->populate([
       ['code'],
       ['bel'],
@@ -50,6 +55,8 @@ print $perl_run <<END;
       ['fra'],
     ]);
   };
+};
+
 END
 
 close($perl_run);

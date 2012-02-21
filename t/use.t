@@ -1,4 +1,4 @@
-use Test::Most tests=>15;
+use Test::Most tests=>16;
 
 BEGIN {
   use_ok 'DBIx::Class::Migration';
@@ -16,6 +16,7 @@ BEGIN {
   use_ok 'Test::DBIx::Class::FixtureCommand::Population';
   use_ok 'DBIx::Class::Migration::TargetDirSandboxBuilder';
   use_ok 'DBIx::Class::Migration::TempDirSandboxBuilder';
+  use_ok 'DBIx::Class::Migration::RunScript';
 }
 
 

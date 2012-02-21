@@ -13,7 +13,7 @@ sub install_fixtures {
     ->schema;
 
   DBIx::Class::Migration::Population
-    ->new(schema=>$schema);
+    ->new(schema=>$schema)
     ->populate(@sets);
 }
 
