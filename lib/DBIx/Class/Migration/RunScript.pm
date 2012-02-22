@@ -3,7 +3,6 @@ package DBIx::Class::Migration::RunScript;
 use Moose;
 use Moose::Exporter;
 use overload '&{}' => sub {
-  my ($self, $schema) = @_;
   shift->to_app(@_) };
 
 Moose::Exporter->setup_import_methods(
@@ -44,7 +43,7 @@ sub builder(&) {
   return sub {
     DBIx::Class::Migration::RunScript
       ->new_with_traits(traits=>\@traits, runs=>$runs, %args)
-      ->(@_);
+      ->to_app->(@_);
   }
 }
 

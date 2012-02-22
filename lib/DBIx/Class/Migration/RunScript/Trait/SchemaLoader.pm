@@ -12,7 +12,8 @@ has 'schema' => (
 
 sub _build_schema {
   my $dbh = (my $self = shift)->dbh;
-  my $name = DBIx::Class::Migration::SchemaLoader::_as_unique_ns('DBIx::Class::Migration::LoadedSchema');
+  my $name = DBIx::Class::Migration::SchemaLoader::_as_unique_ns(
+    'DBIx::Class::Migration::LoadedSchema');
   return DBIx::Class::Schema::Loader::make_schema_at(
     $name, {DBIx::Class::Migration::SchemaLoader::opts}, [ sub {$dbh} ]);
 }
