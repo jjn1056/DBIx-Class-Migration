@@ -40,14 +40,15 @@ open(
   catfile($target_dir, 'migrations', 'SQLite', 'deploy', '1', '002-artists.pl')
 ) || die "Cannot open: $!";
 
-print $perl_run <<END;
+print $perl_run <<'END';
 
 use DBIx::Class::Migration::RunScript;
 
 builder {
   'SchemaLoader',
   sub {
-    shift->schema->resultset('Country')
+    my $self = shift;
+    $self->schema->resultset('Country')
       ->populate([
       ['code'],
       ['bel'],

@@ -26,7 +26,7 @@ BASIC: {
   my $run = DBIx::Class::Migration::RunScript->new_with_traits(
     traits=>['SchemaLoader'], runs=>$runs);
 
-  $run->($migration->schema);
+  $run->($migration->schema, [1,2]);
 }
 
 SUGAR: {
@@ -35,7 +35,7 @@ SUGAR: {
     $runs,
   };
   
-  $run->($migration->schema);
+  $run->($migration->schema, [1,2]);
 }
 
 done_testing;

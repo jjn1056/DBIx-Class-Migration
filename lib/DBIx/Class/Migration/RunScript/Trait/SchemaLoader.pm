@@ -48,9 +48,18 @@ L<DBIx::Class::Migration::RunScript>.  This C<schema> is generated via
 L<DBIx::Class::Schema::Loader> so it is consistent to your actual deployed
 database structure (it is not dependent on your actual code).
 
+=head1 ATTRIBUTES
+
+This class defines the follow attributes
+
+=head2 schema
+
+Using L<DBIx::Class::Schema::Loader> create a L<DBIx::Class::Schema> that
+represents the connected database.
+
 =head1 SEE ALSO
 
-L<DBIx::Class::Migration>.
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::RunScript>
 
 =head1 AUTHOR
 
