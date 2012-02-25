@@ -251,10 +251,10 @@ And here's the template for the webpage: C<share/html/index.tt>
 
     <html>
       <head>
-          <title>Artists</title>
-          <link rel="stylesheet"
-            href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css"
-            type="text/css" rel="Stylesheet">
+        <title>Artists</title>
+        <link rel="stylesheet"
+          href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css"
+          type="text/css" rel="Stylesheet">
       </head>
       <body class="container">
         <h1>Artist List</h1>
@@ -385,14 +385,12 @@ Then open C<share/etc/musicbase_web_test.pl> and add the following:
           db_sandbox_builder_class => 'DBIx::Class::Migration::TempDirSandboxBuilder',
           db_sandbox_class => 'DBIx::Class::Migration::MySQLSandbox'},
         install_if_needed => {
-          on_install => sub {
-            my ($schema, $migration) = @_;
-            $migration->populate('all_tables')}},
+          default_fixture_sets => ['all_tables']},
       },
     };
 
 So what is going to happen here is if you start the application pointing to
-this configuration (with CATALYST_CONFIG_LOCAL_SUFFIX=test) when the application
+this configuration (with C<CATALYST_CONFIG_LOCAL_SUFFIX>=test) when the application
 runs it will automatically create a clean new database and populate it with
 the C<all_tables> fixture set.  Just for fun, we will create a test instance
 of Mysql.  Please note this will be a temporary sandbox, and will be deleted

@@ -617,8 +617,13 @@ add some new country codes, and one new Artist:
 Open C<share/migrations/SQLite/upgrade/2-3/005-new_countries.pl> in your editor
 and add the following:
 
-    sub {
-      shift->resultset('Country')
+    use strict;
+    use warnings;
+    use DBIx::Class::Migration::RunScript;
+
+    migrate {
+      shift->schema
+        ->resultset('Country')
         ->populate([
           ['code'],
           ['bel'],
@@ -630,8 +635,13 @@ and add the following:
 Finally open C<share/migrations/SQLite/upgrade/2-3/006-new_artist.pl> in
 your editor and add the following:
 
-    sub {
-      shift->resultset('Artist')
+    use strict;
+    use warnings;
+    use DBIx::Class::Migration::RunScript;
+
+    migrate {
+      shift->schema
+        ->resultset('Artist')
         ->create({
           name => 'JoJo',
           country_fk => {code=>'usa'},

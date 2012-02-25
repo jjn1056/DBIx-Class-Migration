@@ -246,9 +246,14 @@ that now.  Perform the following commands in your shell:
 Then open the file C<share/migrations/_common/deploy/1/002-demo.pl> in your
 editor of choice and add the following code:
 
-    sub {
+    use strict;
+    use warnings;
+    use DBIx::Class::Migration::RunScript;
 
-      my $artist_rs = shift->resultset('Artist');
+    migrate {
+
+      my $artist_rs = shift
+        ->schema->resultset('Artist');
 
       $artist_rs->create({
         name =>'Michael Jackson',

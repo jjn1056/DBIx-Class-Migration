@@ -284,8 +284,13 @@ Lets edit our Perl run file:
 
 C<share/migrations/_common/upgrade/1-2/002-insert_countries.pl>
 
-    sub {
-      shift->resultset('Country')
+    use strict;
+    use warnings;
+    use DBIx::Class::Migration::RunScript;
+
+    migrate {
+      shift->schema
+        ->resultset('Country')
         ->populate([
           ['name'],
           ['Canada'],
