@@ -1,4 +1,7 @@
 Revision history for DBIx-Class-Migration
 
+0.002   24 February 2012
+        - fixed some POD issues with the first release
+
 0.001   24 February 2012
         - initial release with all features complete
