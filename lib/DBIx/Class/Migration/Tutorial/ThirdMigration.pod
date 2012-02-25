@@ -684,10 +684,12 @@ As before, let's peek inside the database for a quick sanity check:
     SQLite version 3.7.5
     Enter ".help" for instructions
     Enter SQL statements terminated with a ";"
+
     sqlite> .tables
     artist                       country                              
     artist_cd                    dbix_class_deploymenthandler_versions
-    cd                           track                                
+    cd                           track
+
     sqlite> select * from country;
     1|can
     2|mex
