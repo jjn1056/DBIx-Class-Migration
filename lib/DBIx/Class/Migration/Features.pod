@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Features;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Features - Features of DBIx::Class::Migration

@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Tutorial::Conclusion;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Tutorial::Conclusion - Final thoughts

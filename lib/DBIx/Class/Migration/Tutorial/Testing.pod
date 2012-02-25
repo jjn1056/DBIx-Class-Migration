@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Tutorial::Testing;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Tutorial::Testing - Test Your Database

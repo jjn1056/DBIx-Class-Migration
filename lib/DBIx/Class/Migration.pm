@@ -431,7 +431,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-DBIx::Class::Migration - Make database migrations possible
+DBIx::Class::Migration - Use the best tools together for sane database migrations
 
 =head1 SYNOPSIS
 

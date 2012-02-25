@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Tutorial::SecondMigration;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Tutorial::SecondMigration - Upgrade the Database

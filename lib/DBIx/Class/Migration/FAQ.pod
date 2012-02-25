@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::FAQ;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::FAQ - Answers to Frequently Asked Questions

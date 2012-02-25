@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Tutorial::Catalyst;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Tutorial::Catalyst - Using a web framework

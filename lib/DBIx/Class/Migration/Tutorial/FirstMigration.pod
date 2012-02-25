@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Tutorial::FirstMigration;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Tutorial::FirstMigration - Prepare your first Migration

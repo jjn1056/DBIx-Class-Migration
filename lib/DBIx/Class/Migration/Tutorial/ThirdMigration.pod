@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Tutorial::ThirdMigration;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Tutorial::ThirdMigration - A more advanced database change

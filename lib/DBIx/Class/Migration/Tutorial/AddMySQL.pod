@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Tutorial::AddMySQL;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Tutorial::AddMySQL - Add MySQL migration

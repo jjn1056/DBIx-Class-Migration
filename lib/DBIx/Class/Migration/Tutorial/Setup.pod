@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Tutorial::Setup;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Tutorial::Setup - Bootstrap your project files

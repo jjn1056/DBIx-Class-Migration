@@ -1,7 +1,3 @@
-package DBIx::Class::Migration::Tutorial;
-
-1;
-
 =head1 NAME
 
 DBIx::Class::Migration::Tutorial - How to use DBIx::Class::Migration
@@ -168,7 +164,7 @@ L<DBIx::Class::Migration::Tutorial::Conclusion> reviews some key concepts.
 
 =head1 SEE ALSO
 
-L<:DBIx::Class::Migration>, L<DBIx::Class::Manual::Example>,
+L<DBIx::Class::Migration>, L<DBIx::Class::Manual::Example>,
 L<DBIx::Class::DeploymentHandler>, and L<DBIx::Class::Fixtures>.
 
 =head1 AUTHOR
