@@ -2,8 +2,6 @@ package DBIx::Class::Migration::RunScript;
 
 use Moose;
 use Moose::Exporter;
-use overload '&{}' => sub {
-  shift->as_coderef(@_) };
 
 Moose::Exporter->setup_import_methods(
   as_is => ['builder', 'migrate']);
@@ -41,7 +39,7 @@ sub builder(&) {
     }
   }
 
-  return DBIx::Class::Migration::RunScript
+  return __PACKAGE__
     ->new_with_traits(traits=>\@traits, runs=>$runs, %args)
     ->as_coderef;
 }

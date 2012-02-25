@@ -26,16 +26,16 @@ BASIC: {
   my $run = DBIx::Class::Migration::RunScript->new_with_traits(
     traits=>['SchemaLoader'], runs=>$runs);
 
-  $run->($migration->schema, [1,2]);
+  $run->as_coderef->($migration->schema, [1,2]);
 }
 
 SUGAR: {
-  my $run = builder {
+  my $code = builder {
     'SchemaLoader',
     $runs,
   };
   
-  $run->($migration->schema, [1,2]);
+  $code->($migration->schema, [1,2]);
 }
 
 done_testing;

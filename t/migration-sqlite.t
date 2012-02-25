@@ -93,7 +93,6 @@ NEW_SCOPE_FOR_SCHEMA: {
     schema_class=>'Local::Schema');
     
   $migration->install;
-  #$migration->populate('all_tables');
 
   ok $schema->resultset('Country')->find({code=>'fra'}),
     'got some previously inserted data';
