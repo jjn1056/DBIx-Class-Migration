@@ -904,6 +904,7 @@ Accepts: Arrayref of fixture sets
 After database installation, populate the fixtures in order.
 
 =back
+
 Currently we allow one callback C<on_install> which gets passed two arguments:
 
 =head1 THANKS

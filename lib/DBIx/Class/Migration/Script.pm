@@ -288,8 +288,8 @@ Accepts Str.  Not Required
 This is the DSN for the database you are going to be targeting for deploying
 or altering ddl, and installing or generating fixtures.
 
-This should be a DSN suitable for L<DBIx::Class::Schema/connect), something
-in the form of C<DBI:SQLite:myapp-schema.db)>.
+This should be a DSN suitable for L<DBIx::Class::Schema/connect>, something
+in the form of C<DBI:SQLite:myapp-schema.db>.
 
 Please take care where you point this (like production :) )
 
@@ -405,7 +405,7 @@ Should point to the class that does what L<DBIx::Class::Migration> does.  This
 is exposed here for those who need to subclass L<DBIx::Class::Migration>.  We
 don't expose this attribute to the commandline, so if you are smart enough to
 do the subclassing (and sure you need to do that), I will assume you will also
-either subclass L<L<DBIx::Class::Migration:Script> or override then default
+either subclass L<DBIx::Class::Migration:Script> or override then default
 value using some standard technique.
 
 =head2 dbic_fixture_class
