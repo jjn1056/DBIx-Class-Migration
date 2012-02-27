@@ -1,7 +1,12 @@
 #!/usr/bin/env perl
 
+BEGIN {
+  use Test::Most;
+  plan skip_all => 'DBICM_TEST_PG not set'
+    unless $ENV{DBICM_TEST_PG} || $ENV{AUTHOR_MODE};
+}
+
 use lib 't/lib';
-use Test::Most;
 use DBIx::Class::Migration;
 use File::Spec::Functions 'catfile';
 use File::Path 'rmtree';
@@ -38,8 +43,8 @@ ok -d catfile($target_dir, 'migrations'), 'got migrations';
 ok -e catfile($target_dir, 'migrations','MySQL','deploy','1','001-auto.sql'), 'found DDL';
 
 open(
-  my $perl_run, 
-  ">", 
+  my $perl_run,
+  ">",
   catfile($target_dir, 'migrations', 'MySQL', 'deploy', '1', '002-artists.pl')
 ) || die "Cannot open: $!";
 
@@ -96,7 +101,7 @@ NEW_SCOPE_FOR_SCHEMA: {
     schema_class=>'Local::Schema',
     db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
   'created migration with schema_class');
-    
+
   $migration->install;
 
   ok $schema->resultset('Country')->find({code=>'fra'}),

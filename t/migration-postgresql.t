@@ -1,7 +1,12 @@
 #!/usr/bin/env perl
 
+BEGIN {
+  use Test::Most;
+  plan skip_all => 'DBICM_TEST_PG not set'
+    unless $ENV{DBICM_TEST_PG} || $ENV{AUTHOR_MODE};
+}
+
 use lib 't/lib';
-use Test::Most;
 use DBIx::Class::Migration;
 use File::Spec::Functions 'catfile';
 use File::Path 'rmtree';
