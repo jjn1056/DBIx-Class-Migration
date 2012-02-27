@@ -3,6 +3,7 @@ package DBIx::Class::Migration::Script;
 use Moose;
 use MooseX::Attribute::ENV;
 use MooseX::Types::LoadableClass 'LoadableClass';
+use Pod::Usage ();
 
 with 'MooseX::Getopt';
 
@@ -51,7 +52,7 @@ has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef',
   predicate=>'has_databases', cmd_aliases => 'database');
 
 has sandbox_class =>  (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
-  predicate=>'has_sandbox_class', default=>SANDBOX_SQLITE, 
+  predicate=>'has_sandbox_class', default=>SANDBOX_SQLITE,
   cmd_aliases => ['T','sb'], env_prefix=>ENV_PREFIX);
 
 has dbic_fixture_class => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str',
@@ -148,9 +149,10 @@ sub cmd_populate {
 
 sub cmd_help {
   my ($self, $subhelp) = @_;
-  die "Help not yet finished.";
   if($subhelp) {
+    die "detailed help not yet available";
   } else {
+    Pod::Usage::pod2usage(-sections=>['COMMANDS'],-verbose=>99);
   }
 }
 
