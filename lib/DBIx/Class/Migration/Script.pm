@@ -146,6 +146,14 @@ sub cmd_populate {
     ->populate(@{$self->fixture_sets});
 }
 
+sub cmd_help {
+  my ($self, $subhelp) = @_;
+  die "Help not yet finished.";
+  if($subhelp) {
+  } else {
+  }
+}
+
 sub _import_libs {
   my ($self, @libs) = @_;
   require lib;
@@ -164,11 +172,13 @@ sub run {
   $self->_import_libs(@{$self->includes})
     if $self->has_includes;
 
-  die "Must supply a command\n" unless $cmd;
-  die "Extra argv detected - command only please\n" if @extra_argv;
-  die "No such command ${cmd}\n" unless $self->can("cmd_${cmd}");
-
-  $self->${\"cmd_${cmd}"};
+  if(!$cmd || $cmd eq 'help') {
+    $self->cmd_help(@extra_argv);
+  } else {
+    die "Extra argv detected - command only please\n" if @extra_argv;
+    die "No such command ${cmd}\n" unless $self->can("cmd_${cmd}");
+    $self->${\"cmd_${cmd}"};
+  }
 }
 
 sub run_with_options {
