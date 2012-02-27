@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration
 
+0.004   27 February 2012
+        - Started to develop 'dbic-migration help' command
+        - make the pg and mysql tests optional
+        - removed some pointless whitespace
+
 0.003   26 February 2012
         - documentation updates
         - added some missing deps

@@ -1,6 +1,6 @@
 # NAME
 
-DBIx::Class::Migration - Make database migrations possible
+DBIx::Class::Migration - Use the best tools together for sane database migrations
 
 # SYNOPSIS
 
@@ -469,6 +469,8 @@ object).
 Accepts: Arrayref of fixture sets
 
 After database installation, populate the fixtures in order.
+
+Currently we allow one callback `on_install` which gets passed two arguments:
 
 # THANKS
 
