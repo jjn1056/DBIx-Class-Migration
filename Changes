@@ -1,5 +1,11 @@
 Revision history for DBIx-Class-Migration
 
+0.003   26 February 2012
+        - documentation updates
+        - added some missing deps
+        - fixed RT#75323 (tests using optional dependencies) (Fitz Elliott)++
+        - started to stub out better commandline help
+
 0.002   24 February 2012
         - fixed some POD issues with the first release
 
