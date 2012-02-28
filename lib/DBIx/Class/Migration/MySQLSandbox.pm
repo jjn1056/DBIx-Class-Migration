@@ -4,23 +4,48 @@ use Moose;
 use Test::mysqld;
 use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath';
+use File::Temp 'tempdir';
+use Config::Tiny;
 
 with 'DBIx::Class::Migration::Sandbox';
 
 has test_mysqld => (is=>'ro', lazy_build=>1);
 
-  sub _generate_sandbox_dir {
+  sub _generate_schema_path_part {
     my $schema_class = (my $self = shift)->schema_class;
     $schema_class =~ s/::/-/g;
-    catdir($self->target_dir, lc($schema_class));
+    return lc $schema_class;
+  }
+
+  sub _generate_sandbox_dir {
+    my $schema_path_part = (my $self = shift)->_generate_schema_path_part;
+    return catdir($self->target_dir, $schema_path_part);
+  }
+
+  sub _generate_unique_socket {
+    my $schema_path_part = (my $self = shift)->_generate_schema_path_part;
+    my $sockdir = catdir( tempdir, $schema_path_part);
+
+    mkpath($sockdir) unless -d $sockdir;
+    return  catfile( $sockdir, 'mysqld.sock');
   }
 
 sub _build_test_mysqld {
   my $base_dir = (my $self = shift)->_generate_sandbox_dir;
-  my $auto_start = -d $base_dir ? 1:2;
+  my $auto_start = 2;
+  my $my_cnf = { socket => $self->_generate_unique_socket };
+
+  if( -d $base_dir) {
+    $auto_start = 1;
+    my $conf = Config::Tiny->read( catfile($base_dir, 'etc', 'my.cnf') ) ||
+      die "Can't read my.cnf file";
+    $my_cnf = { socket => $conf->{mysqld}->{socket} };
+  }
+
   return Test::mysqld->new(
     auto_start => $auto_start,
-    base_dir => $base_dir);
+    base_dir => $base_dir,
+    my_cnf => $my_cnf );
 }
 
 sub _write_start {
@@ -66,8 +91,8 @@ sub _write_use {
   open( my $fh, '>', catfile($bin, 'use'))
     || die "Cannot open $bin/use: $!";
 
-  my $SOCKET = $self->test_mysqld->{my_cnf}->{socket};
   my $mysqld = $self->test_mysqld->{mysqld};
+  my $SOCKET = $self->test_mysqld->my_cnf->{socket};
   $mysqld =~s/d$//; ## ug. sorry :(
 
   print $fh <<USE;
@@ -81,18 +106,17 @@ USE
   chmod oct("0755"), catfile($bin, 'use');
 }
 
-
 sub make_sandbox {
   my $self = shift;
   my $base_dir = $self->_generate_sandbox_dir;
 
   if( -e catfile($base_dir, 'tmp', 'mysqld.pid')) {
-    return "DBI:mysql:test;mysql_socket=$base_dir/tmp/mysql.sock",'root','';
+    return $self->test_mysqld->dsn;
   } elsif($self->test_mysqld) {
     $self->_write_start;
     $self->_write_stop;
     $self->_write_use;
-    return "DBI:mysql:test;mysql_socket=$base_dir/tmp/mysql.sock",'root','';
+    return $self->test_mysqld->dsn;
   } else {
     die "can't start a mysql sandbox";
   }

@@ -2,8 +2,8 @@
 
 BEGIN {
   use Test::Most;
-  plan skip_all => 'DBICM_TEST_PG not set'
-    unless $ENV{DBICM_TEST_PG} || $ENV{AUTHOR_MODE};
+  plan skip_all => 'DBICM_TEST_MYSQL not set'
+    unless $ENV{DBICM_TEST_MYSQL} || $ENV{AUTHOR_MODE};
 }
 
 use lib 't/lib';
@@ -21,10 +21,6 @@ ok(
 isa_ok(
   my $schema = $migration->schema, 'Local::Schema',
   'got a reasonable looking schema');
-
-like(
-  ($migration->_build_schema_args)->[0], qr/local-schema/,
-  'generated schema_args seem ok');
 
 is(
   DBIx::Class::Migration::_infer_database_from_schema($schema),
