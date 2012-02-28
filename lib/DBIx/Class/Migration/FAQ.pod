@@ -156,6 +156,32 @@ L<DBIx::Class::Migrations::Script/make_schema>).
 That's because MySQL does not support transaction DDL.  Even if you have a
 transaction, MySQL will silently COMMIT when it bumps into some DDL.
 
+=head1 I need to dump fixtures from a existing database
+
+You don't always have the luxury of building a new database from the start.
+For example, you may have an existing database that you want to start to
+create migrations for.  In this case you probably want to dump some data
+directly from that existing database in order to create fixtures for testing
+or for seeding a new database.
+
+L<DBIx::Class::Migration> will let you run the C<dump_all_sets> and C<dump_named_sets>
+commands against an unversioned database.  For example:
+
+    dbic-migration -Ilib -SMyApp::Schema dump_all_sets /
+      --dsn="dbi:mysql:database=myapp;host=10.0.88.98;port=3306" /
+      --username johnn /
+      --password $PASSWORD
+
+In this case let's say "dbi:mysql:database=myapp;host=10.0.88.98;port=3306" is
+a database that you've been managing manually and it has some data that is useful
+for creating your fixture sets.
+
+When you run these commands against an unversioned database you will be warned
+because we have no way of being sure what version of the fixture sets you should
+be dumping.  We will just assume that whatever the Schema version is, is correct.
+This can of course lead to bad or undumpable fixtures should your Schema and the
+unversioned DB not match properly.  Buyer beware!
+
 =head1 Error: "`' is not a module name"
 
 Sorry this error is vague and I am working on a fix.  You will get this if you

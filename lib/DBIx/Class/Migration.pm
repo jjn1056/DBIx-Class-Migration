@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.005";
+our $VERSION = "0.006";
 
 use Moose;
 use JSON::XS;
@@ -331,8 +331,14 @@ sub _prepare_fixture_data_dir {
 
 sub build_dbic_fixtures {
   my $dbic_fixtures = (my $self = shift)->dbic_fixture_class;
-  my $conf_dir = _prepare_fixture_conf_dir($self->target_dir,
-    $self->dbic_dh->database_version);
+  my $version = $self->dbic_dh->version_storage_is_installed ?
+    $self->dbic_dh->database_version : do {
+      print "Since this database is not versioned, we will assume version";
+      print "${\$self->dbic_dh->schema_version}\n";
+      $self->dbic_dh->schema_version;
+    };
+
+  my $conf_dir = _prepare_fixture_conf_dir($self->target_dir, $version);
 
   print "Reading configurations from $conf_dir\n";
 
@@ -346,7 +352,7 @@ sub build_dbic_fixtures {
 
 sub dump_named_sets {
   (my $self = shift)->dbic_dh->version_storage_is_installed
-    || die "No Database to dump!";
+    || print "Target DB is not versioned.  Dump may not be reliable.\n";
 
   my $schema = $self->schema_loader
     ->schema_from_database($self->_infer_schema_class);
@@ -357,15 +363,17 @@ sub dump_named_sets {
     directory_template => sub {
       my ($fixture, $params, $set) = @_;
       $set =~s/\.json//;
-      _prepare_fixture_data_dir($self->target_dir,
-        $self->dbic_dh->database_version, $set);
+      my $fixture_conf_dir = $fixture->config_dir->parent->subdir($set);
+      mkpath($fixture_conf_dir)
+        unless -d $fixture_conf_dir;
+      return $fixture_conf_dir;
     },
   });
 }
 
 sub dump_all_sets {
   (my $self = shift)->dbic_dh->version_storage_is_installed
-    || die "No Database to dump!";
+    || print "Target DB is not versioned.  Dump may not be reliable.\n";
 
   my $schema = $self->schema_loader
     ->schema_from_database($self->_infer_schema_class);
@@ -375,8 +383,10 @@ sub dump_all_sets {
     directory_template => sub {
       my ($fixture, $params, $set) = @_;
       $set =~s/\.json//;
-      _prepare_fixture_data_dir($self->target_dir,
-        $self->dbic_dh->database_version, $set);
+      my $fixture_conf_dir = $fixture->config_dir->parent->subdir($set);
+      mkpath($fixture_conf_dir)
+        unless -d $fixture_conf_dir;
+      return $fixture_conf_dir;
     },
   });
 }
