@@ -4,6 +4,7 @@ Revision history for DBIx-Class-Migration
         - solved a problem when the msql socket path can exceed 104 characters
         - make use of existing Test::mysqld methods instead of guessing
         - minor fixes to incorrect test messages
+        - fixed mistakes in the dependency list
 
 0.004   27 February 2012
         - Started to develop 'dbic-migration help' command
