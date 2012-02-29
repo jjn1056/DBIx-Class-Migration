@@ -21,7 +21,7 @@ sub _make_schema_at {
 }
 
 sub _next_cnt { our $_cnt++ }
-sub _as_unique_ns { shift . _next_cnt() }
+sub _as_unique_ns { $_[0] . _next_cnt() }
 
 sub schema_from_database {
   my ($self, $ns) = @_;

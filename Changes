@@ -1,5 +1,12 @@
 Revision history for DBIx-Class-Migration
 
+0.007   29 February 2012
+        - Catalyst::TraitFor::Model::DBIC::Schema::FromMigration now lets you
+          set some connect_info args instead of deleting them.
+        - silence some warnings about my unclear use of 'shift'
+        - Fixed a use.t problem where I was trying to check a module that had
+          optional dependencies
+
 0.006   28 February 2012
         - let you dump fixtures from an unversioned DB, but warn about it.
         - FAQ entry about this

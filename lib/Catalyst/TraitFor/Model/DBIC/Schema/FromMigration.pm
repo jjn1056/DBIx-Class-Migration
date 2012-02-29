@@ -11,8 +11,7 @@ around BUILDARGS => sub {
   my ($orig, $class, @args) = @_;
   my $args = $class->$orig(@args);
 
-  die "Can't use 'connect_info' with the 'FromMigration' trait."
-    if $args->{connect_info};
+  my $connect_info = (delete $args->{connect_info}) || {};
 
   my %init_args = (
     schema_class => $args->{schema_class},
@@ -24,8 +23,9 @@ around BUILDARGS => sub {
     ->new(%init_args);
 
   $args->{migration_helper} = $migration_helper;
-  $args->{connect_info} = sub {
-    $migration_helper->migration->schema->storage->dbh;
+  $args->{connect_info} = {
+    dbh_maker => sub { $migration_helper->migration->schema->storage->dbh },
+    ref $connect_info eq 'HASH' ? %$connect_info : @$connect_info,
   };
 
   return $args;

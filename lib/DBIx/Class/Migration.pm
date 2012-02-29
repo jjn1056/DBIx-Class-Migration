@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.006";
+our $VERSION = "0.007";
 
 use Moose;
 use JSON::XS;
@@ -333,7 +333,7 @@ sub build_dbic_fixtures {
   my $dbic_fixtures = (my $self = shift)->dbic_fixture_class;
   my $version = $self->dbic_dh->version_storage_is_installed ?
     $self->dbic_dh->database_version : do {
-      print "Since this database is not versioned, we will assume version";
+      print "Since this database is not versioned, we will assume version ";
       print "${\$self->dbic_dh->schema_version}\n";
       $self->dbic_dh->schema_version;
     };

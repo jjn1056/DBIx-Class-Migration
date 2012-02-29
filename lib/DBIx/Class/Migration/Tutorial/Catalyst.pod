@@ -164,8 +164,8 @@ would look like so:
       schema_class => 'MusicBase::Schema',
       extra_migration_args => {
         db_sandbox_class => 'DBIx::Class::Migration::MySQLSandbox'},
-        install_if_needed => {
-          default_fixture_sets => ['all_tables']},
+      install_if_needed => {
+        default_fixture_sets => ['all_tables']},
       },
 
 In any case, you hopefully noticed that we also run some setup code to install
