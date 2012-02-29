@@ -3,6 +3,7 @@ package DBIx::Class::Migration::Script;
 use Moose;
 use MooseX::Attribute::ENV;
 use MooseX::Types::LoadableClass 'LoadableClass';
+use Pod::Find ();
 use Pod::Usage ();
 
 with 'MooseX::Getopt';
@@ -152,7 +153,10 @@ sub cmd_help {
   if($subhelp) {
     die "detailed help not yet available";
   } else {
-    Pod::Usage::pod2usage(-sections=>['COMMANDS'],-verbose=>99);
+    Pod::Usage::pod2usage(
+      -sections=>['COMMANDS'],-verbose=>99,
+      -input => Pod::Find::pod_where({-inc => 1}, __PACKAGE__)
+    );
   }
 }
 
