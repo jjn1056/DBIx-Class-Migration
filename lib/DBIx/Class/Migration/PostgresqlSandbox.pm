@@ -16,14 +16,35 @@ has test_postgresql => (is=>'ro', isa=>'Object', lazy_build=>1);
     catdir($self->target_dir, lc($schema_class));
   }
 
+  sub _determine_auto_start {
+    my $base_dir = shift;
+    if(-d $base_dir) {
+      if( -e catdir($base_dir, 'data','postmaster.pid')) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      return 2;
+    }
+  }
+
 sub _build_test_postgresql {
   my $base_dir = (my $self = shift)->_generate_sandbox_dir;
-  my $auto_start = -d $base_dir ? 1:2;
+  my $auto_start = _determine_auto_start($base_dir);
   my %config = (
     auto_start => $auto_start,
     base_dir => $base_dir,
     initdb_args => $Test::postgresql::Defaults{initdb_args},
     postmaster_args => $Test::postgresql::Defaults{postmaster_args});
+
+  unless($auto_start) {
+    open ( my $pid_fh, '<', catdir($base_dir, 'data','postmaster.pid')) ||
+      die "Can't open PID file";
+    my @lines = <$pid_fh>;
+    close ($pid_fh);
+    $config{port} = $lines[3];
+  }
 
   if(my $testdb = Test::postgresql->new(%config)) {
     return $testdb;

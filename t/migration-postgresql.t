@@ -94,10 +94,13 @@ $migration = undef;
 
 NEW_SCOPE_FOR_SCHEMA: {
 
+  ## This tests to make sure we can just connect and start a sandbox
+  ## against an existing setup
+
   ok( my $migration = DBIx::Class::Migration->new(
     schema_class=>'Local::Schema',
     db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
-  'created migration with schema_class');
+  'created migration with schema_class #2');
 
   $migration->install;
 
@@ -109,6 +112,25 @@ NEW_SCOPE_FOR_SCHEMA: {
 
   ok $schema->resultset('Country')->find({code=>'bel'}),
     'got some previously inserted data';
+
+  SCOPE_FOR_ALREADY_RUNNING: {
+
+    ## The database is still running, lets make sure we can connect
+    ## and use it
+
+    ok( my $migration = DBIx::Class::Migration->new(
+      schema_class=>'Local::Schema',
+      db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
+      'created migration with schema_class #3');
+
+    isa_ok(
+      my $schema = $migration->schema, 'Local::Schema',
+      'got a reasonable looking schema');
+
+    ok $schema->resultset('Country')->find({code=>'fra'}),
+      'got some previously inserted data';
+
+  }
 
 }
 
