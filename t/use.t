@@ -12,10 +12,15 @@ BEGIN {
   use_ok 'DBIx::Class::Migration::Sandbox';
   use_ok 'DBIx::Class::Migration::ShareDirBuilder';
   use_ok 'DBIx::Class::Migration::TempDirBuilder';
-  use_ok 'Test::DBIx::Class::FixtureCommand::Population';
   use_ok 'DBIx::Class::Migration::TargetDirSandboxBuilder';
   use_ok 'DBIx::Class::Migration::TempDirSandboxBuilder';
   use_ok 'DBIx::Class::Migration::RunScript';
+
+  SKIP: {
+    skip "Don't test population classes", 1
+      unless try_load_class('Test::DBIx::Class');
+    use_ok 'Test::DBIx::Class::FixtureCommand::Population';
+  };
 
   SKIP: {
     skip "Don't test population classes", 1
