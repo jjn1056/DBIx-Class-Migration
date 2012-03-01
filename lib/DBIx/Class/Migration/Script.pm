@@ -116,7 +116,7 @@ sub _build_migration {
 
   if($self->has_schema) {
     $args{schema} = $self->schema;
-  } else {
+  } elsif($self->has_schema_class && $self->schema_class) {
     my @schema_args = $self->_prepare_schema_args;
     $args{schema_class} = $self->schema_class;
     $args{schema_args} = \@schema_args if @schema_args;
