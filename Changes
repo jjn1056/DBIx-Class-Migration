@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration
 
+0.008   01 March 2012
+        - Fixed failing test when optional dependency is not installed
+        - help command now does something meaningful (felliott++)
+        - test case for help command
+
 0.007   29 February 2012
         - Catalyst::TraitFor::Model::DBIC::Schema::FromMigration now lets you
           set some connect_info args instead of deleting them.
