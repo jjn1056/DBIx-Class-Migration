@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.009";
+our $VERSION = "0.010";
 
 use Moose;
 use JSON::XS;
@@ -68,7 +68,9 @@ has target_dir_builder => ( is => 'ro', lazy_build => 1);
   sub _infer_schema_class {
     my $self = shift;
     return $self->has_schema_class ?
-      $self->schema_class : ref($self->schema);
+      $self->schema_class : $self->has_schema ? 
+        ref($self->schema) : 
+          die "Can't infer schema class without a --schema or --schema_class";
   }
 
   sub _build_target_dir_builder {

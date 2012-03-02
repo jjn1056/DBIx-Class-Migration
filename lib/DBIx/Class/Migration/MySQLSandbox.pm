@@ -5,7 +5,7 @@ use Test::mysqld;
 use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath';
 use File::Temp 'tempdir';
-use Config::Tiny;
+use Config::MySQL::Reader;
 
 with 'DBIx::Class::Migration::Sandbox';
 
@@ -33,13 +33,18 @@ has test_mysqld => (is=>'ro', lazy_build=>1);
 sub _build_test_mysqld {
   my $base_dir = (my $self = shift)->_generate_sandbox_dir;
   my $auto_start = 2;
-  my $my_cnf = { socket => $self->_generate_unique_socket };
+  my $my_cnf = {
+   'skip-networking' => '',
+    socket => $self->_generate_unique_socket };
 
   if( -d $base_dir) {
     $auto_start = 1;
-    my $conf = Config::Tiny->read( catfile($base_dir, 'etc', 'my.cnf') ) ||
+    my $conf = Config::MySQL::Reader->read_file( catfile($base_dir, 'etc', 'my.cnf') ) ||
       die "Can't read my.cnf file";
     $my_cnf = { socket => $conf->{mysqld}->{socket} };
+    if( -e $conf->{mysqld}->{socket}) {
+      $auto_start = 0;
+    }
   }
 
   return Test::mysqld->new(
