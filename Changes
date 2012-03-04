@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration
 
+0.011   04 March 2012
+        - Added a bit to the FAQ regarding the extra warnings to STDOUT/ERR.
+        - specify more modern version of some dependencies, since I am using the
+          more modern features.
+
 0.010   02 March 2012
         - The mysql sandbox no longer uses TCP networking.  This should make it
           possible to run parallel tests and have more than one user sharing a

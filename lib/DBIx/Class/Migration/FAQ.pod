@@ -27,6 +27,21 @@ the documentation.  The only issue is that if there's a lot of debugging scroll
 by, you might need to page up in your terminal to catch any real error
 messages.
 
+B<UPDATE>:  I recieved an email from a contributor who has code dived a bit
+and possibly narrowed down the issue.  I thought to report that stuff here.
+When L<SQLT::Parser::DBIx::Class> attempts to serialize schemas that are connected
+it trys to serialize the connect object information.  This doesn't play so nice
+with the way the YAML serializer works, since it does try hard to serialize
+objects.
+
+More details in the RT
+
+    ticket: https://rt.cpan.org/Public/Bug/Display.html?id=75394
+
+A possible fix is to change SQLT::Parser::DBIx::Class so that it doesn't try
+to serialize that object.  I think this could be a good fix since I don't
+think we can properly de serialize a DBI connection reliably.  
+
 =head1 Contributing
 
 Contributing to the project is easy.  First you'd fork the project over at
