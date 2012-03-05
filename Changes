@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration
 
+0.012   05 March 2012
+        - Upped Pod::Parser dependency version to close some reported test
+          failures.
+        - Documentation tweaks
+
 0.011   04 March 2012
         - Added a bit to the FAQ regarding the extra warnings to STDOUT/ERR.
         - specify more modern version of some dependencies, since I am using the

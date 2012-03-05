@@ -25,7 +25,7 @@ Test::DBIx::Class::FixtureCommand::Population - Use your fixtures in a test case
 
 =head1 SYNOPSIS
 
-    use DBIx::Class::Migration::Population;
+    use Test::Most;
     use Test::DBIx::Class
       -schema_class=>'MusicBase::Schema',
       -fixture_class => '::Population,
@@ -33,6 +33,10 @@ Test::DBIx::Class::FixtureCommand::Population - Use your fixtures in a test case
 
     fixtures_ok ['all_tables'];
     fixtures_ok ['more_sets', 'and_even_more_sets'];
+
+    ## You test cases ##
+
+    done_testing;
 
 =head1 DESCRIPTION
 
