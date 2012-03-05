@@ -8,7 +8,7 @@ BEGIN {
 
 use lib 't/lib';
 use DBIx::Class::Migration;
-use File::Spec::Functions 'catfile';
+use File::Spec::Functions 'catfile', 'catdir', 'splitpath';
 use File::Path 'rmtree';
 use Test::Requires qw(Test::mysqld);
 
@@ -132,6 +132,37 @@ NEW_SCOPE_FOR_SCHEMA: {
     }
   }
 
+  my ($volume,$directories,$file) =
+    splitpath($migration->db_sandbox->test_mysqld->my_cnf->{socket});
+    
+  rmtree $directories
+    if ($directories && $file);  ## check to make sure we don't rmtree root
+
+  $migration = undef;
+
+  RESTORE_EXISTING_NOT_RUNNING: {
+
+    ## The sandbox exists, but the db is NOT running and the
+    ## socket path is gone;
+
+    SKIP: {
+      skip "Test::mysqld not patched yet", 3
+        unless (eval qq{use Test::mysqld 0.15; 1} || 0);
+
+      ok( my $migration = DBIx::Class::Migration->new(
+        schema_class=>'Local::Schema',
+        db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
+        'created migration with schema_class 4');
+
+      isa_ok(
+        my $schema = $migration->schema, 'Local::Schema',
+        'got a reasonable looking schema');
+
+      ok $schema->resultset('Country')->find({code=>'fra'}),
+        'got some previously inserted data';
+    }
+  }
+
 }
 
 SCOPE_FOR_PARALLEL_TEMP: {
@@ -159,7 +190,6 @@ SCOPE_FOR_PARALLEL_TEMP: {
         'created migration with schema_class in temp 3');
 
     $migration3->install;
-
 }
 
 done_testing;

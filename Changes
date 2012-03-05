@@ -1,5 +1,12 @@
 Revision history for DBIx-Class-Migration
 
+0.013   05 March 2012
+        - upped DBIC:DH dependency version to take advantage of required
+          fixes and overall improvements
+        - If using an existing mysql sandbox, that is not running, if the
+          socket directory is missing, we create it.
+        - Test case for above problem.
+
 0.012   05 March 2012
         - Upped Pod::Parser dependency version to close some reported test
           failures.

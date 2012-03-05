@@ -2,7 +2,7 @@ package DBIx::Class::Migration::MySQLSandbox;
 
 use Moose;
 use Test::mysqld;
-use File::Spec::Functions 'catdir', 'catfile';
+use File::Spec::Functions 'catdir', 'catfile', 'splitpath';
 use File::Path 'mkpath';
 use File::Temp 'tempdir';
 use Config::MySQL::Reader;
@@ -18,8 +18,8 @@ has test_mysqld => (is=>'ro', lazy_build=>1);
   }
 
   sub _generate_sandbox_dir {
-    my $schema_path_part = (my $self = shift)->_generate_schema_path_part;
-    return catdir($self->target_dir, $schema_path_part);
+    my $self = shift;
+    return catdir($self->target_dir, $self->_generate_schema_path_part);
   }
 
   sub _generate_unique_socket {
@@ -44,6 +44,10 @@ sub _build_test_mysqld {
     $my_cnf = { socket => $conf->{mysqld}->{socket} };
     if( -e $conf->{mysqld}->{socket}) {
       $auto_start = 0;
+    } else {
+      my ($volume, $directory, $file) =
+        splitpath($conf->{mysqld}->{socket});
+      mkpath $directory;
     }
   }
 
