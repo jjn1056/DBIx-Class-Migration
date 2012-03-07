@@ -1,8 +1,9 @@
 package DBIx::Class::Migration::Population;
 
 use Moose;
+use version 0.77;
 use File::Spec::Functions 'catdir', 'catfile';
-use File::ShareDir::ProjectDistDir ();
+use File::ShareDir::ProjectDistDir 0.3.1 ();
 use MooseX::Types::LoadableClass 'LoadableClass';
 use Class::Load 'load_class';
 

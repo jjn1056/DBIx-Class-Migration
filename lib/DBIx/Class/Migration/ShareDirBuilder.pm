@@ -1,7 +1,8 @@
 package DBIx::Class::Migration::ShareDirBuilder;
 
 use Moose;
-use File::ShareDir::ProjectDistDir ();
+use version 0.77;
+use File::ShareDir::ProjectDistDir 0.3.1 ();
 
 has schema_class => (
   is => 'ro',

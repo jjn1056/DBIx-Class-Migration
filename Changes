@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration
 
+0.014   07 March 2012
+        - Changed the way we depend on File::ShareDir::ProjectDistDir
+
 0.013   05 March 2012
         - upped DBIC:DH dependency version to take advantage of required
           fixes and overall improvements

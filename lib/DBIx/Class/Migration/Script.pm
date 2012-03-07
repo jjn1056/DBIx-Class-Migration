@@ -154,9 +154,9 @@ sub cmd_help {
     die "detailed help not yet available";
   } else {
     Pod::Usage::pod2usage(
-      -sections=>['COMMANDS'],-verbose=>99,
-      -input => Pod::Find::pod_where({-inc => 1}, __PACKAGE__)
-    );
+      -sections => ['COMMANDS'],
+      -verbose => 99,
+      -input => Pod::Find::pod_where({-inc => 1}, ref($self)));
   }
 }
 
