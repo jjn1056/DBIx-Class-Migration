@@ -211,7 +211,7 @@ small database using sqlite, so our needs are similarly small, however that
 should not excuse us from planning!
 
 Let's look at the proposed DDL change.  In the editor of your choice open
-C<share/migrations/SQlite/upgrade/1-2/001-auto.sql>
+C<share/migrations/SQLite/upgrade/1-2/001-auto.sql>
 
     BEGIN;
 
@@ -237,7 +237,7 @@ make a mistake and need to re prepare it, as we'll see in a later step) each
 time you do it will overwrite that file, blowing away any customization you
 made.  So lets bust out the first part:
 
-    touch share/migrations/SQlite/upgrade/1-2/001-add_country.sql
+    touch share/migrations/SQLite/upgrade/1-2/001-add_country.sql
 
 And then open it in your text editor and add the following (copied from the
 C<001-auto.sql> file).
@@ -272,7 +272,7 @@ Since Perl migration run files are going to be database agnostic, it makes
 sense to do this.  You could have just as easily created a file: 
 
     ## example, you don't need to do this!
-    touch share/migrations/SQlite/upgrade/1-2/002-insert_countries.pl
+    touch share/migrations/SQLite/upgrade/1-2/002-insert_countries.pl
 
 And that woould have made a script that would only run on SQLite installs.
 
@@ -312,7 +312,7 @@ So that only does part of the job.  First of all, we can't really add a NOT NULL
 column without default values, since that's going to be a constraint.  Also the
 foriegn key is missing.  That's because it seems SQLite doesn't let you alter
 a table to add that kind of constraint.  Let's look at the DDL for the new
-artist table from the full ddl in C<share/migrations/SQlite/deploy/2/001-auto.sql>:
+artist table from the full ddl in C<share/migrations/SQLite/deploy/2/001-auto.sql>:
 
     CREATE TABLE artist (
       artist_id INTEGER PRIMARY KEY NOT NULL,
@@ -329,7 +329,7 @@ you partway there.
 
 Alright, lets try to fix it.  Lets create a file to hold our code:
 
-    touch share/migrations/SQlite/upgrade/1-2/003-change_artist.sql
+    touch share/migrations/SQLite/upgrade/1-2/003-change_artist.sql
 
 So this is going to be the third step for this upgrade (the second one was to
 add the country rows we need).  Open the file in your text editor and enter:
