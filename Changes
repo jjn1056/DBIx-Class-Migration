@@ -1,6 +1,6 @@
 Revision history for DBIx-Class-Migration
 
-0.015  TBD
+0.015  08 March 2012
         - Minor typo fixes in the tutorial (Volker++)
         - FAQ entry regarding ubuntu + AppArmor and MySQL sandboxes (Volker++)
 
