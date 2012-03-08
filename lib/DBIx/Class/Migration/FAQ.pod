@@ -109,6 +109,25 @@ sharing).
 
 Would be the general approach.
 
+=head1 Error: Trouble creating a MySQL Sandbox when running AppArmor
+
+Its been reported that the developer database sandboxing feature doens't
+work properly when using AppArmor.  I guess AppArmor considers this a 
+security violation.  Currently I don't have a reported workaround other than
+to just disable AppArmor, which for developer level machines may or may not
+be a problem.
+
+Here's some symptoms of this problem, if you think you may be having it:
+
+In C</var/log/syslog> something like:
+
+    kernel: [18593519.090601] type=1503 audit(1281847667.413:22):
+    operation="inode_permission" requested_mask="::r" denied_mask="::r"
+    fsuid=0 name="/etc/mysql0/my.cnf" pid=4884 profile="/usr/sbin/mysqld"
+
+If you need AppArmor, you'll have to setup and install MySQL the 'old school
+way.'
+
 =head1 Error: "Failed to find share dir for dist..."
 
 You didn't specify a custom C<--target_dir> but forgot to make the C</share>

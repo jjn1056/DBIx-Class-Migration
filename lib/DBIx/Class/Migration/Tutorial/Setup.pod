@@ -183,7 +183,7 @@ Change C<lib/MusicBase/Schema/Result/Artist.pm>
 
     1;
 
-Change C<lib/MusicBase/Schema/Result/CD.pm>
+Change C<lib/MusicBase/Schema/Result/Cd.pm>
 
     package MusicBase::Schema::Result::Cd;
 

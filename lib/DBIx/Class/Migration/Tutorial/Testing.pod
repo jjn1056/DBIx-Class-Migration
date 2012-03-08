@@ -42,7 +42,7 @@ Then open the new files in the editor of choice and enter the following code:
 This creates a basic test case that only runs for version 2 of the schema (this
 is just testing that the version 2 update was correct after all).  It uses
 L<Test::DBIx::Class> to automatically deploy a temporary test database (by
-default it creates a C<SQlite> in-memory database) which reflects the current 
+default it creates a C<SQLite> in-memory database) which reflects the current 
 schema and then we populate the C<all_tables> fixtures using the utility class
 L<DBIx::Class::Migration::Population> which is part of the L<DBIx::Class::Migration>
 distribution.  (In this case, since we are using L<Test::DBIx::Class>, we are

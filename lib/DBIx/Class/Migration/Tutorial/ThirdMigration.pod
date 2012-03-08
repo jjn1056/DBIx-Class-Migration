@@ -1,4 +1,4 @@
-=head1 NAME
+
 
 DBIx::Class::Migration::Tutorial::ThirdMigration - A more advanced database change
 
@@ -230,7 +230,7 @@ this case the existing custom configuration is fine for this version, so we can
 move on to reviewing the deploy and upgrades.
 
 There should be no surprises under C<deploy/3/*>.  The only reason you'll need
-to poke into these files is if you need to see the full DLL as part of helping
+to poke into these files is if you need to see the full DDL as part of helping
 you craft the upgrades correctly, or if your DBA needs to tweak aspects of the
 design (change indexes, storage engines, etc.)
 
