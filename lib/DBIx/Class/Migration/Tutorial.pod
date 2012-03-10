@@ -59,7 +59,7 @@ of database change possible, standard, and managed.  This should reduce your
 stress, enable you to be more productive and not fear the need to change your
 tables.
 
-L<DBIx::Class::Migration> is build on top of L<DBIx::Class::DeploymentHander>,
+L<DBIx::Class::Migration> is built on top of L<DBIx::Class::DeploymentHander>,
 which is a tool to create deployment files of full databases and database diffs
 and also L<DBIx::Class::Fixtures>, which is a tool for serializing and
 restoring sets of information.  You need to solve both problems in an
