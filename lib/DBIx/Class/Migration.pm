@@ -763,7 +763,7 @@ choose to leave this undefined.
 =head3 Specify a schema
 
 There may be some cases when you already have a schema object constructed and
-woudl prefer to just use that.  For example, you may be using L<Catalyst> and
+would prefer to just use that.  For example, you may be using L<Catalyst> and
 wish to build custom scripts using the built-in dependency and service lookup:
 
     use MyCatalyst::App;
