@@ -543,7 +543,7 @@ running tests, for example.
 
 =head2 db_sandbox_class
 
-Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::MySQLSandbox').
+Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::SqliteSandbox').
 
 Unless you already have a database setup and running (as you probably do in
 production) we need to auto create a database 'sandbox' that is isolated to
