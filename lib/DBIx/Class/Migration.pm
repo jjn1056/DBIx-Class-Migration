@@ -543,7 +543,7 @@ running tests, for example.
 
 =head2 db_sandbox_class
 
-Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::MySQLSandbox').
+Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::SqliteSandbox').
 
 Unless you already have a database setup and running (as you probably do in
 production) we need to auto create a database 'sandbox' that is isolated to
@@ -595,7 +595,7 @@ database connection with the following DSN:
 
     DBD:SQLite:[path to target_dir]/[db_file_name].db
 
-Where c<[path to home_dir]> is L</target_dir> and [db_file_name] is a converted
+Where c<[path to target_dir]> is L</target_dir> and [db_file_name] is a converted
 version of L</schema_class>.  For example if you set L<schema_class> to:
 
     MyApp::Schema
@@ -763,7 +763,7 @@ choose to leave this undefined.
 =head3 Specify a schema
 
 There may be some cases when you already have a schema object constructed and
-woudl prefer to just use that.  For example, you may be using L<Catalyst> and
+would prefer to just use that.  For example, you may be using L<Catalyst> and
 wish to build custom scripts using the built-in dependency and service lookup:
 
     use MyCatalyst::App;
@@ -774,7 +774,7 @@ wish to build custom scripts using the built-in dependency and service lookup:
       %{MyCatalyst::App->config->{extra_migration_init_args}};
     );
 
-Be care of potential locking issues when using some databases like SQLite.
+Be careful of potential locking issues when using some databases like SQLite.
 
 =head3 OPTIONAL: Specify a target_dir
 
