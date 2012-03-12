@@ -254,7 +254,7 @@ There will be more like this:
     shared_buffers or max_connections.
 
 The solution is as presented.  Since I prefer not to change my system settings
-permanently, " just add the following to a little bash script in my application
+permanently, just add the following to a little bash script in my application
 
     sudo sysctl -w kern.sysv.shmall=65536
     sudo sysctl -w kern.sysv.shmmax=16777216
