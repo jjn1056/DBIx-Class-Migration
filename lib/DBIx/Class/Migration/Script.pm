@@ -210,7 +210,7 @@ DBIx::Class::Migration::Script - Tools to manage database Migrations
     dbic-migration status \
       --libs="lib" \
       --schema_class='MyApp::Schema' \
-      --dns='DBI:SQLite:myapp.db'
+      --dsn='DBI:SQLite:myapp.db'
 
 =head1 DESCRIPTION
 
