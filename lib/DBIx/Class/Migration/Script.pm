@@ -210,7 +210,7 @@ DBIx::Class::Migration::Script - Tools to manage database Migrations
     dbic-migration status \
       --libs="lib" \
       --schema_class='MyApp::Schema' \
-      --dns='DBI:SQLite:myapp.db'
+      --dsn='DBI:SQLite:myapp.db'
 
 =head1 DESCRIPTION
 
@@ -396,7 +396,7 @@ development and postgresql in production.  However this requires a bit more
 setup effort, so when you are starting off just sticking to the default sqlite
 is probably the easiest thing to do.
 
-YOu should review the documenation at L<DBIx::Class::Migration::MySQLSandbox> or 
+You should review the documenation at L<DBIx::Class::Migration::MySQLSandbox> or 
 L<DBIx::Class::Migration::PostgresqlSandbox> because those delegates also build
 some helper scripts, intended to help you use a sandbox.
 
@@ -405,7 +405,7 @@ DBIC_MIGRATION_SANDBOX_CLASS
 
 If you need to create your own custom database sandboxes, please see:
 L<DBIx::Class::Migration::Sandbox> which is the role your sandbox factory needs
-tp complete.  You can signify your custom sandbox by using the full package name
+to complete.  You can signify your custom sandbox by using the full package name
 with a '+' prepended.  For example:
 
     sandbox_class => '+MyApp::Schema::CustomSandbox'
@@ -765,7 +765,7 @@ PostgresqlSandbox
 Please see L<DBIx::Class::Migration::Tutorial> for more.  Here's some basic use
 cases.
 
-head2 Prepare deployment files for a schema
+=head2 Prepare deployment files for a schema
 
     dbic_migration prepare --schema_class MyApp::Schema
 
@@ -776,7 +776,7 @@ This will prepare deployment files for just SQLite
 
 This will prepare deployment files for both SQLite and MySQL
 
-head2 Install database from deployments
+=head2 Install database from deployments
 
     dbic_migration install --schema_class MyApp::Schema
 
@@ -790,7 +790,7 @@ the most recent version
     dbic_migration populate --schema_class MyApp::Schema --fixture_set seed
 
 Populates the C<seed> fixture set to the current database (matches the database
-version to the seed version.
+version to the seed version.)
 
 =head1 SEE ALSO
 
