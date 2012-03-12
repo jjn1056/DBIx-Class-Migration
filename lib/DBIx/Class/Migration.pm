@@ -774,7 +774,7 @@ wish to build custom scripts using the built-in dependency and service lookup:
       %{MyCatalyst::App->config->{extra_migration_init_args}};
     );
 
-Be care of potential locking issues when using some databases like SQLite.
+Be careful of potential locking issues when using some databases like SQLite.
 
 =head3 OPTIONAL: Specify a target_dir
 
