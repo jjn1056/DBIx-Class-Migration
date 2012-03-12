@@ -1,5 +1,11 @@
 Revision history for DBIx-Class-Migration
 
+0.016  12 March 2012
+        - More POD and documentation fixes  (Volker++), (logie17++)
+        - changed the way I declare version requirements in my dist.ini filr
+          in order address some bugs in the way version strings are interpreted
+          in various versions of Perl.
+
 0.015  08 March 2012
         - Minor typo fixes in the tutorial (Volker++)
         - FAQ entry regarding ubuntu + AppArmor and MySQL sandboxes (Volker++)
