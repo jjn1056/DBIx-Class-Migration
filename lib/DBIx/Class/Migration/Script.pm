@@ -790,7 +790,7 @@ the most recent version
     dbic_migration populate --schema_class MyApp::Schema --fixture_set seed
 
 Populates the C<seed> fixture set to the current database (matches the database
-version to the seed version.
+version to the seed version.)
 
 =head1 SEE ALSO
 
