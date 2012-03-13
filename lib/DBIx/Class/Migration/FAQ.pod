@@ -18,11 +18,11 @@ DBIx::Class::Migration::FAQ - Answers to Frequently Asked Questions
           MAX = 7
           RITER = -1
 
-There's some debugging code somewhere in the L<DBIx::Class::DeploymentHander>
+There's some debugging code somewhere in the L<DBIx::Class::DeploymentHandler>
 dependency chain.  We've looked and can't find it :(  A case of beer at the
 next YAPC we meet at to whoever can figure it out.
 
-ALthough you see this, there's nothing wrong.  The command will work as in
+Although if you see this, there's nothing wrong.  The command will work as in
 the documentation.  The only issue is that if there's a lot of debugging scroll
 by, you might need to page up in your terminal to catch any real error
 messages.
