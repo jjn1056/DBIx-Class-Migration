@@ -30,7 +30,7 @@ C<version> above) and any number of option flags (starting with C<--> or C<->).
 When using the tool, you'll need to specify the C<schema_class> that you are
 creating and using migrations for.  Typically this will be your subclass of
 L<DBIx::Class::Schema>, and you'll need to extend the Perl module search path
-with C<I> as above.  This is so that C<perl> know about your custom application
+with C<I> as above.  This is so that C<perl> will know about your custom application
 libraries.
 
 If you are going to be working with one schema for a bit, you can export
@@ -88,7 +88,7 @@ You should see:
 B<NOTE:> If you are getting some wild debugging messages, please see
 L<DBIx::Class::Migration::FAQ> for details.
 
-Since this is the first version, we won't create any upgrades or downgrade
+Since this is the first version, we won't create any upgrade or downgrade
 migrations.  Okay, lets see what we now have:
 
 In your C<share> directory you now have the following:
@@ -107,7 +107,7 @@ In your C<share> directory you now have the following:
               001-auto.sql
       musicbase-schema.db
 
-So Lets review.  We created a default fixture configuration that just serializes
+So let's review.  We created a default fixture configuration that just serializes
 all the database information.  This is probably not great for the long term but
 until you get the hang of creating custom fixture configurations (and for this
 you need to review L<DBIx::Class::Fixtures>) it will serve.  In any case you
@@ -151,11 +151,11 @@ the schema version number you have prepared.  You'll see later that as you add
 more schema versions this becomes your primary way of managing all the directories.
 
 Three other files of interest have been created.  The first is 
-C<001-auto-_VERSION.sql> which is DDL for the default database (SQLite) to create
-the meta table that L<DBIx::Class::DeploymentHandler> uses to keep track of the
-version history for your deployments.  We also create a full DDL (data description
-language) for the tables that make up your application.  In this case we have one
-table for each of the Artist, CD and Track Result classes.  
+C<001-auto-_VERSION.sql> which is the DDL (data description language)  for the default 
+database (SQLite) to create the meta table that L<DBIx::Class::DeploymentHandler> 
+uses to keep track of the version history for your deployments.  We also create a 
+full DDL for the tables that make up your application.  In this case we have one table 
+for each of the Artist, CD and Track Result classes.  
 
 C</share/migrations/SQLite/deploy/1/001-auto.sql>
 
@@ -277,7 +277,7 @@ editor of choice and add the following code:
 
     };
 
-If your read the L<DBIx::Class::DeploymentHandler> docs, you know that in
+If you read the L<DBIx::Class::DeploymentHandler> docs, you know that in
 addition to running SQL files natively against your database of choice, you can
 also create Perl run scripts, which is a Perl file that returns an anonymous
 subroutine (similar to L<Plack>).  That subroutine should expect to get one
