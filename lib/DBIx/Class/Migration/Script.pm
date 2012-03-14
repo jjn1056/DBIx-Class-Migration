@@ -771,7 +771,7 @@ cases.
 
 This will prepare deployment files for just SQLite
 
-    dbic_migration prepare --database SQLite --database mysql \
+    dbic_migration prepare --database SQLite --database MySQL \
       --schema_class MyApp::Schema
 
 This will prepare deployment files for both SQLite and MySQL
