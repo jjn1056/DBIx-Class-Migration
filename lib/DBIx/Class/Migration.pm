@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.016";
+our $VERSION = "0.017";
 
 use Moose;
 use JSON::XS;
@@ -10,6 +10,7 @@ use File::Path 'mkpath', 'remove_tree';
 use MooseX::Types::LoadableClass 'LoadableClass';
 use Class::Load 'load_class';
 use Devel::PartialDump;
+use SQL::Translator;
 
 has db_sandbox_class => (
   is => 'ro',
@@ -425,6 +426,24 @@ sub make_schema {
     ->generate_dump(
       $self->_infer_schema_class,
       catdir($self->target_dir, 'dumped_db'));
+}
+
+sub diagram {
+  my $self = shift;
+  my $trans = SQL::Translator->new(
+    parser => 'SQL::Translator::Parser::DBIx::Class',
+    parser_args => { package => $self->schema },
+    producer => 'GraphViz',
+    producer_args => {
+      skip_tables => 'dbix_class_deploymenthandler_versions',
+      show_constraints => 1,
+      show_datatypes => 1,
+      show_sizes => 1,
+      out_file  => catfile(
+        $self->target_dir, 'db-diagram-v' . $self->dbic_dh->schema_version . '.png')});
+
+  $trans->translate
+    or die $trans->error;
 }
 
 sub install_if_needed {
@@ -884,6 +903,23 @@ the matching sets for that version.
 
 Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
 deployment info (this is different from L</drop_tables> which does delete it.)
+
+=head diagram
+
+Experimental feature.  Although not specifically a migration task, I find it
+useful to output visuals of my databases.  This command will place a file in
+your L</target_dir> called C<db-diagram-vXXX.png> where C<XXX> is he current
+C<schema> version.
+
+This is using the Graphviz producer (L<SQL::Translator::Producer::GraphViz>)
+which in turn requires L<Graphviz>.  Since this is not always trivial to
+install, I do not require it.  You will need to add it manually to your
+C<Makefile.PL> or C<dist.ini> and manage it yourself.
+
+This feature is experimental and currently does not offer any options, as I
+am still determining the best way to meet the need without exceeding the
+scope of L<DBIx::Class::Migration>.  Consider this command a 'freebee' and
+please don't depend on it in your custom code.
 
 =head2 install_if_needed
 

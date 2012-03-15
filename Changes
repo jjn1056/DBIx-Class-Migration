@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration
 
+0.017  14 March 2012
+        - POD and documentation fixes (logie17++)
+        - new command: "dbic-migration diagram".  If GraphViz is installed will
+          produce a png file of the current schema.  EXPERIMENTAL!
+
 0.016  12 March 2012
         - More POD and documentation fixes  (Volker++), (logie17++)
         - changed the way I declare version requirements in my dist.ini filr

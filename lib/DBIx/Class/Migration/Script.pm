@@ -74,7 +74,7 @@ has fixture_sets => (
       version status prepare install upgrade
       downgrade drop_tables delete_table_rows
       dump_all_sets make_schema install_if_needed
-      dump );
+      dump diagram);
   }
 
 has migration_class => (
@@ -522,6 +522,13 @@ what the deployment perl run files get for schema.
 
 Install the database to the current C<$schema> version if it is not currently
 installed.  Otherwise this is a nop (even if the database is behind the schema).
+
+=head2 diagram
+
+Experimental feature.  This command will place a file in your L</target_dir>
+called C<db-diagram-vXXX.png> where C<XXX> is he current C<schema> version.
+
+This feature is experimental and currently does not offer any options.
 
 =head2 Command Flags
 
