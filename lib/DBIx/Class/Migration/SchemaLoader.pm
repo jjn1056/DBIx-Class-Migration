@@ -27,7 +27,7 @@ sub _make_schema_at {
   my ($self, $name, %extra_opts) = @_;
   my $schema = $self->schema->clone;
   DBIx::Class::Schema::Loader::make_schema_at
-    $name, {_merge_opts(%extra_opts)}, {_rearrange_connect_info($schema->storage)};
+    $name, {_merge_opts(%extra_opts)}, [{_rearrange_connect_info($schema->storage)}];
 }
 
 sub _next_cnt { our $_cnt++ }

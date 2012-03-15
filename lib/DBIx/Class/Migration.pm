@@ -430,21 +430,29 @@ sub make_schema {
 
 sub diagram {
   my $self = shift;
+  my $number_tables = scalar $self->schema->sources;
+  my $dimension = int sqrt($number_tables * 13);
   my $trans = SQL::Translator->new(
     parser => 'SQL::Translator::Parser::DBIx::Class',
     parser_args => { package => $self->schema },
     producer => 'GraphViz',
     producer_args => {
       skip_tables => 'dbix_class_deploymenthandler_versions',
+      width => $dimension,
+      height => $dimension,
       show_constraints => 1,
       show_datatypes => 1,
       show_sizes => 1,
-      out_file  => catfile(
-        $self->target_dir, 'db-diagram-v' . $self->dbic_dh->schema_version . '.png')});
+      out_file  => $self->_diagram_default_outfile });
 
   $trans->translate
     or die $trans->error;
 }
+
+  sub _diagram_default_outfile {
+    my $self = shift;
+    catfile $self->target_dir, 'db-diagram-v' . $self->dbic_dh->schema_version . '.png';
+  }
 
 sub install_if_needed {
   my ($self, %callbacks) = @_;
