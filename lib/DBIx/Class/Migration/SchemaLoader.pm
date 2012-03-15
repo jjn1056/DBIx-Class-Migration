@@ -13,11 +13,21 @@ sub opts {
 
 sub _merge_opts { opts(), @_ };
 
+sub _rearrange_connect_info {
+   my ($storage) = @_;
+   my $nci = $storage->_normalize_connect_info(
+    $storage->connect_info);
+   return (
+    dbh_maker => sub { $storage->dbh },
+    map %{$nci->{$_}}, grep { $_ ne 'arguments' } keys %$nci,
+  );
+}
+
 sub _make_schema_at {
   my ($self, $name, %extra_opts) = @_;
   my $schema = $self->schema->clone;
   DBIx::Class::Schema::Loader::make_schema_at
-    $name, {_merge_opts(%extra_opts)}, [ sub {$schema->storage->dbh} ];
+    $name, {_merge_opts(%extra_opts)}, {_rearrange_connect_info($schema->storage)};
 }
 
 sub _next_cnt { our $_cnt++ }

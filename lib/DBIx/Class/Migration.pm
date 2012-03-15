@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.017";
+our $VERSION = "0.018";
 
 use Moose;
 use JSON::XS;
@@ -455,6 +455,16 @@ sub install_if_needed {
     } elsif( my $default_fixture_sets = delete($callbacks{default_fixture_sets})) {
       $self->populate(@$default_fixture_sets);
     }
+  }
+}
+
+sub install_version_storage {
+  my $self = shift;
+  if(!$self->dbic_dh->version_storage_is_installed) {
+    $self->dbic_db->install_version_storage;
+    print "Version storage has been installed in the target database\n";
+  } else {
+    print "Version storage is already installed in the target database!\n";
   }
 }
 
@@ -949,11 +959,23 @@ object).
 
 Accepts: Arrayref of fixture sets
 
+    $migration->install_if_needed(
+      default_fixture_sets => ['all_tables']);
+
 After database installation, populate the fixtures in order.
 
 =back
 
-Currently we allow one callback C<on_install> which gets passed two arguments:
+=head2 install_version_storage
+
+If the targeted (connected) database does not have the versioning tables
+installed, this will install them.  The version is set to whatever your
+C<schema> version currently is.
+
+You will only need to use this command in the case where you have an existing
+database that you are reverse engineering and you need to setup versioning
+storage since you can't rebuild the database from scratch (such as if you have
+a huge production database that you now want to start versioning).
 
 =head1 THANKS
 

@@ -74,7 +74,7 @@ has fixture_sets => (
       version status prepare install upgrade
       downgrade drop_tables delete_table_rows
       dump_all_sets make_schema install_if_needed
-      dump diagram);
+      dump diagram install_version_storage);
   }
 
 has migration_class => (
@@ -522,6 +522,13 @@ what the deployment perl run files get for schema.
 
 Install the database to the current C<$schema> version if it is not currently
 installed.  Otherwise this is a nop (even if the database is behind the schema).
+
+
+=head2 install_version_storage
+
+If the targeted (connected) database does not have the versioning tables
+installed, this will install them.  The version is set to whatever your
+C<schema> version currently is.
 
 =head2 diagram
 

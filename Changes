@@ -1,5 +1,15 @@
 Revision history for DBIx-Class-Migration
 
+0.018  15 March 2012
+        - Documentation fixes (Volker++)
+        - Project title change
+        - ::SchemaLoader now more carefully preserves connection information
+          from its target database (code cribbed from frew++)
+        - new command: "dbic-migration install_version_storage", which lets you
+          force install the versioning tables and metadate into a target DB.
+          This could be useful if you have an existing database that you want
+          to start versioning.
+
 0.017  14 March 2012
         - POD and documentation fixes (logie17++)
         - new command: "dbic-migration diagram".  If GraphViz is installed will
