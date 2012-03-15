@@ -440,7 +440,7 @@ L<DBIx::Class::Fixtures> to understand what additional arguments may be of use.
 
 =head1 COMMANDS
 
-    dbic_migration -Ilib install
+    dbic-migration -Ilib install
 
 Since this class consumes the L<MooseX::GetOpt> role, it can be run directly
 as a commandline application.  The following is a list of commands we support
@@ -539,7 +539,7 @@ The following flags are used to modify or inform commands.
 Aliases: I, lib
 Value: String or Array of Strings
 
-    dbic_migration --includes lib --includes /opt/perl/lib
+    dbic-migration --includes lib --includes /opt/perl/lib
 
 Does the same thing as the Perl command line interpreter flag C<I>.  Adds all
 the listed paths to C<@INC>.  You will likely use this in order to find your
@@ -549,7 +549,7 @@ application schema (subclass of L<DBIx::Class::Schema>.
 
 Value: Str
 
-    dbic_migration prepare --schema_class MyApp::Schema -Ilib
+    dbic-migration prepare --schema_class MyApp::Schema -Ilib
 
 Used to specify the L<DBIx::Class::Schema> subclass which is the core of your
 L<DBIx::Class> based ORM managed system.  This is required and the application
@@ -560,7 +560,7 @@ cannot function without one.
 Aliases: D
 Value: Str
 
-    dbic_migration prepare --schema_class MyApp::Schema --target_dir /opt/share
+    dbic-migration prepare --schema_class MyApp::Schema --target_dir /opt/share
 
 We need a directory path that is used to store your fixtures and migration
 files.  By default this will be the C<share> directory for the application
@@ -590,7 +590,7 @@ database, where we will deploy migrations and fixtures.  If you don't provide
 them, we will automatically deploy to a L<DBD::SQLite> managed database located
 at L</target_dir>.
 
-    dbic_migration install --username myuser --password mypass --dsn DBI:SQLite:mydb.db
+    dbic-migration install --username myuser --password mypass --dsn DBI:SQLite:mydb.db
 
 =head3 force_overwrite
 
@@ -602,14 +602,14 @@ once (say if you are developing a new version and need to try out a few options
 first).  This lets you deploy over an existing set.  This will of course destroy
 and manual modifications you made, buyer beware.)
 
-    dbic_migration prepare --overwrite_migrations
+    dbic-migration prepare --overwrite_migrations
 
 =head3 to_version
 
 Aliases: D
 Value: Str (default: Current VERSION of Schema)
 
-    dbic_migration install --to_version 5
+    dbic-migration install --to_version 5
 
 Used to specify which version we are going to deploy.  Defaults to whatever
 is the most current version you've prepared.
@@ -626,7 +626,7 @@ You can prepare deployment for any database type that L<SQLT> understand.  By
 default we only prepare a deployment version for the database which matches
 the L<dsn> you specified but you can use this to prepare additional deployments
 
-    dbic_migration prepare --database SQLite --database mysql
+    dbic-migration prepare --database SQLite --database mysql
 
 Please note if you choose to manually set this value, you won't automatically
 get the default, unless you specify as above
@@ -638,7 +638,7 @@ Value: Str or Array of Str (default: all set)
 
 When dumping or populating fixture sets, you use this to set which sets.
 
-    dbic_migration dump --fixture_set roles --fixture_set core
+    dbic-migration dump --fixture_set roles --fixture_set core
 
 Please note that if you manually describe your sets as in the above example,
 you don't automatically get the C<all_tables> set, which is a fixture set of all
@@ -676,7 +676,7 @@ L<DBIx::Class::Migration::MySQLSandbox> for more documentation.
 
 Assuming you've prepared migrations for an alternative sandbox, such as MySQL:
 
-    dbic_migration install --schema_class MyApp::Schema --sandbox_class MySQLSandbox
+    dbic-migration install --schema_class MyApp::Schema --sandbox_class MySQLSandbox
 
 Would install it.  Like some of the other option flags you can specify with an
 %ENV setting:
@@ -774,27 +774,27 @@ cases.
 
 =head2 Prepare deployment files for a schema
 
-    dbic_migration prepare --schema_class MyApp::Schema
+    dbic-migration prepare --schema_class MyApp::Schema
 
 This will prepare deployment files for just SQLite
 
-    dbic_migration prepare --database SQLite --database mysql \
+    dbic-migration prepare --database SQLite --database MySQL \
       --schema_class MyApp::Schema
 
 This will prepare deployment files for both SQLite and MySQL
 
 =head2 Install database from deployments
 
-    dbic_migration install --schema_class MyApp::Schema
+    dbic-migration install --schema_class MyApp::Schema
 
 Creates the default sqlite database in the C<share> directory.
 
-    dbic_migration install --schema_class MyApp::Schema --to_version 2
+    dbic-migration install --schema_class MyApp::Schema --to_version 2
 
 Same as the previous command, but installs version 2, instead of whatever is
 the most recent version
 
-    dbic_migration populate --schema_class MyApp::Schema --fixture_set seed
+    dbic-migration populate --schema_class MyApp::Schema --fixture_set seed
 
 Populates the C<seed> fixture set to the current database (matches the database
 version to the seed version.)
