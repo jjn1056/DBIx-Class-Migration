@@ -74,7 +74,7 @@ testing modules.  Great, now install the new dependencies:
 
     dzil listdeps | cpanm
 
-Perfect, we are now fully up to date (and anyone that checks out our code can
+Perfect, we are now fully up to date and anyone that checks out our code can
 also be sure to have all the right dependencies.  Let's run the test case:
 
     $ prove -lv t/upgrade-1to2.t 
@@ -88,7 +88,7 @@ also be sure to have all the right dependencies.  Let's run the test case:
     Files=1, Tests=2,  1 wallclock secs ( ... )
     Result: PASS
 
-So hopefully that was easier database testing then you might be used too :)
+So hopefully that was easier database testing than you might be used too. :)
 
 =head1 Additional Domain Logic Testing
 
