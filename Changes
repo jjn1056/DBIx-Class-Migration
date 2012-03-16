@@ -1,5 +1,11 @@
 Revision history for DBIx-Class-Migration
 
+0.019  16 March 2012
+        - Fixed broken POD in the third part of the tutorial that prevented
+          the page from being rendered.
+        - Updated a number of dependencies to newer version to solve some
+          reported problems.
+
 0.018  15 March 2012
         - Documentation fixes (Volker++)
         - Project title change
