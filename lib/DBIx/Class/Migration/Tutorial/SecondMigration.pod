@@ -10,7 +10,7 @@ about creating seed data.
 
 =head1 Changing Requirements
 
-So far your L<MusicBase> application is doing fine, but some new requirements
+So far your C<MusicBase> application is doing fine, but some new requirements
 come down.  In addition to storing the Artist's name, we now want to store
 some geographical information, in this case a C<Country> that can be associated
 with the C<Artist>.  Right now we are just going to care about Artists that can
