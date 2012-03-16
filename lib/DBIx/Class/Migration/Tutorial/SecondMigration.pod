@@ -10,7 +10,7 @@ about creating seed data.
 
 =head1 Changing Requirements
 
-So far your L<MusicBase> application is doing fine, but some new requirements
+So far your C<MusicBase> application is doing fine, but some new requirements
 come down.  In addition to storing the Artist's name, we now want to store
 some geographical information, in this case a C<Country> that can be associated
 with the C<Artist>.  Right now we are just going to care about Artists that can
@@ -274,7 +274,7 @@ sense to do this.  You could have just as easily created a file:
     ## example, you don't need to do this!
     touch share/migrations/SQLite/upgrade/1-2/002-insert_countries.pl
 
-And that woould have made a script that would only run on SQLite installs.
+And that would have made a script that would only run on SQLite installs.
 
 Lets edit our Perl run file:
 
@@ -361,7 +361,7 @@ add the country rows we need).  Open the file in your text editor and enter:
     COMMIT;
 
 So this was my personal best shot, but of course there is going to be more than
-one way to do it.  I decide it would be best to create a temporary table to
+one way to do it.  I decided it would be best to create a temporary table to
 hold the current artist info, build a new artist table with the correct FK
 constraint and new column, and then copy back from the temp table.  Now, if I
 had a million rows this wouldn't work out very well, but with a database that
@@ -455,7 +455,7 @@ C<sqlite> shell:
 
 =head1 Customize Fixtures and Serializing Fixtures
 
-When you C<prepare>ed the new version, in addition to creating the database
+When you C<prepareed> the new version, in addition to creating the database
 structure migrations, we also got a new version 2 directory for the fixtures.
 
     /share
@@ -484,7 +484,7 @@ as country lists, roles, product names, etc.
 So you can use fixtures for a variety of jobs, from created demo databases to
 show clients, databases for developer, fixtures for running tests, and
 fixtures to preserve necessary domain data.  You can then install a database
-and setup whatever list of fixtures is needed for the job at had.  Additionally
+and setup whatever list of fixtures is needed for the job at hand.  Additionally
 since our migrations perform updates on the database data, we can just dump new
 fixtures after each clean update, and expect to have properly updated fixtures.
 
@@ -519,7 +519,7 @@ Now that you have the new, custom fixture, lets dump all the sets:
     dbic-migration -Ilib dump_all_sets
 
 Please note that if you 'played' with the database after doing the update, any
-new additional data with now become part of your fixtures.  This may or may not
+new additional data will now become part of your fixtures.  This may or may not
 be desirable.  Let's see the list of new fixtures:
 
     /share
