@@ -1,5 +1,9 @@
 Revision history for DBIx-Class-Migration
 
+0.020  28 March 2012
+        - fixed typo that caused new command added in 0.018 to fail (nour.sharabash++)
+        - documentation typo fixes (logie17++)
+
 0.019  16 March 2012
         - Fixed broken POD in the third part of the tutorial that prevented
           the page from being rendered.
