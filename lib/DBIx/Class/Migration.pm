@@ -285,7 +285,7 @@ sub prepare {
       $self->target_dir, $previous);
     _copy_from_to($previous_fixtures_conf, $fixture_conf_dir);
   } else {
-    print "There is not current database deployed, so I can't prepare upgrades\n";
+    print "There is no current database deployed, so I can't prepare upgrades\n";
     print "or downgrades\n";
   }
 }

@@ -42,7 +42,7 @@ You should now have a directory structure like this:
 We will use the C<dist.ini> file to manage our project dependencies.  Open
 C<dist.ini> in your editor of choice and alter it to look like this:
 
-    name    = DBIx-Class-Migration
+    name    = MusicBase
     author  = John Napiorkowski <jjnapiork@cpan.org>
     license = Perl_5
     copyright_holder = John Napiorkowski

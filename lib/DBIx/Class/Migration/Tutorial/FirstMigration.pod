@@ -82,7 +82,7 @@ Let's create some migrations for Version 1 of your Schema.
 
 You should see:
 
-    There is not current database deployed, so I can't prepare upgrades
+    There is no current database deployed, so I can't prepare upgrades
     or downgrades
 
 B<NOTE:> If you are getting some wild debugging messages, please see
