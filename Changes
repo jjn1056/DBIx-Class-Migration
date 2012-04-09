@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration
 
+0.021  09 April 2012
+        - Documentation and debug output fixes (RsrchBoy++)
+        - New Feature: We set  %ENV variables for key settings so that
+          information is passed to install / up-downgrade scripts.
+
 0.020  28 March 2012
         - fixed typo that caused new command added in 0.018 to fail (nour.sharabash++)
         - documentation typo fixes (logie17++)

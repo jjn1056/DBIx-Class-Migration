@@ -1,5 +1,15 @@
 # NAME
 
+    my $dbic_dh = shift->dbic_dh;
+    print "Schema is ${\$dbic_dh->schema_version}\n";
+    if($dbic_dh->version_storage_is_installed) {
+      print "Deployed database is ${\$dbic_dh->database_version}\n";
+    } else {
+      print "Database is not currently installed\n";
+    }
+
+
+
 DBIx::Class::Migration - Use the best tools together for sane database migrations
 
 # SYNOPSIS
@@ -41,6 +51,7 @@ Utility Commands:
     $migration->delete_table_rows;
     $migration->make_schema;
     $migration->install_if_needed;
+    $migration->install_version_storage;
 
 # DESCRIPTION
 
@@ -100,7 +111,7 @@ running tests, for example.
 
 ## db_sandbox_class
 
-Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::MySQLSandbox').
+Accepts Str.  Not Required (defaults to 'DBIx::Class::Migration::SqliteSandbox').
 
 Unless you already have a database setup and running (as you probably do in
 production) we need to auto create a database 'sandbox' that is isolated to
@@ -152,7 +163,7 @@ database connection with the following DSN:
 
     DBD:SQLite:[path to target_dir]/[db_file_name].db
 
-Where c<[path to home_dir]> is ["target_dir"](#target_dir) and [db_file_name] is a converted
+Where c<[path to target_dir]> is ["target_dir"](#target_dir) and [db_file_name] is a converted
 version of ["schema_class"](#schema_class).  For example if you set [schema_class](http://search.cpan.org/perldoc?schema_class) to:
 
     MyApp::Schema
@@ -320,7 +331,7 @@ choose to leave this undefined.
 ### Specify a schema
 
 There may be some cases when you already have a schema object constructed and
-woudl prefer to just use that.  For example, you may be using [Catalyst](http://search.cpan.org/perldoc?Catalyst) and
+would prefer to just use that.  For example, you may be using [Catalyst](http://search.cpan.org/perldoc?Catalyst) and
 wish to build custom scripts using the built-in dependency and service lookup:
 
     use MyCatalyst::App;
@@ -331,7 +342,7 @@ wish to build custom scripts using the built-in dependency and service lookup:
       %{MyCatalyst::App->config->{extra_migration_init_args}};
     );
 
-Be care of potential locking issues when using some databases like SQLite.
+Be careful of potential locking issues when using some databases like SQLite.
 
 ### OPTIONAL: Specify a target_dir
 
@@ -442,6 +453,21 @@ the matching sets for that version.
 Skips the table `dbix_class_deploymenthandler_versions`, so you don't lose
 deployment info (this is different from ["drop_tables"](#drop_tables) which does delete it.)
 
+Experimental feature.  Although not specifically a migration task, I find it
+useful to output visuals of my databases.  This command will place a file in
+your ["target_dir"](#target_dir) called `db-diagram-vXXX.png` where `XXX` is he current
+`schema` version.
+
+This is using the Graphviz producer ([SQL::Translator::Producer::GraphViz](http://search.cpan.org/perldoc?SQL::Translator::Producer::GraphViz))
+which in turn requires [Graphviz](http://search.cpan.org/perldoc?Graphviz).  Since this is not always trivial to
+install, I do not require it.  You will need to add it manually to your
+`Makefile.PL` or `dist.ini` and manage it yourself.
+
+This feature is experimental and currently does not offer any options, as I
+am still determining the best way to meet the need without exceeding the
+scope of [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration).  Consider this command a 'freebee' and
+please don't depend on it in your custom code.
+
 ## install_if_needed
 
 If the database is not installed, do so.  Accepts a hash of callbacks or
@@ -468,9 +494,36 @@ object).
 
 Accepts: Arrayref of fixture sets
 
+    $migration->install_if_needed(
+      default_fixture_sets => ['all_tables']);
+
 After database installation, populate the fixtures in order.
 
-Currently we allow one callback `on_install` which gets passed two arguments:
+## install_version_storage
+
+If the targeted (connected) database does not have the versioning tables
+installed, this will install them.  The version is set to whatever your
+`schema` version currently is.
+
+You will only need to use this command in the case where you have an existing
+database that you are reverse engineering and you need to setup versioning
+storage since you can't rebuild the database from scratch (such as if you have
+a huge production database that you now want to start versioning).
+
+# ENVIRONMENT
+
+When running [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) we set some `%ENV` variables during
+installation, up / downgrading, so that your Perl run scripts (see
+["DBIx::Class::DeploymentHandler::DeployMethod::SQL::Translator\'PERL SCRIPTS'"](#DBIx::Class::DeploymentHandler::DeployMethod::SQL::Translator\'PERL SCRIPTS'))
+can receive some useful information.  The Following `%ENV` variables are set:
+
+    DBIC_MIGRATION_SCHEMA_CLASS => $self->schema_class
+    DBIC_MIGRATION_TARGET_DIR => $self->target_dir
+    DBIC_MIGRATION_SCHEMA_VERSION => $self->dbic_dh->schema_version
+    DBIC_MIGRATION_TO_VERSION => $self->dbic_dh->to_version
+    DBIC_MIGRATION_DATABASE_VERSION => $self->dbic_dh->schema_version || 0
+
+
 
 # THANKS
 
