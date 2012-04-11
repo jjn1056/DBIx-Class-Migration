@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration
 
+0.022  11 April 2012
+        - Fixed broken POD in last release.  No functional changes
+
 0.021  11 April 2012
         - Documentation and debug output fixes (RsrchBoy++)
         - fixed regression when using DBIC:DeploymentHandler v0.002112+

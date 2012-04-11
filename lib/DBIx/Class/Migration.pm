@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.021";
+our $VERSION = "0.022";
 
 use Moose;
 use JSON::XS;
@@ -493,15 +493,6 @@ before [qw/install upgrade downgrade/], sub {
 __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
-
-  my $dbic_dh = shift->dbic_dh;
-  print "Schema is ${\$dbic_dh->schema_version}\n";
-  if($dbic_dh->version_storage_is_installed) {
-    print "Deployed database is ${\$dbic_dh->database_version}\n";
-  } else {
-    print "Database is not currently installed\n";
-  }
-
 
 DBIx::Class::Migration - Use the best tools together for sane database migrations
 
