@@ -478,10 +478,11 @@ sub install_version_storage {
 
 before [qw/install upgrade downgrade/], sub {
   my ($self, @args) = @_;
-  local %ENV = (
+  %ENV = (
     %ENV,
     DBIC_MIGRATION_SCHEMA_CLASS => $self->schema_class,
     DBIC_MIGRATION_TARGET_DIR => $self->target_dir,
+    DBIC_MIGRATION_FIXTURE_DIR => catdir($self->target_dir, 'fixtures', $self->dbic_dh->schema_version),
     DBIC_MIGRATION_SCHEMA_VERSION => $self->dbic_dh->schema_version,
     DBIC_MIGRATION_TO_VERSION => $self->dbic_dh->to_version,
     DBIC_MIGRATION_DATABASE_VERSION => (
@@ -1017,10 +1018,14 @@ can receive some useful information.  The Following C<%ENV> variables are set:
 
     DBIC_MIGRATION_SCHEMA_CLASS => $self->schema_class
     DBIC_MIGRATION_TARGET_DIR => $self->target_dir
+    DBIC_MIGRATION_FIXTURE_DIR => catdir($self->target_dir, 'fixtures', $self->dbic_dh->schema_version),
     DBIC_MIGRATION_SCHEMA_VERSION => $self->dbic_dh->schema_version
     DBIC_MIGRATION_TO_VERSION => $self->dbic_dh->to_version
     DBIC_MIGRATION_DATABASE_VERSION => $self->dbic_dh->schema_version || 0
 
+You might find having these available in your migration scripts useful for
+doing things like 'populate a database from a fixture set, if it exists, but
+if not run a bunch of inserts.
 
 =head1 THANKS
 

@@ -1,7 +1,9 @@
 Revision history for DBIx-Class-Migration
 
-0.021  09 April 2012
+0.021  11 April 2012
         - Documentation and debug output fixes (RsrchBoy++)
+        - fixed regression when using DBIC:DeploymentHandler v0.002112+
+          (lxp@cpan.org++)
         - New Feature: We set  %ENV variables for key settings so that
           information is passed to install / up-downgrade scripts.
 

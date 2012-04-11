@@ -43,6 +43,9 @@ open(
 print $perl_run <<'END';
 
 use DBIx::Class::Migration::RunScript;
+use Test::Most;
+
+ok $ENV{DBIC_MIGRATION_TARGET_DIR};
 
 builder {
   'SchemaLoader',

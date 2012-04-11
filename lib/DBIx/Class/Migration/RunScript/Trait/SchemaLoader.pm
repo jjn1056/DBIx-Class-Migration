@@ -6,11 +6,7 @@ use DBIx::Class::Migration::SchemaLoader;
 
 requires 'dbh';
 
-has 'schema' => (
-  is=>'ro',
-  lazy_build=>1);
-
-sub _build_schema {
+sub schema {
   my $dbh = (my $self = shift)->dbh;
   my $name = DBIx::Class::Migration::SchemaLoader::_as_unique_ns(
     'DBIx::Class::Migration::LoadedSchema');
