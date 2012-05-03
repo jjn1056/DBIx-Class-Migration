@@ -24,8 +24,14 @@ sub build {
   File::ShareDir::ProjectDistDir->import('dist_dir',
     filename => filename_from_class($class));
 
-  return dist_dir(
-    class_to_distname($class));
+  my $sharedir;
+  while($class) {
+    last if $sharedir = eval { dist_dir( class_to_distname($class) ) };
+    last unless $class =~s/::[^\:\:]+$//;
+  }
+
+  return $sharedir || die "Can't find a /share for $class";
+
 }
 
 __PACKAGE__->meta->make_immutable;

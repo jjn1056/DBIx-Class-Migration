@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration
 
+0.023  03 May 2012
+        - Look harder for a sharedir
+
 0.022  11 April 2012
         - Fixed broken POD in last release.  No functional changes
 
