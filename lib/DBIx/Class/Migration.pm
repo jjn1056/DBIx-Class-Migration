@@ -470,6 +470,7 @@ sub install_version_storage {
   my $self = shift;
   if(!$self->dbic_dh->version_storage_is_installed) {
     $self->dbic_dh->install_version_storage;
+    $self->dbic_dh->add_database_version({ version => $self->dbic_dh->schema_version });
     print "Version storage has been installed in the target database\n";
   } else {
     print "Version storage is already installed in the target database!\n";
