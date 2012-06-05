@@ -1,5 +1,9 @@
 Revision history for DBIx-Class-Migration
 
+0.024  05 June 2012
+        - Fixed method 'install_version_storage' to actually do what the
+          documentation claims.  Added test case (++bentglasstube).
+
 0.023  03 May 2012
         - Look harder for a sharedir
 
