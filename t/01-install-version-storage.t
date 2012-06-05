@@ -8,20 +8,33 @@ use Test::Most;
 use DBIx::Class::Migration;
 use File::Spec::Functions 'catfile';
 use File::Path 'rmtree';
+use Local::Schema;
 
-my $migration = DBIx::Class::Migration->new(schema_class => 'Local::Schema');
-my $dbic_dh   = $migration->dbic_dh;
+## Create an in-memory sqlite version of the test schema
+(my $schema = Local::Schema->connect('dbi:SQLite::memory:'))
+  ->deploy;
+
+## Connect a DBIC migration to that
+ok my $migration = DBIx::Class::Migration->new(schema => $schema);
+
+## Verify that the connected schema is missing the version storage meta-table
+
+ok my $dbic_dh = $migration->dbic_dh;
 
 is(
   $dbic_dh->schema_version, 1,
-  'schema version ok');
+    'schema version ok');
 
 is(
   $dbic_dh->version_storage_is_installed, undef,
-  'version storage not yet installed');
+    'version storage not yet installed');
 
+
+## Install the version storage and set the version
 $migration->prepare;
 $migration->install_version_storage;
+
+## Make sure the version is right and the meta table exists
 
 ok(
   $dbic_dh->version_storage_is_installed,
