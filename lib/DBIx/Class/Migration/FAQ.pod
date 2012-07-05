@@ -264,6 +264,35 @@ but they work for my testing.  Corrections very welcome!  Ideally I'd try to
 find a way to offer a patch to L<Test::postgresql>, although this seems to be
 limited to people using Macs.
 
+=head1 How to Release
+
+Here's the release steps I currently use, should I eventually find willing
+comainters:
+
+=over4
+
+=item Update Version
+
+You need to increment the version in C<dist.ini> and in L<DBIx::Class::Migration>
+
+=item Prepare Changes file
+
+Update the C<Changes> file.  It would be ideal to have been adding to this as
+you've gone along, but you should double check.
+
+=item Update Author's list
+
+If there have been new contributors, be sure to give credit
+
+=item Rebuild the README
+
+    pod2markdown < lib/DBIx/Class/Migration.pm > README.mkdn
+
+This will make sure the C<README> file in the project root matches the most
+recent updates.
+
+=back
+
 =head1 AUTHOR
 
 See L<DBIx::Class::Migration> for author information

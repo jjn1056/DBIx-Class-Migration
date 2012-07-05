@@ -42,6 +42,7 @@ Utility Commands:
     $migration->make_schema;
     $migration->install_if_needed;
     $migration->install_version_storage;
+    $migration->diagram;
 
 # DESCRIPTION
 
@@ -369,7 +370,8 @@ and reflect a desire for long term code flexibility and clean design.
 
 ## version
 
-Prints to STDOUT a message regarding the current application $VERSION
+Prints to STDOUT a message regarding the version of [DBIC:Migration](DBIC:Migration) that you
+are currently running.
 
 ## status
 

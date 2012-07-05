@@ -21,11 +21,16 @@ C<dbic-migration> command line tool:
 
 This should return (something similar to):
 
-    Application version is 0.001
+    Application version is 0.025
 
 Let's do a quick review.  C<dbic-migration> is your main gateway to managing
 your migrations.  When using the tool you will give it one command (such as
 C<version> above) and any number of option flags (starting with C<--> or C<->).
+
+B<NOTE:> The version reported might be different from the one mentioned in the
+above documentation.  If you have a much older (or newer) version, please note
+this tutorial was written against the one mentioned, and although I will strive
+for backward compatibility feature sets might change.
 
 When using the tool, you'll need to specify the C<schema_class> that you are
 creating and using migrations for.  Typically this will be your subclass of

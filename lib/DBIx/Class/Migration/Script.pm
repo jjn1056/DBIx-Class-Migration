@@ -156,7 +156,7 @@ sub cmd_help {
     Pod::Usage::pod2usage(
       -sections => ['COMMANDS'],
       -verbose => 99,
-      -input => Pod::Find::pod_where({-inc => 1}, ref($self)));
+      -input => Pod::Find::pod_where({-inc => 1}, __PACKAGE__));
   }
 }
 

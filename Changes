@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration
 
+0.025  05 July 2012
+        - Updated docs a bit to disambiguate the command 'version' and 'status'
+        - you can now run the help command on your custom subclasses of
+          DBIx::Class::Migration.
+
 0.024  05 June 2012
         - Fixed method 'install_version_storage' to actually do what the
           documentation claims.  Added test case (++bentglasstube).

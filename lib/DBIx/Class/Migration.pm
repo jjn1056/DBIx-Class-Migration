@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.024";
+our $VERSION = "0.025";
 
 use Moose;
 use JSON::XS;
@@ -537,6 +537,7 @@ Utility Commands:
     $migration->make_schema;
     $migration->install_if_needed;
     $migration->install_version_storage;
+    $migration->diagram;
 
 =head1 DESCRIPTION
 
@@ -864,7 +865,8 @@ and reflect a desire for long term code flexibility and clean design.
 
 =head2 version
 
-Prints to STDOUT a message regarding the current application $VERSION
+Prints to STDOUT a message regarding the version of L<DBIC:Migration> that you
+are currently running.
 
 =head2 status
 
