@@ -291,6 +291,29 @@ If there have been new contributors, be sure to give credit
 This will make sure the C<README> file in the project root matches the most
 recent updates.
 
+=item Check your tests
+
+    prove -lvr t
+
+=item Update the repository
+
+    git add @stuff_to_add
+    git commit -m $message
+    git push
+
+=item Make the Distribution
+
+    dzil build
+    dzil release
+    dzil clean
+
+=item Update the git version tag
+
+I usually don't update and push the tag until we are on CPAN.
+
+    git tag $VERSION -m 'cpan release'
+    git push --tags
+
 =back
 
 =head1 AUTHOR
