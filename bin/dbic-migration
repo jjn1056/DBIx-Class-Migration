@@ -12,7 +12,7 @@ dbic-migration - commandline tool to create and manage your migrations
     dbic-migration status \
       --libs="lib"
       --schema_class='MyApp::Schema' \
-      --dns='DBI:SQLite:myapp.db'
+      --dsn='DBI:SQLite:myapp.db'
 
 =head1 DESCRIPTION
 
