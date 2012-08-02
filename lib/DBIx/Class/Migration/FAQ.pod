@@ -288,12 +288,12 @@ If there have been new contributors, be sure to give credit
 
     pod2markdown < lib/DBIx/Class/Migration.pm > README.mkdn
 
-This will make sure the C<README> file in the project root matches the most
+This will make sure the C<README.mkdn> file in the project root matches the most
 recent updates.
 
 =item Check your tests
 
-    prove -lvr t
+    AUTHOR_MODE=1 prove -lvr t
 
 =item Update the repository
 
