@@ -12,12 +12,13 @@ around BUILDARGS => sub {
   my $args = $class->$orig(@args);
 
   my $connect_info = (delete $args->{connect_info}) || {};
+  $args->{extra_migration_args}->{schema_class} = $args->{schema_class};
 
   my %init_args = (
-    schema_class => $args->{schema_class},
+   ($args->{migration_class} ? (migration_class => delete $args->{migration_class}) : ()),
    ($args->{default_fixtures} ? (default_fixtures => delete $args->{default_fixtures}) : ()),
    ($args->{install_if_needed} ? (install_if_needed => delete $args->{install_if_needed}) : ()),
-   ($args->{extra_migration_args} ? (extra_migration_args => delete $args->{extra_migration_args}) : ()));
+   (migration_init_args => delete $args->{extra_migration_args}));
 
   my $migration_helper = Catalyst::TraitFor::Model::DBIC::Schema::FromMigration::_MigrationHelper
     ->new(%init_args);

@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration
 
+0.027  TBA
+        - Allow you to specify a migration class in the Catalyst DBIC Model
+          Trait.  This will allow you to make direct use of any custom
+          subclasses of DBIx::Class::Migration you may have written.
+
 0.026  02 August 2012
         - Fixed typo in documentation (chromatic++)
         - added repository and other metadata to the distribution.
