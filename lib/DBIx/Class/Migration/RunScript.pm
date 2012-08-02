@@ -2,6 +2,7 @@ package DBIx::Class::Migration::RunScript;
 
 use Moose;
 use Moose::Exporter;
+use Text::Brew qw(distance);
 
 Moose::Exporter->setup_import_methods(
   as_is => ['builder', 'migrate']);
@@ -16,7 +17,38 @@ has 'runs' => (
   isa=>'CodeRef',
   required=>1);
 
-sub run { shift->runs->(@_) }
+sub run {
+  my ($self) = @_;
+  eval { $self->runs->(@_); 1 } ||
+    $self->handle_errors($@);
+}
+
+sub handle_errors {
+  my ($self, $err) = @_;
+  if($err =~m/Can't find source for (.+?) at/) {
+    my @presentsources = map {
+      (distance($_, $1))[0] < 3 ? "$_ <== Possible Match\n" : "$_\n";
+    } $self->schema->sources;
+
+    die <<"ERR";
+$err
+You are probably seeing this error because the DBIC source in your migration
+script called "$1" doesn't match a source defined in the schema that
+::SchemaLoader has inferred from your existing database.  You may be confused
+since that source might exist in your hand coded Schema files.  Since your
+migration script doesn't use your hand coded Schema (it can't since we cannot
+be sure it is in sync with your database state) but instead uses SchemaLoader
+to autogenerate a schema, it uses the default SchemaLoader rules for creating
+source names from the database tables it finds.
+
+To help you debug this issue, here's a list of the actual sources that the
+schema available to your migration knows about:
+
+ @presentsources
+ERR
+  }
+  die $err;
+}
 
 sub as_coderef {
   my $self = shift;

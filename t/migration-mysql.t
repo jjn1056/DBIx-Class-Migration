@@ -47,7 +47,6 @@ open(
 print $perl_run <<END;
 
 use DBIx::Class::Migration::RunScript;
-
 migrate {
   shift->schema
     ->resultset('Country')

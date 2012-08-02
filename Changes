@@ -1,5 +1,15 @@
 Revision history for DBIx-Class-Migration
 
+0.026  02 August 2012
+        - Fixed typo in documentation (chromatic++)
+        - added repository and other metadata to the distribution.
+        - increased the minimum require version of MX:GetOpt to hopefully solve
+          reported problems with older versions.
+        - If you get the very common "Can't find source for..." error in your
+          migration script, we now give you more details and debugging.
+        - Started to create some custom subtypes so we can better control the
+          error messages you get when making common mistakes at the commandline.
+
 0.025  05 July 2012
         - Updated docs a bit to disambiguate the command 'version' and 'status'
         - you can now run the help command on your custom subclasses of
