@@ -52,7 +52,7 @@ has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
 has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef',
   predicate=>'has_databases', cmd_aliases => 'database');
 
-has sandbox_class =>  (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+has sandbox_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
   predicate=>'has_sandbox_class', default=>SANDBOX_SQLITE,
   cmd_aliases => ['T','sb'], env_prefix=>ENV_PREFIX);
 
@@ -154,9 +154,9 @@ sub cmd_help {
     die "detailed help not yet available";
   } else {
     Pod::Usage::pod2usage(
-      -sections => ['COMMANDS'],
+      -sections => ['USAGE','COMMANDS','OPTIONS','SEE ALSO'],
       -verbose => 99,
-      -input => Pod::Find::pod_where({-inc => 1}, __PACKAGE__));
+      -input => Pod::Find::pod_where({-inc => 1}, "DBIx::Class::Migration::Script::Help"));
   }
 }
 
@@ -613,7 +613,7 @@ and manual modifications you made, buyer beware.)
 
 =head3 to_version
 
-Aliases: D
+Aliases: V
 Value: Str (default: Current VERSION of Schema)
 
     dbic-migration install --to_version 5

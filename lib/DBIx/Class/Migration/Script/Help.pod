@@ -1,0 +1,70 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help - Summary of the CLI help documentation
+
+=head1 USAGE
+
+  dbic-migration [options] Command
+
+=head1 COMMANDS
+
+  ## Informational Commands:
+
+  help                : Summary of commandline Help.
+  help [word]         : Detailed help for [command] or [option].
+  version             : The version of DBIx::Class::Migration you are using.
+  status              : Current database and schema version
+
+  ## Preparing and using Migrations:
+
+  prepare             : Makes deployment files for your schema_class
+  install             : Install a version to the database.
+  upgrade             : Upgrade the database.
+  downgrade           : Downgrade the database.
+  install_if_needed   : Install the database if its not installed
+  install_version_storage : populate the DBIC:DH metadata tables
+  
+  ## Commands for working with Fixtures:
+
+  dump_named_sets     : Created fixture sets for the named sets
+  dump_all_sets       : Dump all available fxture sets
+  populate            : Deploy the current database from fixtures
+
+  ## Utility Commands
+
+  drop_tables         : drops all tables in the target database.  CAREFUL!
+  delete_table_rows   : truncate all the tables (no data, keep structure).
+  make_schema         : Reverse engineer your database into DBIx::Class
+  diagram             : Create an image schematic of your schema
+  examples            : More examples of common usage
+
+=head1 OPTIONS
+
+  includes (I,lib)    : Adds the listed paths to @INC.
+  schema_class (S)    : The DBIx::Class::Schema subclass you are migrating
+  target_dir (D)      : Where to put (or find) your migration files
+  username (U)
+  password (P)
+  dsn                 : connection info to the database you are migrating
+  force_overwrite (O) : Allow overwriting of existing migration files
+  to_version (V)      : Use the given migration version
+  database(s)         : The type of database we are preparing migrations for.
+  fixture_set(s)      : Control the fixture sets used for dumping or populating
+  sandbox_class (T)   : Make any of SqliteSandbox, MySQLSandbox, PostgresqlSandbox
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+
