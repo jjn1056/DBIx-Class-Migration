@@ -150,14 +150,10 @@ sub cmd_populate {
 
 sub cmd_help {
   my ($self, $subhelp) = @_;
-  if($subhelp) {
-    die "detailed help not yet available";
-  } else {
-    Pod::Usage::pod2usage(
-      -sections => ['USAGE','COMMANDS','OPTIONS','SEE ALSO'],
-      -verbose => 99,
-      -input => Pod::Find::pod_where({-inc => 1}, "DBIx::Class::Migration::Script::Help"));
-  }
+  my $docs = "DBIx::Class::Migration::Script::Help" . ($subhelp ? "::$subhelp" : "");
+  Pod::Usage::pod2usage(
+    -verbose => 2,
+    -input => Pod::Find::pod_where({-inc => 1}, $docs));
 }
 
 sub _import_libs {
@@ -448,11 +444,11 @@ as well as the options / flags associated with each command.
 
 =head2 help
 
-Summary of commands and aliases.
+See L<DBIx::Class::Migration::Script::Help::help>.
 
 =head2 version
 
-prints the current version of the application to STDOUT
+See L<DBIx::Class::Migration::Script::Help::version>.
 
 =head2 status
 

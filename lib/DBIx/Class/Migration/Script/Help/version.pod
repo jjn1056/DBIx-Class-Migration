@@ -1,0 +1,28 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::version - version status
+
+=head1 SYNOPSIS
+
+  dbic-migration version
+
+=head1 DESCRIPTION
+
+prints the current version of the L<DBIx::Class::Migration> to STDOUT.  This
+could be useful in debugging issues or in communication with the author.
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+

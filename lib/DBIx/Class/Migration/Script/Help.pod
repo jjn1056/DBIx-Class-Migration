@@ -1,6 +1,6 @@
 =head1 NAME
 
-DBIx::Class::Migration::Script::Help - Summary of the CLI help documentation
+DBIx::Class::Migration::Script::Help - Summary of the commands
 
 =head1 USAGE
 
@@ -8,14 +8,16 @@ DBIx::Class::Migration::Script::Help - Summary of the CLI help documentation
 
 =head1 COMMANDS
 
-  ## Informational Commands:
+The following is a summary of available commands
+
+=head2 Informational Commands
 
   help                : Summary of commandline Help.
   help [word]         : Detailed help for [command] or [option].
   version             : The version of DBIx::Class::Migration you are using.
   status              : Current database and schema version
 
-  ## Preparing and using Migrations:
+=head2 Preparing and using Migrations
 
   prepare             : Makes deployment files for your schema_class
   install             : Install a version to the database.
@@ -24,13 +26,13 @@ DBIx::Class::Migration::Script::Help - Summary of the CLI help documentation
   install_if_needed   : Install the database if its not installed
   install_version_storage : populate the DBIC:DH metadata tables
   
-  ## Commands for working with Fixtures:
+=head2 Commands for working with Fixtures:
 
   dump_named_sets     : Created fixture sets for the named sets
   dump_all_sets       : Dump all available fxture sets
   populate            : Deploy the current database from fixtures
 
-  ## Utility Commands
+=head2 Utility Commands
 
   drop_tables         : drops all tables in the target database.  CAREFUL!
   delete_table_rows   : truncate all the tables (no data, keep structure).
@@ -38,7 +40,7 @@ DBIx::Class::Migration::Script::Help - Summary of the CLI help documentation
   diagram             : Create an image schematic of your schema
   examples            : More examples of common usage
 
-=head1 OPTIONS
+=head2 Command options
 
   includes (I,lib)    : Adds the listed paths to @INC.
   schema_class (S)    : The DBIx::Class::Schema subclass you are migrating
@@ -51,6 +53,13 @@ DBIx::Class::Migration::Script::Help - Summary of the CLI help documentation
   database(s)         : The type of database we are preparing migrations for.
   fixture_set(s)      : Control the fixture sets used for dumping or populating
   sandbox_class (T)   : Make any of SqliteSandbox, MySQLSandbox, PostgresqlSandbox
+
+=head1 EXAMPLE
+
+    dbic-migration status \
+      --libs="lib" \
+      --schema_class='MyApp::Schema' \
+      --dsn='DBI:SQLite:myapp.db'
 
 =head1 SEE ALSO
 
