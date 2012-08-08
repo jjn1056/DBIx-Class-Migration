@@ -452,8 +452,7 @@ See L<DBIx::Class::Migration::Script::Help::version>.
 
 =head2 status
 
-Returns the state of the deployed database (if it is deployed) and the state
-of the current C<schema>
+See L<DBIx::Class::Migration::Script::Help::status>.
 
 =head2 prepare
 
