@@ -24,7 +24,7 @@ has includes => (
   is => 'ro',
   isa => 'ArrayRef',
   predicate => 'has_includes',
-  cmd_aliases => ['I', 'libs']);
+  cmd_aliases => ['include','I', 'lib','libs']);
 
 has schema => (is=>'ro', predicate=>'has_schema');
 
@@ -204,7 +204,7 @@ DBIx::Class::Migration::Script - Tools to manage database Migrations
 =head1 SYNOPSIS
 
     dbic-migration status \
-      --libs="lib" \
+      --lib="lib" \
       --schema_class='MyApp::Schema' \
       --dsn='DBI:SQLite:myapp.db'
 
@@ -538,7 +538,7 @@ The following flags are used to modify or inform commands.
 
 =head3 includes
 
-Aliases: I, lib
+Aliases: I, lib, libs, include
 Value: String or Array of Strings
 
     dbic-migration --includes lib --includes /opt/perl/lib

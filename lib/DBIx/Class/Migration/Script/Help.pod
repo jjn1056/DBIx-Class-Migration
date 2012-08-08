@@ -42,7 +42,7 @@ The following is a summary of available commands
 
 =head2 Command options
 
-  includes (I,lib)    : Adds the listed paths to @INC.
+  include/s (I,lib/s) : Adds the listed paths to @INC.
   schema_class (S)    : The DBIx::Class::Schema subclass you are migrating
   target_dir (D)      : Where to put (or find) your migration files
   username (U)
@@ -50,8 +50,8 @@ The following is a summary of available commands
   dsn                 : connection info to the database you are migrating
   force_overwrite (O) : Allow overwriting of existing migration files
   to_version (V)      : Use the given migration version
-  database(s)         : The type of database we are preparing migrations for.
-  fixture_set(s)      : Control the fixture sets used for dumping or populating
+  database/s         : The type of database we are preparing migrations for.
+  fixture_set/s      : Control the fixture sets used for dumping or populating
   sandbox_class (T)   : Make any of SqliteSandbox, MySQLSandbox, PostgresqlSandbox
 
 =head1 EXAMPLE

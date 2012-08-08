@@ -5,7 +5,7 @@ DBIx::Class::Migration::Script::Help::status - Schema and Database Status
 =head1 SYNOPSIS
 
   dbic-migration status \
-    --libs=lib \
+    --lib=lib \
     --schema_class=MyApp::Schema
 
 =head1 DESCRIPTION
@@ -23,7 +23,7 @@ option by typing C<dbic-migration help OPTION>
 
 Format is "canonical (@aliases)".
 
-=head2 includes (I,lib)
+=head2 includes (I,lib,libs,include)
 
 Adds the listed paths to @INC.  Handy during development when you want to use
 a development schema class.
