@@ -38,7 +38,6 @@ The following is a summary of available commands
   delete_table_rows   : truncate all the tables (no data, keep structure).
   make_schema         : Reverse engineer your database into DBIx::Class
   diagram             : Create an image schematic of your schema
-  examples            : More examples of common usage
 
 =head2 Command options
 

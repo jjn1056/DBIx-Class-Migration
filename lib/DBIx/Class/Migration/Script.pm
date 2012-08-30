@@ -456,10 +456,7 @@ See L<DBIx::Class::Migration::Script::Help::status>.
 
 =head2 prepare
 
-Creates a C<fixtures> and C<migrations> directory under L</target_dir> (if they
-don't already exist) and makes deployment files for the current schema.  If
-deployment files exist, will fail unless you L</overwrite_migrations> and
-L</overwrite_fixtures>.
+See L<DBIx::Class::Migration::Script::Help::prepare>.
 
 =head2 install
 
@@ -538,40 +535,15 @@ The following flags are used to modify or inform commands.
 
 =head3 includes
 
-Aliases: I, lib, libs, include
-Value: String or Array of Strings
-
-    dbic-migration --includes lib --includes /opt/perl/lib
-
-Does the same thing as the Perl command line interpreter flag C<I>.  Adds all
-the listed paths to C<@INC>.  You will likely use this in order to find your
-application schema (subclass of L<DBIx::Class::Schema>.
+See L<DBIx::Class::Migration::Script::Help::includes>.
 
 =head3 schema_class
 
-Value: Str
-
-    dbic-migration prepare --schema_class MyApp::Schema -Ilib
-
-Used to specify the L<DBIx::Class::Schema> subclass which is the core of your
-L<DBIx::Class> based ORM managed system.  This is required and the application
-cannot function without one.
+See L<DBIx::Class::Migration::Script::Help::schema_class>.
 
 =head3 target_dir
 
-Aliases: D
-Value: Str
-
-    dbic-migration prepare --schema_class MyApp::Schema --target_dir /opt/share
-
-We need a directory path that is used to store your fixtures and migration
-files.  By default this will be the C<share> directory for the application
-where your L</schema_class> resides.  I recommend you leave it alone since
-this is a reasonable Perl convention for non code data, and there's a decent
-ecosystem of tools around it, however if you need to place the files in an
-alternative location (for example you have huge fixture sets and you don't
-want them in you core repository, or you can't store them in a limited space
-filesystem) this will let you do it.  Option and defaults as discussed.
+See L<DBIx::Class::Migration::Script::Help::target_dir>.
 
 =head3 username
 
@@ -596,66 +568,19 @@ at L</target_dir>.
 
 =head3 force_overwrite
 
-Aliases: O
-Value: Bool (default: False)
-
-Sometimes you may wish to prepare migrations for the same version more than
-once (say if you are developing a new version and need to try out a few options
-first).  This lets you deploy over an existing set.  This will of course destroy
-and manual modifications you made, buyer beware.)
-
-    dbic-migration prepare --overwrite_migrations
+See L<DBIx::Class::Migration::Script::Help::force_overwrite>
 
 =head3 to_version
 
-Aliases: V
-Value: Str (default: Current VERSION of Schema)
-
-    dbic-migration install --to_version 5
-
-Used to specify which version we are going to deploy.  Defaults to whatever
-is the most current version you've prepared.
-
-Use this when you need to force install an older version, such as when you are
-roundtripping prepares while fiddling with a new database version.
+See L<DBIx::Class::Migration::Script::Help::to_version>
 
 =head3 databases
 
-Alias: database
-Value: Str or Array of Str (default: SQLite)
-
-You can prepare deployment for any database type that L<SQLT> understand.  By
-default we only prepare a deployment version for the database which matches
-the L<dsn> you specified but you can use this to prepare additional deployments
-
-    dbic-migration prepare --database SQLite --database mysql
-
-Please note if you choose to manually set this value, you won't automatically
-get the default, unless you specify as above
+See L<DBIx::Class::Migration::Script::Help::databases>
 
 =head3 fixture_sets
 
-Alias: fixture_set
-Value: Str or Array of Str (default: all set)
-
-When dumping or populating fixture sets, you use this to set which sets.
-
-    dbic-migration dump --fixture_set roles --fixture_set core
-
-Please note that if you manually describe your sets as in the above example,
-you don't automatically get the C<all_tables> set, which is a fixture set of all
-database information and not 'all' the sets.
-
-We automatically create the C<all_tables> fixture set description file for you when
-you prepare a new migration of the schema.  You can use this set for early
-testing but I recommend you study L<DBIx::Class::Fixtures> and learn the set
-configuration rules, and create limited fixture sets for given purposes, rather
-than just dump / populate everything, since that is like to get big pretty fast
-
-My recommendation is to create a core 'seed' set, of default database values,
-such as role types, default users, lists of countries, etc. and then create a
-'demo' or 'dev' set that contains extra information useful to populate a
-database so that you can run test cases and develop against.
+See L<DBIx::Class::Migration::Script::Help::fixture_sets>
 
 =head3 sandbox_class
 

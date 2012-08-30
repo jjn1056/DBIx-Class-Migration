@@ -9,10 +9,7 @@ dbic-migration - commandline tool to create and manage your migrations
 
 =head1 SYNOPSIS
 
-    dbic-migration status \
-      --libs="lib"
-      --schema_class='MyApp::Schema' \
-      --dsn='DBI:SQLite:myapp.db'
+    dic-migration help
 
 =head1 DESCRIPTION
 

@@ -1,0 +1,61 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::databases - Which databases are we building migrations for?
+
+=head1 SYNOPSIS
+
+    dbic-migration prepare --databases SQLite --databases mysql
+
+=head1 DESCRIPTION
+
+=over 4
+
+=item  Aliases
+
+database
+
+=item Value
+
+Str or Array of Str (default: SQLite)
+
+=back
+
+Used when building L</migration> to define the target databases we are building
+migration files for.  You can name any of the databases currently supported by
+L<SQLT>.  If you leave this undefined we will derive a value based on the value
+of L</dsn>.  For example, if your L</dsn> is "DBI:SQLite:test.db", we will set
+the valuye of L</databases> to C<['SQLite']>.
+
+
+You can prepare deployment for any database type that L<SQLT> understand.  By
+default we only prepare a deployment version for the database which matches
+the L<dsn> you specified but you can use this to prepare additional deployments
+
+    dbic-migration prepare --database SQLite --database mysql
+
+Please note if you choose to manually set this value, you won't automatically
+get the default, unless you specify as above
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+
+
+
+
+
+
+
+

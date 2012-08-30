@@ -1,0 +1,45 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::includes - Add a path to @INC
+
+=head1 SYNOPSIS
+
+    dbic-migration --includes /opt/perl/lib -Ilib
+
+=head1 DESCRIPTION
+
+=over 4
+
+=item  Aliases
+
+I, lib, libs, include
+
+=item Value
+
+String or Array of Strings
+
+=back
+
+Does the same thing as the Perl command line interpreter flag C<I>.  Adds all
+the listed paths to C<@INC>.  You will likely use this in order to find your
+application schema (subclass of L<DBIx::Class::Schema>.
+
+You can add multiply paths by using the option more than once.  We don't check
+the path given for validity or accessibility.
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+

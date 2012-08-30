@@ -877,8 +877,7 @@ of the current C<schema> version.  Sends this as a string to STDOUT
 
 Creates a C<fixtures> and C<migrations> directory under L</target_dir> (if they
 don't already exist) and makes deployment files for the current schema.  If
-deployment files exist, will fail unless you L</overwrite_migrations> and
-L</overwrite_fixtures>.
+deployment files exist, will fail unless you L</overwrite_migrations>. 
 
 The C<migrations> directory reflects a directory structure as documented in
 L<DBIx::Class::DeploymentHandler>.

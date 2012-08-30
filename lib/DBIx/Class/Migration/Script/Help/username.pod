@@ -1,0 +1,52 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::username - the user for a database you are connecting to
+
+=head1 SYNOPSIS
+
+    dbic-migration install --username myuser --password mypass --dsn DBI:SQLite:mydb.db
+
+=head1 DESCRIPTION
+
+=over 4
+
+=item  Aliases
+
+U
+
+=item Value
+
+String
+
+=back
+
+This should be the username for the database we connect to for deploying
+ddl, ddl changes and fixtures.  Uasually used with the C<password> and C<dsn>
+options for when you are running in an enviroment above development and you are
+no longer using a developer level database sandbox.
+
+When required you can also populate this option with the %ENV variables
+
+    DBIC_MIGRATION_TARGET_USERNAME
+    DBIC_MIGRATION_TARGET_PASSWORD
+    DBIC_MIGRATION_TARGET_DSN
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+
+
+
+

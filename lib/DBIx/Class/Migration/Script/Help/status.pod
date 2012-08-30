@@ -25,14 +25,20 @@ Format is "canonical (@aliases)".
 
 =head2 includes (I,lib,libs,include)
 
+Optional.
+
 Adds the listed paths to @INC.  Handy during development when you want to use
 a development schema class.
 
 =head2 schema_class (S)
 
-Required.
+Accepts Str. Required.
 
-Your subclass of L<DBIx::Class::Schema> for your custom application.
+This is the schema we use as the basis for creating, managing and running your
+deployments.  This should be the full package namespace defining your subclass
+of L<DBIx::Class::Schema>.  For example C<MyApp::Schema>.
+
+If the L</schema_class> cannot be loaded, a hard exception will be thrown.
 
 =head2 sandbox_class (T) 
 

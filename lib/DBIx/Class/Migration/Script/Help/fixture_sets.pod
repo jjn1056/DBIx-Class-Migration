@@ -1,0 +1,63 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::fixture_sets - fixture sets to dump or load
+
+=head1 SYNOPSIS
+
+     dbic-migration dump --fixture_set roles --fixture_set core
+
+=head1 DESCRIPTION
+
+=over 4
+
+=item  Aliases
+
+fixture_set
+
+=item Value
+
+Str or Array of String. Defaults to 'all_tables'. 
+
+=back
+
+When dumping or populating fixture sets, you use this to set which sets.
+
+Please note that if you manually describe your sets as in the above example,
+you don't automatically get the C<all_tables> set, which is a fixture set of all
+database information and not 'all' the sets.
+
+We automatically create the C<all_tables> fixture set description file for you when
+you prepare a new migration of the schema.  You can use this set for early
+testing but I recommend you study L<DBIx::Class::Fixtures> and learn the set
+configuration rules, and create limited fixture sets for given purposes, rather
+than just dump / populate everything, since that is like to get big pretty fast
+
+My recommendation is to create a core 'seed' set, of default database values,
+such as role types, default users, lists of countries, etc. and then create a
+'demo' or 'dev' set that contains extra information useful to populate a
+database so that you can run test cases and develop against.
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+
+
+
+
+
+
+
+
+

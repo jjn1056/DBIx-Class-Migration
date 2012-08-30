@@ -1,0 +1,50 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::force_overwrite - overwrite an existing migration
+
+=head1 SYNOPSIS
+
+    dbic-migration prepare --overwrite_migrations
+
+=head1 DESCRIPTION
+
+=over 4
+
+=item  Aliases
+
+O
+
+=item Value
+
+Boolean (Default: False)
+
+=back
+
+Sometimes you may wish to prepare migrations for the same version more than
+once (say if you are developing a new version and need to try out a few options
+first).  This lets you deploy over an existing set.  This will of course destroy
+and manual modifications you made, buyer beware.)
+
+This option won't overwrite previously existing fixture configuration files.
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+
+
+
+
+
+
