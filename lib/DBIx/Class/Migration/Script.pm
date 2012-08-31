@@ -153,6 +153,7 @@ sub cmd_help {
   my $docs = "DBIx::Class::Migration::Script::Help" . ($subhelp ? "::$subhelp" : "");
   Pod::Usage::pod2usage(
     -verbose => 2,
+    -exitval => 'NOEXIT',
     -input => Pod::Find::pod_where({-inc => 1}, $docs));
 }
 

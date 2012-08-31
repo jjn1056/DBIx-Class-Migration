@@ -1,26 +1,16 @@
 =head1 NAME
 
-DBIx::Class::Migration::Script::Help::prepare - Create migration files.
+DBIx::Class::Migration::Script::Help::install - Install a migration version
 
 =head1 SYNOPSIS
 
-  dbic-migration prepare \
-    --lib=lib \
-    --schema_class=MyApp::Schema
+    dbic-migration install --schema_class MyApp::Schema --to_version 2
 
 =head1 DESCRIPTION
 
-Creates a C<fixtures> and C<migrations> directory under L</target_dir> (if they
-don't already exist) and makes deployment files for the current schema.  If
-deployment files exist, will fail unless you L</overwrite_migrations>.
-
-The C<migrations> directory reflects a directory structure as documented in
-L<DBIx::Class::DeploymentHandler>.
-
-If this is the first version, we create directories and initial DLL, etc.  For
-versions greater than 1, we will also generate diffs and copy any fixture
-configs etc (as well as generating a fresh 'all_table.json' fixture config). For
-safety reasons, we never overwrite any fixture configs.
+Installs either the current schema version (if already prepared) or the target
+version specified via L</to_version> to the database connected via the L</dsn>,
+L</username> and L</password>
 
 =head1 OPTIONS
 
