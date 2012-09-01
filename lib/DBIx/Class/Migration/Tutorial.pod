@@ -43,7 +43,7 @@ natural progression in learning.
 
 Dealing with change in your database can be a vexing problem.  You need the
 ability manage database versions (how your database changes over time).  You
-need to be able to upgrade seemlessly from one version to another.  You need
+need to be able to upgrade seamlessly from one version to another.  You need
 to be able to manage database and system data, and how they change over time.
 Additionally you may need to be able to create subsets of data for testing,
 and the ability to reset the database to a given state at any time.
