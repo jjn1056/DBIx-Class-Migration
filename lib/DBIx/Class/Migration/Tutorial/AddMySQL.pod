@@ -163,7 +163,7 @@ Now you database is ready to use!
 
 =head1 SUMMARY
 
-Let the section on Testing, this one was pretty short.  At this point you should
+Like the section on Testing, this one was pretty short.  At this point you should
 have a good idea of the effort it would require to use your migrations against
 databases other than the default SQlite.  
 
