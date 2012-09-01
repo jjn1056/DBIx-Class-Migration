@@ -6,7 +6,7 @@ DBIx::Class::Migration::Tutorial::ThirdMigration - A more advanced database chan
 
 In the last version we added a new table C<country> and enforced a one to many
 relationship between C<country> and C<artist> such that every C<artist> belonged
-to a single C<country>  These types of database changes, when you add a table
+to a single C<country>.  These types of database changes, when you add a table
 and some columns, tend to be some the easier types of migrations to perform.
 
 Lets take on a more complicated migration problem, and add some more fixture
@@ -20,7 +20,7 @@ In version 1 and 2 the relationship between Artist and CD is one to many; for
 each Artist there are zero to many CDs, and for each Cd there is one and only
 one artist.  Now we realize that a CD could have a bunch of Artists working
 together as a collaboration.  We need to change our database to reflect this
-need, and we additionally need to migrate our existing data to this new schema
+need, and we additionally need to migrate our existing data to this new schema.
 Let's get to it!
 
 =head1 Change your Schema
@@ -181,7 +181,7 @@ one version behind.  Let's prepare the migration:
 
     dbic-migration -Ilib prepare
 
-And as usually we can see a bunch of new version 3 directories and some 2-3
+And as usual we can see a bunch of new version 3 directories and some 2-3
 directories related to upgrades.  As in the previous migration, we'll skip
 the 3-2 downgrade, instead covering downgrades in a later section.  Here's
 some of the new directory structure:
