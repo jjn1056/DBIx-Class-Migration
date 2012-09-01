@@ -8,7 +8,7 @@ In this section you will use L<DBIx::Class::Migration> to prepare migration
 files for version 1.  You will also install a test database, create some 'seed'
 data and dump some fixtures.
 
-In preparation for this section, you might wish to revist the documentation for
+In preparation for this section, you might wish to revisit the documentation for
 L<DBIx::Class::DeploymentHandler> and in particular
 L<DBIx::Class::DeploymentHandler::Manual::Intro>
 
@@ -321,7 +321,7 @@ Lets take a peek at the database and make sure we got that demo data:
 
     sqlite3 share/musicbase-schema.db
 
-This should give use the SQLite shell, something like this:
+This should give us the SQLite shell, something like this:
 
     SQLite version 3.7.5
     Enter ".help" for instructions
