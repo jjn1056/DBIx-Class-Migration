@@ -4,7 +4,7 @@ DBIx::Class::Migration::Tutorial::SecondMigration - Upgrade the Database
 
 =head1 GOAL
 
-In this section you will change you database and learn how to create upgrade
+In this section you will change your database and learn how to create upgrade
 files.  You will also create some custom fixture configurations and learn
 about creating seed data.
 
@@ -395,7 +395,7 @@ sure the database is in a good known state:
 
     dbic-migration -Ilib drop_tables
 
-That will blow away you tables, so be careful when using this command!  You
+That will blow away your tables, so be careful when using this command!  You
 should see:
 
     Dropping table cd
@@ -455,7 +455,7 @@ C<sqlite> shell:
 
 =head1 Customize Fixtures and Serializing Fixtures
 
-When you C<prepareed> the new version, in addition to creating the database
+When you C<prepared> the new version, in addition to creating the database
 structure migrations, we also got a new version 2 directory for the fixtures.
 
     /share
@@ -467,7 +467,7 @@ structure migrations, we also got a new version 2 directory for the fixtures.
             all_tables.json
 
 By default we build you a fresh C<all_tables.json> that should reflect any new
-or removed tables.  Additionally, if there where any custom fixture
+or removed tables.  Additionally, if there were any custom fixture
 configurations, we would have copied those from the version 1.  We didn't have
 any custom files so nothing was copied.  Lets make a custom fixture config now:
 
