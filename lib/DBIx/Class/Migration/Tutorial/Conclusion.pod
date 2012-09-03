@@ -13,7 +13,7 @@ needed to be able to integrate migrations into your DBIC workflow, testing
 and web development.  The next bit is up to you.  Use the tools, think about
 where the gaps are, and give me some feedback.  Hopefully over time this
 tutorial can become better and we can also start to create some basic recipes
-for good approachs to common problems.  Thanks!
+for good approaches to common problems.  Thanks!
 
 =head1 NEXT STEPS
 
@@ -26,7 +26,7 @@ L<DBIx::Class::Migration> and L<DBIx::Class::Migration::Script> useful.  For
 more on some of the testing stuff we covered see L<DBIx::Class::Migration::Population>
 and L<Test::DBIx::Class>.
 
-Lastly, its definitely a good idea to revew the documention for both
+Lastly, its definitely a good idea to review the documention for both
 L<DBIx::Class::DeploymentHandler> and L<DBIx::Class::Fixtures> if you have not
 already.  Looking at L<SQL::Translator> may not be a bad idea either.
 
