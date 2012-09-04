@@ -461,28 +461,23 @@ See L<DBIx::Class::Migration::Script::Help::prepare>.
 
 =head2 install
 
-Installs either the current schema version (if already prepared) or the target
-version specified via L</to_version> to the database connected via the L</dsn>,
-L</username> and L</password>
+See L<DBIx::Class::Migration::Script::Help::install>.
 
 =head2 upgrade
 
-Run upgrade files to either bring the database into sync with the current
-schema version, or stop at an intermediate version specified via L</to_version>
+See L<DBIx::Class::Migration::Script::Help::upgrade>.
 
 =head2 downgrade
 
-Run down files to bring the database down to the version specified via
-L</to_version>
+See L<DBIx::Class::Migration::Script::Help::downgrade>.
 
 =head2 dump_named_sets
 
-Given listed L<fixture_sets>, dump files for the current database version (not
-the current schema version)
+See L<DBIx::Class::Migration::Script::Help::dump_named_sets>.
 
 =head2 dump_all_sets
 
-Just dump all the sets for the current database
+See L<DBIx::Class::Migration::Script::Help::dump_all_sets>.
 
 =head2 populate
 
@@ -585,34 +580,7 @@ See L<DBIx::Class::Migration::Script::Help::fixture_sets>
 
 =head3 sandbox_class
 
-Alias: T
-Value: String (default: SqliteSandbox)
-
-If you don't have a target database for your migrations (as you might not for
-your development setup, or during initial prototyping) we automatically create
-a local database sandbox in your L</target_dir>.  By default this is a
-L<DBD::Sqlite> single file database, since this is easy to get installed (you
-probably already have it) and is easy to work with.  However, we can also create
-database sandboxes for mysql and postgresql (although you will need to get the
-L<Test::mysqld> and/or L<Test::postgresql> as well as the correcct DBD installed).
-
-This is handy as you move toward a real production target and know the eventual
-database for production.  If you choose to create a postgresql or mysql database
-sandbox, they will automatically be created in your L</target_dir>, along with
-some helper scripts. See L<DBIx::Class::Migration::PostgresqlSandbox> and
-L<DBIx::Class::Migration::MySQLSandbox> for more documentation.
-
-Assuming you've prepared migrations for an alternative sandbox, such as MySQL:
-
-    dbic-migration install --schema_class MyApp::Schema --sandbox_class MySQLSandbox
-
-Would install it.  Like some of the other option flags you can specify with an
-%ENV setting:
-
-    export DBIC_MIGRATION_SANDBOX_CLASS=MySQLSandbox
-
-This would be handy if you are always going to target one of the alternative
-sandbox types.
+See L<DBIx::Class::Migration::Script::Help::sandbox_class>
 
 The default sqlite sandbox is documented at L<DBIx::Class::Migration::SQLiteSandbox>
 although this single file database is pretty straightforward to use.

@@ -5,6 +5,7 @@ Revision history for DBIx-Class-Migration
           Trait.  This will allow you to make direct use of any custom
           subclasses of DBIx::Class::Migration you may have written.
         - Lots of improvements to the commandline documentation.
+        - Overall Documention corrections (pjcj++)
 
 0.026  02 August 2012
         - Fixed typo in documentation (chromatic++)

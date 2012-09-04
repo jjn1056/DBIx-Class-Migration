@@ -1,24 +1,26 @@
 =head1 NAME
 
-DBIx::Class::Migration::Script::Help::install - Install a migration version
+DBIx::Class::Migration::Script::Help::dump_named_sets - Dump specified fixture sets.
 
 =head1 SYNOPSIS
 
-    dbic-migration install --schema_class MyApp::Schema --to_version 2
+    dbic-migration dump_named_sets --fixture_set core --fixture_set demo_db
 
 =head1 DESCRIPTION
 
-Installs a prepared migration to  either the current schema version or the target
-version specified via L</to_version> to the database connected via the L</dsn>,
-L</username> and L</password> (or to a developer level sandbox as defined by the
-L</sandbox_type>).
-
-You can't install to a database if the tables already exist.  See C<drop_tables>.
+For the current database version, dump data sets for the named fixtures.  If
+the database is not versioned, we assume the version is whatever you schema
+class is.
 
 =head1 OPTIONS
 
 This command accepts the following options.  You may learn more about each
 option by typing C<dbic-migration help OPTION>.  The following is a summary.
+
+=head1 fixture_sets (fixture_sets)
+
+Required.  The fixture configuration set names (basically these are the file
+names of your fixture configurations, without the '.json' part.
 
 =head2 includes (I,lib,libs,include)
 
@@ -26,14 +28,6 @@ Optional.
 
 Adds the listed paths to @INC.  Handy during development when you want to use
 a development schema class.
-
-=head2 to_version
-
-aliases:V, Optional
-
-This is the target version of the database we are installing.  The version
-named must be have been previously prepared.  If not specified, we will use
-the current C<Schema> class version.
 
 =head2 schema_class (S)
 

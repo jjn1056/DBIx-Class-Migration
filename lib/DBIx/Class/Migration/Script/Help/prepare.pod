@@ -20,18 +20,19 @@ L<DBIx::Class::DeploymentHandler>.
 If this is the first version, we create directories and initial DLL, etc.  For
 versions greater than 1, we will also generate diffs and copy any fixture
 configs etc (as well as generating a fresh 'all_table.json' fixture config). For
-safety reasons, we never overwrite any fixture configs.
+safety reasons, we never overwrite any fixture configs (even if
+C<overwrite_migrations> is true.)
 
 =head1 OPTIONS
 
 This command accepts the following options.  You may learn more about each
 option by typing C<dbic-migration help OPTION>.  The following is a summary.
 
-Format is "canonical (@aliases)".
+=head2 includes
 
-=head2 includes (I,lib,libs,include)
+Aliases: I,lib,libs,include
 
-Optional.
+Accepts String, Optional.
 
 Adds the listed paths to @INC.  Handy during development when you want to use
 a development schema class.
@@ -48,7 +49,7 @@ If the L</schema_class> cannot be loaded, a hard exception will be thrown.
 
 =head2 force_overwrite (O)
 
-Optional.
+Optional. Bool.
 
 Usually if you've already prepared migration files for the current version as
 specified in your L</schema_class> we don't write out files even if you call
@@ -59,27 +60,53 @@ This option won't overwrite previously existing fixture configuration files.
 
 =head2 target_dir (D)
 
-Optional.
+Optional. String (Path to directory).
 
 When using a C<sandbox_class> for generating developer level database sandboxes,
 you may wish to place the sandbox in a directory other than the default (which
 is under the C<share> directory off the project root).
 
-=head2 database
+=head2 databases
 
-Optional.
-Alias: databases
-Value: Str or Array of Str (default: SQLite)
+Aliases: database
+
+Value: Str or Array of Str (default: SQLite).  Optional.
 
 By default we create migrations for SQLite.  You can use this option to change
 that default, or to write our migrations for more than one database
 
 You can prepare deployment for any database type that L<SQLT> understands.
 
-    dbic-migration prepare --database SQLite --database mysql
+    dbic-migration prepare --database SQLite --database MySQL --PostgreSQL
 
 Please note if you choose to manually set this value, you won't automatically
-get the default, unless you specify as above.
+get the default or inferred type.
+
+=head2 sandbox_class
+
+Aliases: T, sb
+
+Accepts: String (default: SqliteSandbox)
+
+The class we use to create a developer level database sandbox.
+
+You can change this to either 'PostgresqlSandbox' or 'MySQLSandbox', which will
+create a sandbox using either L<DBIx::Class::Migration::MySQLSandbox> or 
+L<DBIx::Class::Migration::PostgresqlSandbox>.
+
+=head2 user
+
+Aliases: U
+
+=head2 password
+
+Aliases: P
+
+=head2 dsn
+
+Connection information to an already created and running instance of a database.
+If you don't specify this, we will assume you want a developer level sandbox (
+See L</sandbox>).
 
 =head1 SEE ALSO
 

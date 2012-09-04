@@ -1,19 +1,15 @@
 =head1 NAME
 
-DBIx::Class::Migration::Script::Help::install - Install a migration version
+DBIx::Class::Migration::Script::Help::downgrade - Downgrade your existing database
 
 =head1 SYNOPSIS
 
-    dbic-migration install --schema_class MyApp::Schema --to_version 2
+    dbic-migration downgrade --schema_class MyApp::Schema --to_version 2
 
 =head1 DESCRIPTION
 
-Installs a prepared migration to  either the current schema version or the target
-version specified via L</to_version> to the database connected via the L</dsn>,
-L</username> and L</password> (or to a developer level sandbox as defined by the
-L</sandbox_type>).
-
-You can't install to a database if the tables already exist.  See C<drop_tables>.
+Run downgrade files to either bring the database into sync with the current
+schema version, or stop at an intermediate version specified via L</to_version>
 
 =head1 OPTIONS
 

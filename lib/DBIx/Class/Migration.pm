@@ -891,7 +891,10 @@ safety reasons, we never overwrite any fixture configs.
 
 Installs either the current schema version (if already prepared) or the target
 version specified via any C<to_version> flags sent as an L<dbic_dh_args> to the
-database which is connected via L</schema>
+database which is connected via L</schema>.
+
+If you try to install to a database that has already been installed, you'll get
+an error.  See L</drop_tables>.
 
 =head2 upgrade
 
