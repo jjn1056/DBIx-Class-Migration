@@ -1,0 +1,96 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::delete_table_rows - trunate existing tables
+
+=head1 SYNOPSIS
+
+    dbic-migration delete_table_rows --schema_class MyApp::Schema
+
+=head1 DESCRIPTION
+
+does a C<delete> on each table in the database, which clears out all your data
+but preserves tables.  For Real!  You might want this if you need to load
+and unload fixture sets during testing, or perhaps to get rid of data that
+accumulated in the database while running an app in development, before dumping
+fixtures.
+
+If your table has a lot of rows, this command could take a long time to run
+depending on your database type.
+
+Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
+deployment info (this is different from C<drop_tables> which does delete it.)
+
+This command is intended to be a developer convenience function.  It is not
+intended to be used as a general purpose administration tool.
+
+=head1 OPTIONS
+
+This command accepts the following options.  You may learn more about each
+option by typing C<dbic-migration help OPTION>.  The following is a summary.
+
+=head2 includes (I,lib,libs,include)
+
+Optional.
+
+Adds the listed paths to @INC.  Handy during development when you want to use
+a development schema class.
+
+=head2 schema_class (S)
+
+Accepts Str. Required.
+
+This is the schema we use as the basis for creating, managing and running your
+deployments.  This should be the full package namespace defining your subclass
+of L<DBIx::Class::Schema>.  For example C<MyApp::Schema>.
+
+If the L</schema_class> cannot be loaded, a hard exception will be thrown.
+
+=head2 target_dir (D)
+
+Optional.
+
+When using a C<sandbox_class> for generating developer level database sandboxes,
+you may wish to place the sandbox in a directory other than the default (which
+is under the C<share> directory off the project root).
+
+=head2 sandbox_class
+
+Aliases: T, sb
+
+Accepts: String (default: SqliteSandbox)
+
+The class we use to create a developer level database sandbox.
+
+You can change this to either 'PostgresqlSandbox' or 'MySQLSandbox', which will
+create a sandbox using either L<DBIx::Class::Migration::MySQLSandbox> or 
+L<DBIx::Class::Migration::PostgresqlSandbox>.
+
+=head2 user
+
+Aliases: U
+
+=head2 password
+
+Aliases: P
+
+=head2 dsn
+
+Connection information to an already created and running instance of a database.
+If you don't specify this, we will assume you want a developer level sandbox (
+See L</sandbox>).
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+

@@ -481,49 +481,31 @@ See L<DBIx::Class::Migration::Script::Help::dump_all_sets>.
 
 =head2 populate
 
-Given listed L<fixture_sets>, populate a database with fixtures for the matching
-version (matches database version to fixtures, not the schema version)
+See L<DBIx::Class::Migration::Script::Help::populate>.
 
 =head2 drop_tables
 
-Drops all the tables in the connected database with no backup or recovery.  For
-real! (Make sure you are not connected to Prod, for example)
+See L<DBIx::Class::Migration::Script::Help::drop_tables>.
 
 =head2 delete_table_rows
 
-does a C<delete> on each table in the database, which clears out all your data
-but preserves tables.  For Real!  You might want this if you need to load
-and unload fixture sets during testing, or perhaps to get rid of data that
-accumulated in the database while running an app in development, before dumping
-fixtures.
-
-Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
-deployment info (this is different from L</drop_tables> which does delete it.)
+See L<DBIx::Class::Migration::Script::Help::delete_table_rows>.
 
 =head2 make_schema
 
-Creates DBIC schema files from the currently deployed database into your target
-directory.  You can use this to bootstrap your ORM, or if you get confused about
-what the deployment perl run files get for schema.
+See L<DBIx::Class::Migration::Script::Help::make_schema>.
 
 =head2 install_if_needed
 
-Install the database to the current C<$schema> version if it is not currently
-installed.  Otherwise this is a nop (even if the database is behind the schema).
-
+See L<DBIx::Class::Migration::Script::Help::install_if_needed>.
 
 =head2 install_version_storage
 
-If the targeted (connected) database does not have the versioning tables
-installed, this will install them.  The version is set to whatever your
-C<schema> version currently is.
+See L<DBIx::Class::Migration::Script::Help::install_version_storage>.
 
 =head2 diagram
 
-Experimental feature.  This command will place a file in your L</target_dir>
-called C<db-diagram-vXXX.png> where C<XXX> is he current C<schema> version.
-
-This feature is experimental and currently does not offer any options.
+See L<DBIx::Class::Migration::Script::Help::diagram>.
 
 =head2 Command Flags
 

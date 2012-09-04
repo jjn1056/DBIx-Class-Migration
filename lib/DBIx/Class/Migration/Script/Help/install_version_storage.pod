@@ -1,0 +1,50 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::install_version_storage - Add missing meta data table
+
+=head1 SYNOPSIS
+
+    dbic-migration install_version_storage --user myapp \
+      --password $secret \
+      --dsn='DBI:SQLite:myapp.db'
+    
+=head1 DESCRIPTION
+
+If the targeted (connected) database does not have the versioning tables
+installed, this will install them.  The version is set to whatever your
+C<schema> version currently is.
+
+=head1 OPTIONS
+
+This command accepts the following options.  You may learn more about each
+option by typing C<dbic-migration help OPTION>.  The following is a summary.
+
+=head2 user
+
+Aliases: U
+
+=head2 password
+
+Aliases: P
+
+=head2 dsn
+
+Connection information to an already created and running instance of a database.
+If you don't specify this, we will assume you want a developer level sandbox (
+See L</sandbox>).
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+

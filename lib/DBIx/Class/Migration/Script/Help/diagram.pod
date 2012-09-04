@@ -1,0 +1,60 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::diagram - create a PNG of you database structure
+
+=head1 SYNOPSIS
+
+    dbic-migration diagram -Ilib --schema_class MyApp::Schema
+    
+=head1 DESCRIPTION
+
+Experimental feature.  This command will place a file in your L</target_dir>
+called C<db-diagram-vXXX.png> where C<XXX> is he current C<schema> version.
+
+This feature is experimental and currently does not offer any options.
+
+=head1 OPTIONS
+
+This command accepts the following options.  You may learn more about each
+option by typing C<dbic-migration help OPTION>.  The following is a summary.
+
+=head2 includes (I,lib,libs,include)
+
+Optional.
+
+Adds the listed paths to @INC.  Handy during development when you want to use
+a development schema class.
+
+=head2 schema_class (S)
+
+Accepts String.
+
+This is the schema we use as the basis for creating, managing and running your
+deployments.  This should be the full package namespace defining your subclass
+of L<DBIx::Class::Schema>.  For example C<MyApp::Schema>.
+
+If the L</schema_class> cannot be loaded, a hard exception will be thrown.
+
+=head2 target_dir (D)
+
+Optional.
+
+When using a C<sandbox_class> for generating developer level database sandboxes,
+you may wish to place the sandbox in a directory other than the default (which
+is under the C<share> directory off the project root).
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
