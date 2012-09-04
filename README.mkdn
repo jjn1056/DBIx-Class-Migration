@@ -382,8 +382,7 @@ of the current `schema` version.  Sends this as a string to STDOUT
 
 Creates a `fixtures` and `migrations` directory under ["target\_dir"](#target\_dir) (if they
 don't already exist) and makes deployment files for the current schema.  If
-deployment files exist, will fail unless you ["overwrite\_migrations"](#overwrite\_migrations) and
-["overwrite\_fixtures"](#overwrite\_fixtures).
+deployment files exist, will fail unless you ["overwrite\_migrations"](#overwrite\_migrations). 
 
 The `migrations` directory reflects a directory structure as documented in
 [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).
@@ -397,7 +396,10 @@ safety reasons, we never overwrite any fixture configs.
 
 Installs either the current schema version (if already prepared) or the target
 version specified via any `to_version` flags sent as an [dbic\_dh\_args](http://search.cpan.org/perldoc?dbic\_dh\_args) to the
-database which is connected via ["schema"](#schema)
+database which is connected via ["schema"](#schema).
+
+If you try to install to a database that has already been installed, you'll get
+an error.  See ["drop\_tables"](#drop\_tables).
 
 ## upgrade
 
@@ -547,6 +549,19 @@ don't need to write my own build and deployment tools.
 # AUTHOR
 
 John Napiorkowski [email:jjnapiork@cpan.org](email:jjnapiork@cpan.org)
+
+# CONTRIBUTORS
+
+The following is a list of identified contributors.  Please let me know if I
+missed you.
+
+    https://github.com/pjcj
+    https://github.com/chromatic
+    https://github.com/bentglasstube
+    https://github.com/logie17
+    https://github.com/RsrchBoy
+    https://github.com/vkroll
+    https://github.com/felliott
 
 # SEE ALSO
 

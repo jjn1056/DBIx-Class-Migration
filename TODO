@@ -6,4 +6,5 @@ something for seeding @code @database
 HEAD version @code
 drop_tables and delete_table_rows should only work in a sandbox @code
 script arguments from configuration file @code
-support TRUNCATE over DELETE for databases that do that
+support TRUNCATE over DELETE for databases that do that @code
+help should guess a mis-spelled query @code

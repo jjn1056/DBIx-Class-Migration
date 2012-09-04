@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.027";
+our $VERSION = "0.028";
 
 use Moose;
 use JSON::XS;
@@ -1050,6 +1050,19 @@ don't need to write my own build and deployment tools.
 =head1 AUTHOR
 
 John Napiorkowski L<email:jjnapiork@cpan.org>
+
+=head1 CONTRIBUTORS
+
+The following is a list of identified contributors.  Please let me know if I
+missed you.
+
+    https://github.com/pjcj
+    https://github.com/chromatic
+    https://github.com/bentglasstube
+    https://github.com/logie17
+    https://github.com/RsrchBoy
+    https://github.com/vkroll
+    https://github.com/felliott
 
 =head1 SEE ALSO
 
