@@ -170,6 +170,9 @@ has deployment_handler_class => (
     (load_class "SQL::Translator::Producer::$_" ||
       die "No SQLT Producer for $_") for @$databases;
 
+    die 'A $VERSION needs to be specified in the schema'
+      unless $self->schema->schema_version;
+
     $self->deployment_handler_class->new({
       schema => $self->schema,
       script_directory => catdir($self->target_dir, 'migrations'),
