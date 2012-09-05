@@ -1,5 +1,11 @@
 Revision history for DBIx-Class-Migration
 
+0.029  05 September 2012
+        - Better error message when you forget to have a $VERSION in your
+          schema_class (logie++)
+        - skipping a version to resync oafter botched release (the previous
+          release that was called 0.027 was really 0.028)
+
 0.027  04 September 2012
         - Allow you to specify a migration class in the Catalyst DBIC Model
           Trait.  This will allow you to make direct use of any custom
