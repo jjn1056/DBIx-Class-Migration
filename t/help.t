@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 use Test::Most;
-use Test::Requires 'Capture::Tiny';
+use Test::Requires { 'Capture::Tiny' => 0.19 };
 use DBIx::Class::Migration::Script;
 
 ok(my $r = Capture::Tiny::capture_stdout {
