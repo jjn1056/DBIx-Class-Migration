@@ -62,6 +62,12 @@ has dbic_fixture_class => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str',
 has dbic_fixtures_extra_args => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
   predicate=>'has_dbic_fixtures_extra_args');
 
+has dbic_connect_attrs => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
+  predicate=>'has_dbic_connect_attrs');
+
+has dbi_connect_attrs => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
+  predicate=>'has_dbi_connect_attrs');
+
 has fixture_sets => (
   traits => [ 'Getopt' ],
   is=>'ro',
@@ -95,6 +101,14 @@ has migration => (
     if($self->dsn) {
       push @schema_args, ($self->dsn,
        $self->username, $self->password);
+    
+      if($self->has_dbi_connect_attrs) {
+        push @schema_args, $self->dbi_connect_attrs;
+      }
+      if($self->has_dbic_connect_attrs) {
+        push @schema_args, {} unless $self->has_dbi_connect_attrs;
+        push @schema_args, $self->dbic_connect_attrs;
+      }
     }
     return @schema_args;
   }
@@ -434,6 +448,27 @@ Accepts: HashRef, Not Required.
 If provided will add some additional arguments when creating an instance of
 L</dbic_fixture_class>.  You should take a look at the documentation for
 L<DBIx::Class::Fixtures> to understand what additional arguments may be of use.
+
+=head2 dbi_connect_attrs
+
+Accepts: HashRef, Not Required.
+
+If you are specifying a DSN, you might need to provide some additional args
+to L<DBI> (see L<DBIx::Class::Storage::DB/connect_info> for more).
+
+=head2 dbic_connect_attrs
+
+Accepts: HashRef, Not Required.
+
+If you are specifying a DSN, you might need to provide some additional args
+to L<DBIx::Class> (see L<DBIx::Class::Storage::DB/connect_info> for more).
+
+You can also see L<DBIx::Class::Storage::DBI/DBIx::Class-specific-connection-attributes>
+for more information on what this can do for you.  Chances are good if you
+need this you will also want to subclass L<DBIx::Class::Migration::Script> as
+well.
+
+Common uses for this is to run SQL on startup and set Postgresql search paths.
 
 =head1 COMMANDS
 

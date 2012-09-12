@@ -1,8 +1,15 @@
 Revision history for DBIx-Class-Migration
 
-0.030  TBA
+0.030  11 September 2012
         - in t/help.t, specify minimum version of Capture::Tiny to get required
           functionality.
+        - dbic_fixtures_extra_args and dbi_fixtures_extra_args attributes
+          added to DBICM:Script so that you can better control your custom
+          connections (useful when running migrations against existing dbs).
+          (This feature is considered BETA, please report your experiences
+          and we need docs / test cases).
+        - 9/11 never forget and thank you to everyone who's stood strong these
+          many years.  
 
 0.029  05 September 2012
         - Better error message when you forget to have a $VERSION in your
