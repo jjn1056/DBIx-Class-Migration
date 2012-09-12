@@ -454,14 +454,14 @@ L<DBIx::Class::Fixtures> to understand what additional arguments may be of use.
 Accepts: HashRef, Not Required.
 
 If you are specifying a DSN, you might need to provide some additional args
-to L<DBI> (see L<DBIx::Class::Storage::DB/connect_info> for more).
+to L<DBI> (see L<DBIx::Class::Storage::DBI/connect_info> for more).
 
 =head2 dbic_connect_attrs
 
 Accepts: HashRef, Not Required.
 
 If you are specifying a DSN, you might need to provide some additional args
-to L<DBIx::Class> (see L<DBIx::Class::Storage::DB/connect_info> for more).
+to L<DBIx::Class> (see L<DBIx::Class::Storage::DBI/connect_info> for more).
 
 You can also see L<DBIx::Class::Storage::DBI/DBIx::Class-specific-connection-attributes>
 for more information on what this can do for you.  Chances are good if you
