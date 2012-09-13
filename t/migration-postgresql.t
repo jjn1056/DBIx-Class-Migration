@@ -45,7 +45,7 @@ ok -e catfile($target_dir, 'migrations','PostgreSQL','deploy','1','001-auto.sql'
 open(
   my $perl_run,
   ">",
-  catfile($target_dir, 'migrations', 'PostgreSQL', 'deploy', '1', '002-artists.pl')
+  my $install_artists = catfile($target_dir, 'migrations', 'PostgreSQL', 'deploy', '1', '002-artists.pl')
 ) || die "Cannot open: $!";
 
 print $perl_run <<END;
@@ -131,7 +131,46 @@ NEW_SCOPE_FOR_SCHEMA: {
       'got some previously inserted data';
 
   }
+}
 
+TEST_SEQUENCE_RESTORE: {
+
+  ## Now lets test for the Postgresql Sequence Problem
+
+  ok( my $migration = DBIx::Class::Migration->new(
+    schema_class=>'Local::Schema',
+    db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
+  'created migration with schema_class #3');
+
+  ## First we are going to blow away the database from previous tests
+
+  $migration->drop_tables;
+  unlink $install_artists || 
+    die "Can't delete $install_artists : $@";
+
+  ## Next, install version one and populate the countries
+  ## fixture set
+  
+  $migration->install;
+  $migration->populate('all_tables');
+
+  ## Make sure we got country data
+  
+  isa_ok(
+    my $schema = $migration->schema, 'Local::Schema',
+    'got a reasonable looking schema');
+
+    ok $schema->resultset('Country')->find({code=>'fra'}),
+      'got some previously inserted data';
+
+  ## Since we populated the Country table from fixtures, it is possible that
+  ## the sequences which control the PK Serial type are no longer telling us
+  ## the right info.  In this case we'd expect an insert into Country (which
+  ## has a SERIAL PK) to explode.  This sequence gets set correctly in newer
+  ## versions of DBIC:Fixtures (=>1.001016)
+  
+  ok my $china = $schema->resultset('Country')->create({code=>'prc'}),
+    'created the china country';
 }
 
 done_testing;
