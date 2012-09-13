@@ -9,7 +9,7 @@ Revision history for DBIx-Class-Migration
           (This feature is considered BETA, please report your experiences
           and we need docs / test cases).
         - 9/11 never forget and thank you to everyone who's stood strong these
-          many years.  
+          many years.
 
 0.029  05 September 2012
         - Better error message when you forget to have a $VERSION in your
