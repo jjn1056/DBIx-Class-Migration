@@ -184,17 +184,20 @@ sub _defaults {
 
 sub run {
   my ($self) = @_;
-  my ($cmd, @extra_argv) = @{$self->extra_argv};
+  my ($argv, @extra_argv) = @{$self->extra_argv};
 
   $self->_import_libs(@{$self->includes})
     if $self->has_includes;
 
-  if(!$cmd || $cmd eq 'help') {
+  if(!$argv || $argv eq 'help') {
     $self->cmd_help(@extra_argv);
   } else {
-    die "Extra argv detected - command only please\n" if @extra_argv;
-    die "No such command ${cmd}\n" unless $self->can("cmd_${cmd}");
-    $self->${\"cmd_${cmd}"};
+    foreach my $cmd ($argv, @extra_argv) {
+      $self->can("cmd_${cmd}") ?
+        $self->${\"cmd_${cmd}"} :
+        die "No such command ${cmd}\n";
+    }
+        
   }
 }
 

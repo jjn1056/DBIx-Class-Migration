@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.030";
+our $VERSION = "0.031";
 
 use Moose;
 use JSON::XS;
@@ -485,6 +485,7 @@ before [qw/install upgrade downgrade/], sub {
   my ($self, @args) = @_;
   %ENV = (
     %ENV,
+    DBIC_MIGRATION_FIXTURES_OBJ => $self->build_dbic_fixtures,
     DBIC_MIGRATION_SCHEMA_CLASS => $self->schema_class,
     DBIC_MIGRATION_TARGET_DIR => $self->target_dir,
     DBIC_MIGRATION_FIXTURE_DIR => catdir($self->target_dir, 'fixtures', $self->dbic_dh->schema_version),

@@ -1,5 +1,13 @@
 Revision history for DBIx-Class-Migration
 
+0.031   TBA
+        - Upped the dependency on DBIC:Fixtures to the latest version so that
+          we get fixes related to Postgresql sequences.
+        - Added a test case to make sure we populating fixtures with more
+          complex table relationships works.
+        - Allow you to invoke more than one command at a time, such as
+          "dbic-migration install populate --fixture_set core"
+
 0.030  11 September 2012
         - in t/help.t, specify minimum version of Capture::Tiny to get required
           functionality.
