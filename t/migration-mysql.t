@@ -44,18 +44,24 @@ open(
   catfile($target_dir, 'migrations', 'MySQL', 'deploy', '1', '002-artists.pl')
 ) || die "Cannot open: $!";
 
-print $perl_run <<END;
+print $perl_run <<'END';
 
 use DBIx::Class::Migration::RunScript;
+
 migrate {
-  shift->schema
-    ->resultset('Country')
-    ->populate([
-      ['code'],
-      ['bel'],
-      ['deu'],
-      ['fra'],
-    ]);
+  my $self = shift;
+  if($self->set_has_fixtures('all_tables')) {
+    $self->populate('all_tables');
+  } else {
+    $self->schema
+      ->resultset('Country')
+      ->populate([
+        ['code'],
+        ['bel'],
+        ['deu'],
+        ['fra'],
+      ]);
+  }
 };
 
 END
