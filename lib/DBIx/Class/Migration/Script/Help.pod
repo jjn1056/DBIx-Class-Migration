@@ -49,9 +49,14 @@ The following is a summary of available commands
   dsn                 : connection info to the database you are migrating
   force_overwrite (O) : Allow overwriting of existing migration files
   to_version (V)      : Use the given migration version
-  database/s         : The type of database we are preparing migrations for.
-  fixture_set/s      : Control the fixture sets used for dumping or populating
+  database/s          : The type of database we are preparing migrations for.
+  fixture_set/s       : Control the fixture sets used for dumping or populating
   sandbox_class (T)   : Make any of SqliteSandbox, MySQLSandbox, PostgresqlSandbox
+  dbic_fixture_class  : Name an alternative subclass of DBIx::Class::Fixtures
+  dbic_connect_attrs  : Pass custom args to DBIx::Class::Schema->connect
+  dbi_connect_attrs   : Pass custom args to DBI via DBIx::Class::Schema->connect
+  extra_schemaloader_args  : Pass custom args to DBIx::Class::Migration::SchemaLoader
+  dbic_fixtures_extra_args : Pass custom args to DBIx::Class::Fixtures
 
 =head1 EXAMPLE
 

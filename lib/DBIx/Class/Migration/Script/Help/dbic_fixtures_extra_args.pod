@@ -1,0 +1,45 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::dbic_fixtures_extra_args
+
+=head1 SYNOPSIS
+
+    dbic-migration populate --dbic_fixtures_extra_args cascade=1
+
+=head1 DESCRIPTION
+
+=over 4
+
+=item Value
+
+HashRef, Optional
+
+=back
+
+Allows you to pass custom arguments to L<DBIx::Class::Fixtures>.
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+
+
+
+
+
+
+
+
+
+

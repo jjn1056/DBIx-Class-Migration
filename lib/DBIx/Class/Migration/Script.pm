@@ -620,6 +620,26 @@ although this single file database is pretty straightforward to use.
 If you are declaring the value in a subclass, you can use the pre-defined
 constants to avoid typos (see L</CONSTANTS>).
 
+=head3 dbic_fixture_class
+
+See L<DBIx::Class::Migration::Script::Help::dbic_fixture_class>
+
+=head3 dbic_fixtures_extra_args
+
+See L<DBIx::Class::Migration::Script::Help::dbic_fixtures_extra_args>
+
+=head3 dbic_connect_attrs
+
+See L<DBIx::Class::Migration::Script::Help::dbic_connect_attrs>
+
+=head3 dbi_connect_attrs
+
+See L<DBIx::Class::Migration::Script::Help::dbi_connect_attrs>
+
+=head3 extra_schemaloader_args
+
+See L<DBIx::Class::Migration::Script::Help::extra_schemaloader_args>
+
 =head1 OPTIONAL METHODS FOR SUBCLASSES
 
 If you decide to make a custom subclass of L<DBIx::Class::Migration::Script>,

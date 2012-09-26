@@ -73,6 +73,18 @@ Connection information to an already created and running instance of a database.
 If you don't specify this, we will assume you want a developer level sandbox (
 See L</sandbox>).
 
+=head2 dbic_fixture_class
+
+Accepts: String to a Perl Class.  Defaults to L<DBIx::Class::Fixtures>
+
+Lets you specify a fixture class.
+
+=head2 dbic_fixtures_extra_args
+
+Accepts: HashRef.  Optional
+
+Allows you to pass custom arguments to L<DBIx::Class::Fixtures>.
+
 =head1 SEE ALSO
 
 L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,

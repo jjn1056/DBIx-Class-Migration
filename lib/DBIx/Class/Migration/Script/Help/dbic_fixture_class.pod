@@ -1,0 +1,35 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::dbic_fixture_class
+
+=head1 SYNOPSIS
+
+    dbic-migration populate --dbic_fixture_class My::DBIx::Class::Fixtures
+
+=head1 DESCRIPTION
+
+=over 4
+
+=item Value
+
+String (default: DBIx::Class::Fixtures)
+
+=back
+
+If you have a customized subclass of L<DBIx::Class::Fixtures>, this option
+will let you specify it.
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut

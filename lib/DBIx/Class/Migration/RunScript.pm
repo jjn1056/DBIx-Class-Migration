@@ -78,7 +78,12 @@ sub builder(&) {
 
 sub migrate(&) {
   my $runs = shift;
-  builder { 'SchemaLoader', 'Populate', 'TargetPath', $runs };
+  builder {
+    'SchemaLoader',
+    'Populate',
+    'TargetPath',
+    $runs,
+  };
 }
 
 __PACKAGE__->meta->make_immutable;

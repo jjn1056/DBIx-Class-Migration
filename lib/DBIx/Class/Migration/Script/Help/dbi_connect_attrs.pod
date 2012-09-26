@@ -1,0 +1,41 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::dbi_connect_attrs
+
+=head1 SYNOPSIS
+
+    dbic-migration install --dbi_connect_attrs AutoCommit=1
+
+=head1 DESCRIPTION
+
+=over 4
+
+=item Value
+
+HashRef, Optional
+
+=back
+
+Allows you to send L<DBIx::Class> recognized attributes when connecting to a 
+schema (see L<DBIx::Class::Storage::DBI#connect_info>).
+
+Used to influence how the underlying DBD connects.  Common attributes would be
+PrintError, RaiseError, AutoCommit but your DBD might have other you need to
+control.
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+
+
