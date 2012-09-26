@@ -34,8 +34,8 @@ sub _next_cnt { our $_cnt++ }
 sub _as_unique_ns { $_[0] . _next_cnt() }
 
 sub schema_from_database {
-  my ($self, $ns) = @_;
-  $self->_make_schema_at(_as_unique_ns($ns));
+  my ($self, $ns, %extra_opts) = @_;
+  $self->_make_schema_at(_as_unique_ns($ns), %extra_opts);
 }
 
 sub generate_dump {

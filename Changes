@@ -1,5 +1,11 @@
 Revision history for DBIx-Class-Migration
 
+0.032   TBA
+        - New run script trait: 'TargetPath'.
+        - 
+        - Planned: New feature, 'run' command runs scripts with the current migration
+          to make it easier to automate common migration tasks.
+
 0.031   25 September 2012
         - Upped the dependency on DBIC:Fixtures to the latest version so that
           we get fixes related to Postgresql sequences.

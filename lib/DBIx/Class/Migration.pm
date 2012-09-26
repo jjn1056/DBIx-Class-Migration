@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.031";
+our $VERSION = "0.032";
 
 use Moose;
 use JSON::XS;
@@ -127,7 +127,7 @@ has dbic_fixture_class => (
   isa => LoadableClass,
   coerce=>1);
 
-has dbic_fixtures_extra_args => ( is=>'ro', lazy_build=>1);
+has dbic_fixtures_extra_args => ( is=>'ro', isa=>'HashRef', lazy_build=>1);
 
   sub _build_dbic_fixtures_extra_args { 
     return +{};
@@ -138,6 +138,12 @@ has deployment_handler_class => (
   default => 'DBIx::Class::DeploymentHandler',
   isa => LoadableClass,
   coerce=>1);
+
+has extra_schemaloader_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
+
+  sub _build_extra_schemaloader_args { 
+    return +{};
+  }
 
   sub _infer_database_from_storage {
     return (ref(shift) =~m/DBI::(.+)$/)[0];
@@ -296,8 +302,7 @@ sub prepare {
 
 sub drop_tables {
   my $self = shift;
-  my $schema = $self->schema_loader
-    ->schema_from_database($self->_infer_schema_class);
+  my $schema = $self->_schema_from_database;
 
   $schema->storage->with_deferred_fk_checks(sub {
     foreach my $source ($schema->sources) {
@@ -314,8 +319,7 @@ sub drop_tables {
 
 sub delete_table_rows {
   my $self = shift;
-  my $schema = $self->schema_loader
-    ->schema_from_database($self->_infer_schema_class);
+  my $schema = $self->_schema_from_database;
 
   $schema->storage->with_deferred_fk_checks(sub {
     my $txn = $schema->txn_scope_guard;
@@ -357,12 +361,19 @@ sub build_dbic_fixtures {
   $dbic_fixtures->new($init_args);
 }
 
+sub _schema_from_database {
+  my $self = shift;
+  return $self->schema_loader
+    ->schema_from_database(
+      $self->_infer_schema_class,
+      %{$self->extra_schemaloader_args});
+}
+
 sub dump_named_sets {
   (my $self = shift)->dbic_dh->version_storage_is_installed
     || print "Target DB is not versioned.  Dump may not be reliable.\n";
 
-  my $schema = $self->schema_loader
-    ->schema_from_database($self->_infer_schema_class);
+  my $schema = $self->_schema_from_database;
 
   $self->build_dbic_fixtures->dump_config_sets({
     schema => $schema,
@@ -382,8 +393,7 @@ sub dump_all_sets {
   (my $self = shift)->dbic_dh->version_storage_is_installed
     || print "Target DB is not versioned.  Dump may not be reliable.\n";
 
-  my $schema = $self->schema_loader
-    ->schema_from_database($self->_infer_schema_class);
+  my $schema = $self->_schema_from_database;
 
   $self->build_dbic_fixtures->dump_all_config_sets({
     schema => $schema,
@@ -413,8 +423,7 @@ sub populate {
     || die "No Database to populate!";
 
   my $version = $self->dbic_dh->database_version;
-  my $schema = $self->schema_loader
-    ->schema_from_database($self->_infer_schema_class);
+  my $schema = $self->_schema_from_database;
 
   foreach my $set(@_) {
     my $target_set = _prepare_fixture_data_dir(
@@ -794,6 +803,14 @@ following defaults:
       databases => Inferred from your connected schema, defaults to SQLite
 
 L</dbic_dh_args> will overwrite the defaults, if you pass them.
+
+=head2 extra_schemaloader_args
+
+Optional.  Accepts a HashRef of arguments you can use to influence how
+L<DBIx::Class::Schema::Loader> works.  This HashRef would get passed as
+C<loader_options> (see L<DBIx::Class::Schema::Loader/make_schema_at>.
+
+Meaningful options are described at L<DBIx::Class::Schema::Loader::Base>.
 
 =head1 METHODS
 

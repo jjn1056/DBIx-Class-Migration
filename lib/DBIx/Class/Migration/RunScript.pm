@@ -78,7 +78,7 @@ sub builder(&) {
 
 sub migrate(&) {
   my $runs = shift;
-  builder { 'SchemaLoader', 'Populate', $runs };
+  builder { 'SchemaLoader', 'Populate', 'TargetPath', $runs };
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -151,7 +151,7 @@ specify plugins.
 
 =head2 migrate
 
-Run a migration subref with default plugins.
+Run a migration subref with default plugins (SchemaLoader, Populate, TargetDir).
 
 =head1 SEE ALSO
 
