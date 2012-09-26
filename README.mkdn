@@ -295,6 +295,14 @@ following defaults:
 
 ["dbic\_dh\_args"](#dbic\_dh\_args) will overwrite the defaults, if you pass them.
 
+## extra\_schemaloader\_args
+
+Optional.  Accepts a HashRef of arguments you can use to influence how
+[DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader) works.  This HashRef would get passed as
+`loader_options` (see ["make\_schema\_at" in DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader#make\_schema\_at).
+
+Meaningful options are described at [DBIx::Class::Schema::Loader::Base](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader::Base).
+
 # METHODS
 
 This class defines the following methods for public use

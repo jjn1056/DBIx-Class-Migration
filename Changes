@@ -3,8 +3,8 @@ Revision history for DBIx-Class-Migration
 0.032   26 September 2012
         - New run script trait: 'TargetPath'.
         - New command flag 'extra_schemaloader_args' which allows you to 
-          pass options to SchemaLoader when running migrations
-        - Documented some command options that I previously missed
+          pass options to SchemaLoader when running migrations.
+        - Documented some command options that I previously missed.
 
 0.031   25 September 2012
         - Upped the dependency on DBIC:Fixtures to the latest version so that
