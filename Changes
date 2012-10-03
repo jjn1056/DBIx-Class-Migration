@@ -3,7 +3,7 @@ Revision history for DBIx-Class-Migration
 0.034   03 October 2012
         - RunScript now tries to give you some advice if you invoke a method or
           a column on a source that doesn't exist in the generated schema.
-        - New run script trait; 'Dump'.  This is the flipside of 'Populate' and
+        - New run script trait: 'Dump'.  This is the flipside of 'Populate' and
           makes it straightforward to build core fixture sets as part of your
           database installation.
 
