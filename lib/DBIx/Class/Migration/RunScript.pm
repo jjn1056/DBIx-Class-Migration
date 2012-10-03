@@ -60,6 +60,19 @@ sub as_coderef {
   }
 }
 
+sub default_plugins {
+  'SchemaLoader',
+  'Populate',
+  'TargetPath',
+}
+
+sub used_plugins {
+  my $path = 'DBIx/Class/Migration/RunScript/Trait/';
+  my $match = "$path(.+).pm";
+  return map { m[$match]x }
+    grep { m[$path]x } keys %INC;
+}
+
 sub builder(&) {
   my ($runs, @plugins) = reverse shift->();
   my (@traits, %args);
@@ -79,9 +92,8 @@ sub builder(&) {
 sub migrate(&) {
   my $runs = shift;
   builder {
-    'SchemaLoader',
-    'Populate',
-    'TargetPath',
+    default_plugins(),
+    used_plugins(),
     $runs,
   };
 }
@@ -111,9 +123,11 @@ Using the C<builder> exported subroutine:
       };
     };
 
-Alternatively, use the C<migrate> exported subroutine for normal defaults.
+Alternatively, use the C<migrate> exported subroutine for standard and external
+plugins:
 
     use DBIx::Class::Migration::RunScript;
+    use DBIx::Class::Migration::RunScript::Trait::AuthenPassphrase;
 
     migrate {
       shift->schema
@@ -156,7 +170,43 @@ specify plugins.
 
 =head2 migrate
 
-Run a migration subref with default plugins (SchemaLoader, Populate, TargetDir).
+Run a migration subref with default plugins (SchemaLoader, Populate, TargetDir)
+and any additional plugins that you've used.  For example:
+
+    use DBIx::Class::Migration::RunScript;
+
+    migrate {
+      my $runscript = shift;
+    }
+
+In this case C<$runscript> is an instance of L<DBIx::Class::Migration::RunScript>
+and has the default traits applied (see
+L<DBIx::Class::Migration::RunScript::Trait::TargetPath>,
+L<DBIx::Class::Migration::RunScript::Trait::Schema>,
+L<DBIx::Class::Migration::RunScript::Trait::Populate> for more).
+
+Second example:
+
+    use DBIx::Class::Migration::RunScript;
+    use DBIx::Class::Migration::RunScript::Trait::AuthenPassphrase;
+
+    migrate {
+      my $runscript = shift;
+    }
+
+In this case C<$runscript> is an instance of L<DBIx::Class::Migration::RunScript>
+with traits applied as above and in addition one more trait,
+L<DBIx::Class::Migration::RunScript::Trait::AuthenPassphrase> which is available
+on CPAN (is external because it carries a dependency weight I don't want to 
+impose on people if they don't need it).
+
+=head1 UTILITY SUBROUTINES
+
+The follow subroutines are available as package method, and not exported
+
+=head2 default_plugins
+
+returns an array of the default plugins.
 
 =head1 SEE ALSO
 
