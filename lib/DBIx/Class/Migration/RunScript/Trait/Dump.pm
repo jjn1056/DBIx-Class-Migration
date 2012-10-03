@@ -44,7 +44,7 @@ DBIx::Class::Migration::RunScript::Trait::Dump - Dump fixtures
 
 This is a L<Moose::Role> that adds a C<dump> method to your run script.  This
 will let you dump fixtures from your runscripts, based on previously defined
-fixture configurations. 
+fixture configurations.
 
 This might be useful to you if you are building fixtures if they don't already
 exist (see L<DBIx::Class::Migration::RunScript::Trait::Populate>) and then want
@@ -69,12 +69,12 @@ to dump them as part of building up your database.  For example:
         $self->dump('all_tables');
       }
     };
- 
+
 In the above example if the fixture set exists and has previously been dumped
 we will populate the database with it.  Else, we will create some data manually
 and then dump it so that next time it is available.
 
-This trait requires a C<schema> previously defined, such as provided by 
+This trait requires a C<schema> previously defined, such as provided by
 L<DBIx::Class::Migration::RunScript::Trait::SchemaLoader>.
 
 This trait is one of the defaults for the exported method C<migrate> in

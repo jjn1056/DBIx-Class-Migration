@@ -61,7 +61,7 @@ since that method might exist in your hand coded Schema files.  Since your
 migration script doesn't use your hand coded Schema (it can't since we cannot
 be sure it is in sync with your database state) but instead uses SchemaLoader
 to autogenerate a schema, it uses the default SchemaLoader rules for creating
-column and method names. 
+column and method names.
 
 To help you debug this issue, here's a list of the actual columns and methods
 that $2 has available:
