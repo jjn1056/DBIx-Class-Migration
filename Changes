@@ -1,5 +1,9 @@
 Revision history for DBIx-Class-Migration
 
+0.033   03 October 2012
+        - Refactored ::RunScript such that 'migrate' can use externally added
+          traits.  Documented this.
+
 0.032   26 September 2012
         - New run script trait: 'TargetPath'.
         - New command flag 'extra_schemaloader_args' which allows you to 
