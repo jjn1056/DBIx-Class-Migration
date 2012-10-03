@@ -46,6 +46,7 @@ open(
 
 print $perl_run <<'END';
 
+use Test::Most;
 use DBIx::Class::Migration::RunScript;
 
 migrate {
@@ -61,7 +62,12 @@ migrate {
         ['deu'],
         ['fra'],
       ]);
+
+    $self->dump('all_tables');
+    ok $self->set_has_fixtures('all_tables'),
+      'Fixture Set exists!';
   }
+
 };
 
 END
@@ -71,6 +77,11 @@ $migration->install;
 
 ok $schema->resultset('Country')->find({code=>'fra'}),
   'got some previously inserted data';
+
+ok -e catfile($target_dir, 'fixtures','1','all_tables','country','1.fix'),
+  'found a fixture from runscript dump';
+
+rmtree catfile($target_dir, 'fixtures','1','all_tables');
 
 $migration->dump_all_sets;
 

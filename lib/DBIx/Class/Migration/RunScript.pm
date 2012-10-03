@@ -46,8 +46,31 @@ schema available to your migration knows about:
 
  @presentsources
 ERR
+  } elsif($err =~m/No such column (.+?) on DBIx.+?Result::(.+?) at/) {
+    my @presentsources = map {
+      (distance($_, $1))[0] < 3 ? "$_ <== Possible Match\n" : "$_\n";
+    } ($self->schema->resultset($2)->result_source->columns,
+        $self->schema->resultset($2)->result_source->relationships);
+
+    die <<"ERR";
+$err
+You are probably seeing this error because the DBIC resultset $2 does
+not have a column or method called $1 defined in the schema which
+::SchemaLoader has inferred from your existing database.  You may be confused
+since that method might exist in your hand coded Schema files.  Since your
+migration script doesn't use your hand coded Schema (it can't since we cannot
+be sure it is in sync with your database state) but instead uses SchemaLoader
+to autogenerate a schema, it uses the default SchemaLoader rules for creating
+column and method names. 
+
+To help you debug this issue, here's a list of the actual columns and methods
+that $2 has available:
+
+ @presentsources
+ERR
+  } else {
+    die $err;
   }
-  die $err;
 }
 
 sub as_coderef {
@@ -63,6 +86,7 @@ sub as_coderef {
 sub default_plugins {
   'SchemaLoader',
   'Populate',
+  'Dump',
   'TargetPath',
 }
 
@@ -170,8 +194,8 @@ specify plugins.
 
 =head2 migrate
 
-Run a migration subref with default plugins (SchemaLoader, Populate, TargetDir)
-and any additional plugins that you've used.  For example:
+Run a migration subref with default plugins (SchemaLoader, Populate, TargetDir
+Dump) and any additional plugins that you've used.  For example:
 
     use DBIx::Class::Migration::RunScript;
 
@@ -183,7 +207,8 @@ In this case C<$runscript> is an instance of L<DBIx::Class::Migration::RunScript
 and has the default traits applied (see
 L<DBIx::Class::Migration::RunScript::Trait::TargetPath>,
 L<DBIx::Class::Migration::RunScript::Trait::Schema>,
-L<DBIx::Class::Migration::RunScript::Trait::Populate> for more).
+L<DBIx::Class::Migration::RunScript::Trait::Populate>,
+L<DBIx::Class::Migration::RunScript::Trait::Dump> for more).
 
 Second example:
 
