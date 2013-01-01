@@ -1,5 +1,14 @@
 Revision history for DBIx-Class-Migration
 
+0.035   01 January 2013
+        - Allow you to control the db_sandbox_builder from a script, to make it
+          easier to use alternative sandbox locations (make it easier to build
+          a database sandbox in a temporary area for testing, for example).
+        - Added a bit of documention to the temporary sandbox builder to give
+          you a hint of what it might be for.
+        - Happy New Year 2013!  Don't forget to register for an CPAN account
+          this year and release some code!
+
 0.034   03 October 2012
         - RunScript now tries to give you some advice if you invoke a method or
           a column on a source that doesn't exist in the generated schema.

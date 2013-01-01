@@ -23,7 +23,21 @@ DBIx::Class::Migration::TempDirSandboxBuilder - Build a sandbox in a temporary d
 
 =head1 SYNOPSIS
 
-    use DBIx::Class::Migration::TempDirSandboxBuilder;
+    use DBIx::Class::Migration;
+
+    my $migration = DBIx::Class::Migration->new(
+      schema_class => 'MyApp::Schema',
+      db_sandbox_builder_class => 'DBIx::Class::Migration::TempDirSandboxBuilder');
+
+    $migration->install;
+
+    $migration->schema->resultset('User')
+      ->create({name=>'Test User'});
+
+    $migration->schema->resultset('Role')
+      ->create({name=>'Administrator'});
+
+    $migration->dump_named_sets('users', 'roles');
 
 =head1 DESCRIPTION
 

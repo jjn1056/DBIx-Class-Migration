@@ -486,20 +486,20 @@ The following callbacks / instructions are permitted
 
 - on\_install
 
-Accepts: Coderef
+    Accepts: Coderef
 
-Given a coderef, execute it after the database is installed.  The coderef
-gets passed two arguments: `$schema` and `$self` (the current migration
-object).
+    Given a coderef, execute it after the database is installed.  The coderef
+    gets passed two arguments: `$schema` and `$self` (the current migration
+    object).
 
 - default\_fixture\_sets
 
-Accepts: Arrayref of fixture sets
+    Accepts: Arrayref of fixture sets
 
-    $migration->install_if_needed(
-      default_fixture_sets => ['all_tables']);
+        $migration->install_if_needed(
+          default_fixture_sets => ['all_tables']);
 
-After database installation, populate the fixtures in order.
+    After database installation, populate the fixtures in order.
 
 ## install\_version\_storage
 
@@ -580,7 +580,7 @@ missed you.
 
 # COPYRIGHT & LICENSE
 
-Copyright 2012, John Napiorkowski [email:jjnapiork@cpan.org](email:jjnapiork@cpan.org)
+Copyright 2013, John Napiorkowski [email:jjnapiork@cpan.org](email:jjnapiork@cpan.org)
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

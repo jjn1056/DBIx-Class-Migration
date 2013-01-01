@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.034";
+our $VERSION = "0.035";
 
 use Moose;
 use JSON::XS;
@@ -1095,7 +1095,7 @@ L<Test::mysqld>, L<Test::postgresql>.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2012, John Napiorkowski L<email:jjnapiork@cpan.org>
+Copyright 2013, John Napiorkowski L<email:jjnapiork@cpan.org>
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

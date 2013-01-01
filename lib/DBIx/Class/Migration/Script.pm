@@ -93,6 +93,9 @@ has migration_class => (
   isa => LoadableClass,
   coerce => 1);
 
+has migration_sandbox_builder_class => (traits => [ 'Getopt' ],
+  is => 'ro', isa => 'Str', predicate=>'has_migration_sandbox_builder_class');
+
 has migration => (
   is => 'ro',
   lazy_build => 1,
@@ -153,6 +156,11 @@ sub _build_migration {
   $args{extra_schemaloader_args} = $self->extra_schemaloader_args
     if $self->has_extra_schemaloader_args;
 
+  if($self->has_migration_sandbox_builder_class) {
+    my ($plus, $class) = ($self->migration_sandbox_builder_class=~/^(\+)*(.+)$/);
+    $args{db_sandbox_builder_class} = $plus ? $class : "DBIx::Class::Migration::$class";
+  }
+
   return $self->migration_class->new(%args);
 }
 
@@ -211,6 +219,11 @@ sub run_with_options {
   my ($class, %options) = @_;
   $class->new_with_options($class->_defaults, %options)
     ->run;
+}
+
+sub new_with_defaults {
+  my $class = shift;
+  return $class->new_with_options($class->_defaults, @_);
 }
 
 sub run_if_script {
@@ -484,6 +497,15 @@ Common uses for this is to run SQL on startup and set Postgresql search paths.
 Accepts: HashRef, Not Required.
 
 Used to populate L<DBIx::Class::Migration/extra_schemaloader_args>
+
+=head2 migration_sandbox_builder_class
+
+Accepts: String (Classname), Not Required.
+
+Used to set L<DBIx::Class::Migration/db_sandbox_builder_class>.  You probably
+won't mess with this unless you are writing your own Sandbox builder class, or
+using the alternative builder L<DBIx::Class::Migration::TempDirSandboxBuilder>
+for creating temporary sandboxes when you want to test your migrations.
 
 =head1 COMMANDS
 
