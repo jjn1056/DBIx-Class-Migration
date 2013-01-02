@@ -83,7 +83,7 @@ has fixture_sets => (
       version status prepare install upgrade
       downgrade drop_tables delete_table_rows
       dump_all_sets make_schema install_if_needed
-      dump diagram install_version_storage);
+      dump diagram install_version_storage );
   }
 
 has migration_class => (
@@ -168,6 +168,12 @@ sub cmd_dump_named_sets {
   my $self = shift;
   $self->migration
     ->dump_named_sets(@{$self->fixture_sets});
+}
+
+sub cmd_delete_named_sets {
+  my $self = shift;
+  $self->migration
+    ->delete_named_sets(@{$self->fixture_sets});
 }
 
 sub cmd_populate {
@@ -578,6 +584,10 @@ See L<DBIx::Class::Migration::Script::Help::install_version_storage>.
 =head2 diagram
 
 See L<DBIx::Class::Migration::Script::Help::diagram>.
+
+=head2 delete_named_sets
+
+See L<DBIx::Class::Migration::Script::Help::delete_named_sets>.
 
 =head2 Command Flags
 

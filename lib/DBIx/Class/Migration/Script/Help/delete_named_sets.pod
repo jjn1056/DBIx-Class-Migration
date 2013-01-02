@@ -1,0 +1,86 @@
+=head1 NAME
+
+DBIx::Class::Migration::Script::Help::delete_named_sets - Delete dumped fixture sets
+
+=head1 SYNOPSIS
+
+    dbic-migration --schema_class MyApp::Schema \
+      delete_named_sets --fixture_set core --fixture_set countries
+
+=head1 DESCRIPTION
+
+Used to delete invalid, previously dumped fixtures for a given fixture
+configuration, under the current schema (not database!) version. 
+
+Sometimes when you are dumping fixtures for the current version, you might
+make a mistake in the configuration set and want to re-dump them.  This
+command clears out existing sets.
+
+Since dumped fixtures just live on the filesystem, you can delete them using
+any normal filesystem tool, so we limit this pontentially dangerous command
+to deleting on the current schema fixtures.  You might use this command when
+working on prepping fixures for a new version of the schema, for example.
+
+=head1 OPTIONS
+
+This command accepts the following options.  You may learn more about each
+option by typing C<dbic-migration help OPTION>.  The following is a summary.
+
+=head1 fixture_sets (fixture_sets)
+
+Required.  The fixture configuration set names (basically these are the file
+names of your fixture configurations, without the '.json' part.
+
+=head2 includes (I,lib,libs,include)
+
+Optional.
+
+Adds the listed paths to @INC.  Handy during development when you want to use
+a development schema class.
+
+
+=head2 schema_class (S)
+
+Accepts Str. Required.
+
+This is the schema we use as the basis for creating, managing and running your
+deployments.  This should be the full package namespace defining your subclass
+of L<DBIx::Class::Schema>.  For example C<MyApp::Schema>.
+
+If the L</schema_class> cannot be loaded, a hard exception will be thrown.
+
+=head2 target_dir (D)
+
+Optional.
+
+When using a C<sandbox_class> for generating developer level database sandboxes,
+you may wish to place the sandbox in a directory other than the default (which
+is under the C<share> directory off the project root).
+
+=head2 dbic_fixture_class
+
+Accepts: String to a Perl Class.  Defaults to L<DBIx::Class::Fixtures>
+
+Lets you specify a fixture class.
+
+=head2 dbic_fixtures_extra_args
+
+Accepts: HashRef.  Optional
+
+Allows you to pass custom arguments to L<DBIx::Class::Fixtures>.
+
+=head1 SEE ALSO
+
+L<DBIx::Class::Migration>, L<DBIx::Class::Migration::Script>,
+L<DBIx::Class::Migration::Features>, L<DBIx::Class::Migration::Tutorial>
+
+=head1 AUTHOR
+
+See L<DBIx::Class::Migration> for author information
+
+=head1 COPYRIGHT & LICENSE
+
+See L<DBIx::Class::Migration> for copyright and license information
+
+=cut
+

@@ -91,22 +91,6 @@ has dbic_dh_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
 
   sub _build_dbic_dh_args { +{} }
 
-  sub dbic_dh_handles {
-    qw/
-      prepare_install
-      prepare_upgrade
-      prepare_downgrade
-      install
-      upgrade
-      downgrade/;
-  }
-
-has dbic_dh => (
-  is => 'ro',
-  init_arg => undef,
-  lazy_build => 1,
-  handles => [dbic_dh_handles()]);
-
 has schema_loader_class => (
   is => 'ro',
   default => 'DBIx::Class::Migration::SchemaLoader',
@@ -167,26 +151,50 @@ has extra_schemaloader_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
     }
   }
 
-  sub _build_dbic_dh {
-    my $self = shift;
-    my $databases = $self->dbic_dh_args->{databases} ?
-      delete($self->dbic_dh_args->{databases}) :
-      [_infer_database_from_schema($self->schema)];
+sub dbic_dh {
+  my ($self, @args) = @_;
+  my $databases = $self->dbic_dh_args->{databases} ?
+    delete($self->dbic_dh_args->{databases}) :
+    [_infer_database_from_schema($self->schema)];
 
-    (load_class "SQL::Translator::Producer::$_" ||
-      die "No SQLT Producer for $_") for @$databases;
+  (load_class "SQL::Translator::Producer::$_" ||
+    die "No SQLT Producer for $_") for @$databases;
 
-    die "A \$VERSION needs to be specified in your schema class ${\$self->_infer_schema_class}"
-    unless $self->schema->schema_version;
+  die "A \$VERSION needs to be specified in your schema class ${\$self->_infer_schema_class}"
+  unless $self->schema->schema_version;
 
 
-    $self->deployment_handler_class->new({
-      schema => $self->schema,
-      script_directory => catdir($self->target_dir, 'migrations'),
-      databases => $databases,
-      %{$self->dbic_dh_args},
-    })
+  my $dh = $self->deployment_handler_class->new({
+    schema => $self->schema,
+    script_directory => catdir($self->target_dir, 'migrations'),
+    databases => $databases,
+    %{$self->dbic_dh_args}, @args,
+  });
+
+  return $dh;
+}
+
+sub prepare_install { shift->dbic_dh->prepare_install }
+sub prepare_upgrade { shift->dbic_dh->prepare_upgrade }
+sub prepare_downgrade { shift->dbic_dh->prepare_downgrade }
+sub install { shift->dbic_dh->install }
+sub upgrade { shift->dbic_dh->upgrade }
+
+sub downgrade {
+  my ($self, %args) = @_;
+  unless($self->dbic_dh_args->{to_version}) {
+    my $to_version = $self->dbic_dh->schema_version - 1;
+    warn "No to_version is specified, downgrading to version $to_version";
+    $args{to_version} = $to_version;
   }
+  return $self->dbic_dh(%args)->downgrade;
+}
+
+
+before 'downgrade', sub {
+  my ($self, $args) = @_;
+};
+
 
 sub dump { Devel::PartialDump->new->dump(shift) }
 
@@ -408,6 +416,23 @@ sub dump_all_sets {
   });
 }
 
+sub delete_named_sets {
+  my ($self, @sets) = @_;
+  my $fixtures = $self->build_dbic_fixtures;
+  my @paths = map { $fixtures->config_dir->parent->subdir($_) } @sets;
+  foreach my $path (@paths) {
+    $self->_delete_path($path);
+  }
+}
+
+  sub _delete_path {
+    my ($self, $path) = @_;
+    return unless -d $path;
+    print "Deleting $path \n";
+    $path->rmtree;
+  }
+
+
 sub populate_set_to_schema {
   my ($self, $target_set, $schema) = @_;
   $self->build_dbic_fixtures->populate({
@@ -503,7 +528,7 @@ before [qw/install upgrade downgrade/], sub {
     DBIC_MIGRATION_DATABASE_VERSION => (
       $self->dbic_dh->version_storage_is_installed ? $self->dbic_dh->database_version : 0),
   );
-}; 
+};
 
 __PACKAGE__->meta->make_immutable;
 
@@ -1026,6 +1051,14 @@ You will only need to use this command in the case where you have an existing
 database that you are reverse engineering and you need to setup versioning
 storage since you can't rebuild the database from scratch (such as if you have
 a huge production database that you now want to start versioning).
+
+=head2 delete_named_sets
+
+Given a (or a list) of fixture sets, delete them if the exist in the current
+schema version.
+
+Yes, this really deletes, you've been warned (check in your code to a source
+control repository).
 
 =head1 ENVIRONMENT
 
