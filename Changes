@@ -1,5 +1,13 @@
 Revision history for DBIx-Class-Migration
 
+0.036   02 January 2013
+        - New Feature: delete_named_sets: Allows you to delete dumped fixtures
+          for given sets for the current schema version.
+        - Fixed bug with downgrade.  Now if you downgrade but don't specify a
+          'to-version' target, we do the right thing and downgrade one version.
+        - Added upgrade and downgrade test cases to better catch possible
+          future regressions.
+
 0.035   01 January 2013
         - Allow you to control the db_sandbox_builder from a script, to make it
           easier to use alternative sandbox locations (make it easier to build

@@ -512,6 +512,14 @@ database that you are reverse engineering and you need to setup versioning
 storage since you can't rebuild the database from scratch (such as if you have
 a huge production database that you now want to start versioning).
 
+## delete\_named\_sets
+
+Given a (or a list) of fixture sets, delete them if the exist in the current
+schema version.
+
+Yes, this really deletes, you've been warned (check in your code to a source
+control repository).
+
 # ENVIRONMENT
 
 When running [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) we set some `%ENV` variables during
