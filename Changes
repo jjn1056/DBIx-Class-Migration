@@ -1,5 +1,11 @@
 Revision history for DBIx-Class-Migration
 
+0.037   10 January 2013
+        - Fixed regression introduced in v0.036 where non SQLite databases got
+          deleted on multiple calls to the same migration object.  This is 
+          considered a mandatory upgrade for users of v0.036 and the broken
+          version will be eventually deleted from CPAN.
+
 0.036   02 January 2013
         - New Feature: delete_named_sets: Allows you to delete dumped fixtures
           for given sets for the current schema version.

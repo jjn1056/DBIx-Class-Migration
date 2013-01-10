@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.036";
+our $VERSION = "0.037";
 
 use Moose;
 use JSON::XS;
@@ -87,7 +87,7 @@ has target_dir => (is=>'ro', isa=>'Str', lazy_build=>1);
     shift->target_dir_builder->build;
   }
 
-has dbic_dh_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
+has dbic_dh_args => (is=>'rw', isa=>'HashRef', lazy_build=>1);
 
   sub _build_dbic_dh_args { +{} }
 
@@ -151,14 +151,23 @@ has extra_schemaloader_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
     }
   }
 
+sub normalized_dbic_dh_args {
+  my $self = shift;
+  my %args = %{$self->dbic_dh_args};
+  unless($args{databases}) {
+    $args{databases} = [_infer_database_from_schema($self->schema)];
+    $self->dbic_dh_args(\%args); ## Cache the normalization for next run
+  }
+
+  return %{$self->dbic_dh_args};
+}
+
 sub dbic_dh {
   my ($self, @args) = @_;
-  my $databases = $self->dbic_dh_args->{databases} ?
-    delete($self->dbic_dh_args->{databases}) :
-    [_infer_database_from_schema($self->schema)];
+  my %dbic_dh_args = $self->normalized_dbic_dh_args;
 
   (load_class "SQL::Translator::Producer::$_" ||
-    die "No SQLT Producer for $_") for @$databases;
+    die "No SQLT Producer for $_") for @{$dbic_dh_args{databases}};
 
   die "A \$VERSION needs to be specified in your schema class ${\$self->_infer_schema_class}"
   unless $self->schema->schema_version;
@@ -167,8 +176,7 @@ sub dbic_dh {
   my $dh = $self->deployment_handler_class->new({
     schema => $self->schema,
     script_directory => catdir($self->target_dir, 'migrations'),
-    databases => $databases,
-    %{$self->dbic_dh_args}, @args,
+    %dbic_dh_args, @args,
   });
 
   return $dh;
