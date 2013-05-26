@@ -143,7 +143,7 @@ sub _build_migration {
   }
 
   $args{target_dir} = $self->target_dir
-    if $self->has_target_dir;
+    if $self->has_target_dir && $self->target_dir;
 
   if($self->has_sandbox_class) {
     my ($plus, $class) = ($self->sandbox_class=~/^(\+)*(.+)$/);
@@ -220,7 +220,7 @@ sub run {
         $self->${\"cmd_${cmd}"} :
         die "No such command ${cmd}\n";
     }
-        
+
   }
 }
 
