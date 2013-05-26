@@ -31,8 +31,8 @@ has schema => (is=>'ro', predicate=>'has_schema');
 has schema_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
   predicate=>'has_schema_class', env_prefix=>ENV_PREFIX, cmd_aliases => 'S');
 
-has target_dir => (traits => [ 'Getopt' ], is => 'ro', isa=> 'Str',
-  predicate=>'has_target_dir', cmd_aliases => 'dir');
+has target_dir => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa=> 'Str',
+  predicate=>'has_target_dir', env_prefix=>ENV_PREFIX, cmd_aliases => 'dir');
 
 has username => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
   default => '', env_prefix=>ENV_PREFIX, cmd_aliases => 'U');
@@ -141,6 +141,9 @@ sub _build_migration {
     $args{schema_class} = $self->schema_class;
     $args{schema_args} = \@schema_args if @schema_args;
   }
+
+  $args{target_dir} = $self->target_dir
+    if $self->has_target_dir;
 
   if($self->has_sandbox_class) {
     my ($plus, $class) = ($self->sandbox_class=~/^(\+)*(.+)$/);
