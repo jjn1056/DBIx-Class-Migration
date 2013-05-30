@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.037";
+our $VERSION = "0.038";
 
 use Moose;
 use JSON::XS;
@@ -1126,6 +1126,8 @@ missed you.
     https://github.com/RsrchBoy
     https://github.com/vkroll
     https://github.com/felliott
+    https://github.com/mkrull
+    https://github.com/moltar
 
 =head1 SEE ALSO
 

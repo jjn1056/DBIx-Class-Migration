@@ -1,5 +1,15 @@
 Revision history for DBIx-Class-Migration
 
+0.038   30 May 2013
+        - make a questionable test author side only until I can figure out
+          what the problem is
+        - fix a bug where if you specify the target_dir, DBICM partly ignores
+          your wishes (Matthias Krull++)
+        - POD fixes (Matthias Krull++)
+        - Improve the error message you get around invalid or missing share
+          directories (moltar++)
+        - Other misc documentation updates and fixes
+
 0.037   10 January 2013
         - Fixed regression introduced in v0.036 where non SQLite databases got
           deleted on multiple calls to the same migration object.  This is 
