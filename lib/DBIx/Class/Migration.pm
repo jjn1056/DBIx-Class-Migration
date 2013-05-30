@@ -997,7 +997,7 @@ the matching sets for that version.
 Skips the table C<dbix_class_deploymenthandler_versions>, so you don't lose
 deployment info (this is different from L</drop_tables> which does delete it.)
 
-=head diagram
+=head2 diagram
 
 Experimental feature.  Although not specifically a migration task, I find it
 useful to output visuals of my databases.  This command will place a file in
