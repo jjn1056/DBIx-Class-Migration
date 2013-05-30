@@ -30,7 +30,7 @@ sub build {
     last unless $class =~s/::[^\:\:]+$//;
   }
 
-  return $sharedir || die "Can't find a /share for $class";
+  return $sharedir || die "Can't find a share ($sharedir) for $class";
 
 }
 

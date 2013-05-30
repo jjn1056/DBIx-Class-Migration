@@ -455,6 +455,8 @@ the matching sets for that version.
 Skips the table `dbix_class_deploymenthandler_versions`, so you don't lose
 deployment info (this is different from ["drop\_tables"](#drop\_tables) which does delete it.)
 
+## diagram
+
 Experimental feature.  Although not specifically a migration task, I find it
 useful to output visuals of my databases.  This command will place a file in
 your ["target\_dir"](#target\_dir) called `db-diagram-vXXX.png` where `XXX` is he current
