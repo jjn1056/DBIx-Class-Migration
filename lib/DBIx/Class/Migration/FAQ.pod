@@ -34,6 +34,9 @@ it trys to serialize the connect object information.  This doesn't play so nice
 with the way the YAML serializer works, since it does try hard to serialize
 objects.
 
+B<UPDATE>: This may be fixed in recent updates to the DBIC ecosystem.  If you
+are seeing this try upgraded DBIC and SQLT and see if it goes away.
+
 More details in the RT
 
     ticket: https://rt.cpan.org/Public/Bug/Display.html?id=75394
