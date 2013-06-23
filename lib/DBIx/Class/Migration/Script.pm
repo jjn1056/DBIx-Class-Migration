@@ -123,7 +123,7 @@ has migration => (
     my $self = shift;
     return (
       ($self->has_force_overwrite ? (force_overwrite => $self->force_overwrite) : ()),
-      ($self->has_target_dir ? (script_directory=>$self->target_dir) : ()),
+      ($self->has_target_dir && $self->target_dir ? (script_directory=>$self->target_dir) : ()),
       ($self->has_to_version ? (to_version=>$self->to_version) : ()),
       ($self->has_databases ? (databases=>$self->databases) : ()),
     );
