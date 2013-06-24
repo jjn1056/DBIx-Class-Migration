@@ -1,5 +1,11 @@
 Revision history for DBIx-Class-Migration
 
+0.039   24 June 2013
+        - Fixed behavior when --target_dir is not specified.  There was a
+          regression introduced in the previous version that tried to default
+          target_dir to '/' if you don't specify it (unlike the previous and
+          correct default which is to use the /share directoruy. (andyjones++)
+
 0.038   30 May 2013
         - make a questionable test author side only until I can figure out
           what the problem is
