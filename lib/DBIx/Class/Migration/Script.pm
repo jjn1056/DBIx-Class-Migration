@@ -49,6 +49,9 @@ has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool',
 has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
   predicate=>'has_to_version', cmd_aliases => 'V');
 
+has sql_translator_args => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
+  predicate=>'has_sql_translator_args');
+
 has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef',
   predicate=>'has_databases', cmd_aliases => 'database');
 
@@ -126,6 +129,7 @@ has migration => (
       ($self->has_target_dir && $self->target_dir ? (script_directory=>$self->target_dir) : ()),
       ($self->has_to_version ? (to_version=>$self->to_version) : ()),
       ($self->has_databases ? (databases=>$self->databases) : ()),
+      ($self->has_sql_translator_args ? (sql_translator_args=>$self->sql_translator_args) : ()),
     );
   }
 
@@ -404,6 +408,18 @@ migration files for.  You can name any of the databases currently supported by
 L<SQLT>.  If you leave this undefined we will derive a value based on the value
 of L</dsn>.  For example, if your L</dsn> is "DBI:SQLite:test.db", we will set
 the valuye of L</databases> to C<['SQLite']>.
+
+=head2 sql_translator_args
+
+Accepts HashRef.  Not Required.
+
+Used when building L</migration> to set the L<DBIx::Class::DeploymentHandler>
+option C<sql_translator_args>. This can be used to specify options for
+L<SQL::Translator>, for example:
+
+    producer_args => { postgres_version => '9.1' }
+
+to define the database version for SQL producer.
 
 =head2 fixture_sets
 
