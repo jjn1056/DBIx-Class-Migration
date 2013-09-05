@@ -1,12 +1,12 @@
 Revision history for DBIx-Class-Migration
 
-0.039   24 June 2013
+0.039   2013-06-24
         - Fixed behavior when --target_dir is not specified.  There was a
           regression introduced in the previous version that tried to default
           target_dir to '/' if you don't specify it (unlike the previous and
           correct default which is to use the /share directoruy. (andyjones++)
 
-0.038   30 May 2013
+0.038   2013-05-30
         - make a questionable test author side only until I can figure out
           what the problem is
         - fix a bug where if you specify the target_dir, DBICM partly ignores
@@ -16,13 +16,13 @@ Revision history for DBIx-Class-Migration
           directories (moltar++)
         - Other misc documentation updates and fixes
 
-0.037   10 January 2013
+0.037   2013-01-10
         - Fixed regression introduced in v0.036 where non SQLite databases got
           deleted on multiple calls to the same migration object.  This is 
           considered a mandatory upgrade for users of v0.036 and the broken
           version will be eventually deleted from CPAN.
 
-0.036   02 January 2013
+0.036   2013-01-02
         - New Feature: delete_named_sets: Allows you to delete dumped fixtures
           for given sets for the current schema version.
         - Fixed bug with downgrade.  Now if you downgrade but don't specify a
@@ -30,7 +30,7 @@ Revision history for DBIx-Class-Migration
         - Added upgrade and downgrade test cases to better catch possible
           future regressions.
 
-0.035   01 January 2013
+0.035   2013-01-01
         - Allow you to control the db_sandbox_builder from a script, to make it
           easier to use alternative sandbox locations (make it easier to build
           a database sandbox in a temporary area for testing, for example).
@@ -39,24 +39,24 @@ Revision history for DBIx-Class-Migration
         - Happy New Year 2013!  Don't forget to register for an CPAN account
           this year and release some code!
 
-0.034   03 October 2012
+0.034   2012-10-03
         - RunScript now tries to give you some advice if you invoke a method or
           a column on a source that doesn't exist in the generated schema.
         - New run script trait: 'Dump'.  This is the flipside of 'Populate' and
           makes it straightforward to build core fixture sets as part of your
           database installation.
 
-0.033   03 October 2012
+0.033   2012-10-03
         - Refactored ::RunScript such that 'migrate' can use externally added
           traits.  Documented this.
 
-0.032   26 September 2012
+0.032   2012-09-26
         - New run script trait: 'TargetPath'.
         - New command flag 'extra_schemaloader_args' which allows you to
           pass options to SchemaLoader when running migrations.
         - Documented some command options that I previously missed.
 
-0.031   25 September 2012
+0.031   2012-09-25
         - Upped the dependency on DBIC:Fixtures to the latest version so that
           we get fixes related to Postgresql sequences.
         - Added a test case to make sure we populating fixtures with more
@@ -68,7 +68,7 @@ Revision history for DBIx-Class-Migration
           previously dumped fixture sets in your install/upgrade/downgrade
           cycle.
 
-0.030  11 September 2012
+0.030   2012-09-11
         - in t/help.t, specify minimum version of Capture::Tiny to get required
           functionality.
         - dbic_fixtures_extra_args and dbi_fixtures_extra_args attributes
@@ -79,13 +79,13 @@ Revision history for DBIx-Class-Migration
         - 9/11 never forget and thank you to everyone who's stood strong these
           many years.
 
-0.029  05 September 2012
+0.029   2012-09-05
         - Better error message when you forget to have a $VERSION in your
           schema_class (logie++)
         - skipping a version to resync oafter botched release (the previous
           release that was called 0.027 was really 0.028)
 
-0.027  04 September 2012
+0.027   2012-09-04
         - Allow you to specify a migration class in the Catalyst DBIC Model
           Trait.  This will allow you to make direct use of any custom
           subclasses of DBIx::Class::Migration you may have written.
@@ -93,7 +93,7 @@ Revision history for DBIx-Class-Migration
         - Misc. documentation corrections.
         - Overall Documention corrections (pjcj++).
 
-0.026  02 August 2012
+0.026   2012-08-02
         - Fixed typo in documentation (chromatic++)
         - added repository and other metadata to the distribution.
         - increased the minimum require version of MX:GetOpt to hopefully solve
@@ -103,39 +103,39 @@ Revision history for DBIx-Class-Migration
         - Started to create some custom subtypes so we can better control the
           error messages you get when making common mistakes at the commandline.
 
-0.025  05 July 2012
+0.025   2012-07-05
         - Updated docs a bit to disambiguate the command 'version' and 'status'
         - you can now run the help command on your custom subclasses of
           DBIx::Class::Migration.
 
-0.024  05 June 2012
+0.024   2012-06-05
         - Fixed method 'install_version_storage' to actually do what the
           documentation claims.  Added test case (++bentglasstube).
 
-0.023  03 May 2012
+0.023   2012-05-03
         - Look harder for a sharedir
 
-0.022  11 April 2012
+0.022   2012-04-11
         - Fixed broken POD in last release.  No functional changes
 
-0.021  11 April 2012
+0.021   2012-04-11
         - Documentation and debug output fixes (RsrchBoy++)
         - fixed regression when using DBIC:DeploymentHandler v0.002112+
           (lxp@cpan.org++)
         - New Feature: We set  %ENV variables for key settings so that
           information is passed to install / up-downgrade scripts.
 
-0.020  28 March 2012
+0.020   2012-03-28
         - fixed typo that caused new command added in 0.018 to fail (nour.sharabash++)
         - documentation typo fixes (logie17++)
 
-0.019  16 March 2012
+0.019   2012-03-16
         - Fixed broken POD in the third part of the tutorial that prevented
           the page from being rendered.
         - Updated a number of dependencies to newer version to solve some
           reported problems.
 
-0.018  15 March 2012
+0.018   2012-03-15
         - Documentation fixes (Volker++)
         - Project title change
         - ::SchemaLoader now more carefully preserves connection information
@@ -145,49 +145,49 @@ Revision history for DBIx-Class-Migration
           This could be useful if you have an existing database that you want
           to start versioning.
 
-0.017  14 March 2012
+0.017   2012-03-14
         - POD and documentation fixes (logie17++)
         - new command: "dbic-migration diagram".  If GraphViz is installed will
           produce a png file of the current schema.  EXPERIMENTAL!
 
-0.016  12 March 2012
+0.016   2012-03-12
         - More POD and documentation fixes  (Volker++), (logie17++)
         - changed the way I declare version requirements in my dist.ini filr
           in order address some bugs in the way version strings are interpreted
           in various versions of Perl.
 
-0.015  08 March 2012
+0.015   2012-03-08
         - Minor typo fixes in the tutorial (Volker++)
         - FAQ entry regarding ubuntu + AppArmor and MySQL sandboxes (Volker++)
 
-0.014   07 March 2012
+0.014   2012-03-07
         - Changed the way we depend on File::ShareDir::ProjectDistDir
 
-0.013   05 March 2012
+0.013   2012-03-05
         - upped DBIC:DH dependency version to take advantage of required
           fixes and overall improvements
         - If using an existing mysql sandbox, that is not running, if the
           socket directory is missing, we create it.
         - Test case for above problem.
 
-0.012   05 March 2012
+0.012   2012-03-05
         - Upped Pod::Parser dependency version to close some reported test
           failures.
         - Documentation tweaks
 
-0.011   04 March 2012
+0.011   2012-03-04
         - Added a bit to the FAQ regarding the extra warnings to STDOUT/ERR.
         - specify more modern version of some dependencies, since I am using the
           more modern features.
 
-0.010   02 March 2012
+0.010   2012-03-02
         - The mysql sandbox no longer uses TCP networking.  This should make it
           possible to run parallel tests and have more than one user sharing a
           single development server.
         - Avoid infinite recursive when I can't infer the schema class (this
           fixes regression introduced in previous version).
 
-0.009   01 March 2012
+0.009   2012-03-01
         - changed the way we look for a schema so that commands that don't need
           one (like help and version) can still run.
         - if a postgresql sandbox is already running, just use it and don't try
@@ -195,41 +195,42 @@ Revision history for DBIx-Class-Migration
         - changed the mysql sandbox code so that when Test::mysqld is patched
           it will work just like postgresql does in the above change-line.
 
-0.008   01 March 2012
+0.008   2012-03-01
         - Fixed failing test when optional dependency is not installed
         - help command now does something meaningful (felliott++)
         - test case for help command
 
-0.007   29 February 2012
+0.007   2012-02-29
         - Catalyst::TraitFor::Model::DBIC::Schema::FromMigration now lets you
           set some connect_info args instead of deleting them.
         - silence some warnings about my unclear use of 'shift'
         - Fixed a use.t problem where I was trying to check a module that had
           optional dependencies
 
-0.006   28 February 2012
+0.006   2012-02-28
         - let you dump fixtures from an unversioned DB, but warn about it.
         - FAQ entry about this
 
-0.005   27 February 2012
+0.005   2012-02-27
         - solved a problem when the msql socket path can exceed 104 characters
         - make use of existing Test::mysqld methods instead of guessing
         - minor fixes to incorrect test messages
         - fixed mistakes in the dependency list
 
-0.004   27 February 2012
+0.004   2012-02-27
         - Started to develop 'dbic-migration help' command
         - make the pg and mysql tests optional
         - removed some pointless whitespace
 
-0.003   26 February 2012
+0.003   2012-02-26
         - documentation updates
         - added some missing deps
         - fixed RT#75323 (tests using optional dependencies) (Fitz Elliott)++
         - started to stub out better commandline help
 
-0.002   24 February 2012
+0.002   2012-02-24
         - fixed some POD issues with the first release
 
-0.001   24 February 2012
+0.001   2012-02-24
         - initial release with all features complete
+
