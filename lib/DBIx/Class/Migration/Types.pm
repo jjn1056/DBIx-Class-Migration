@@ -2,6 +2,9 @@ package DBIx::Class::Migration::Types;
 
 use base 'MooseX::Types::Combine';
 
+# tell perl this inline package has already been loaded
+$INC{'DBIx/Class/Migration/_Types.pm'} = __FILE__;
+
 __PACKAGE__->provide_types_from(
   'MooseX::Types::LoadableClass',
   'DBIx::Class::Migration::_Types');
