@@ -1,4 +1,12 @@
-Revision history for DBIx-Class-Migration
+Revision history for DBIx-Class-Migration.
+
+NOTE: Date format is YEAR-MONTH-DAY
+
+0.041   2013-09-18
+        - Changed changes file date spec to match CPAN::Spec.
+        - Fix for changes in how inlined files are loaded, due to upstream 
+          changes.  This fixes problems in loading the DBICM:Types modules.
+        - Updated FAQ.
 
 0.040   2013-09-05
         - Support specifying sql_translator_args from the Script wrapper. This
