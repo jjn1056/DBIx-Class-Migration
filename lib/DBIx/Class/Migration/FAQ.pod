@@ -37,13 +37,8 @@ objects.
 B<UPDATE>: This may be fixed in recent updates to the DBIC ecosystem.  If you
 are seeing this try upgraded DBIC and SQLT and see if it goes away.
 
-More details in the RT
-
-    ticket: https://rt.cpan.org/Public/Bug/Display.html?id=75394
-
-A possible fix is to change SQLT::Parser::DBIx::Class so that it doesn't try
-to serialize that object.  I think this could be a good fix since I don't
-think we can properly de serialize a DBI connection reliably.  
+B<UPDATE>:  You really should not be seeing this anymore, if you are, and you're
+on the lastest DBIC and related, please let me know.
 
 =head1 Contributing
 
