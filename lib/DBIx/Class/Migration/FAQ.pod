@@ -267,7 +267,7 @@ limited to people using Macs.
 Here's the release steps I currently use, should I eventually find willing
 comainters:
 
-=over4
+=over 4
 
 =item Update Version
 
