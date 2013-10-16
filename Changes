@@ -2,6 +2,10 @@ Revision history for DBIx-Class-Migration.
 
 NOTE: Date format is YEAR-MONTH-DAY
 
+0.042   2013-10-16
+        - Added a '.devdir' to 't/' to hopefully solve reported issues with
+        the newest DevShareDir
+
 0.041   2013-09-18
         - Changed changes file date spec to match CPAN::Spec.
         - Fix for changes in how inlined files are loaded, due to upstream 
