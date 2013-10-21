@@ -2,6 +2,10 @@ Revision history for DBIx-Class-Migration.
 
 NOTE: Date format is YEAR-MONTH-DAY
 
+0.043   2013-10-21
+        - Another attempt to fix the regression caused by changes to
+        ::DevShareDir
+
 0.042   2013-10-16
         - Added a '.devdir' to 't/' to hopefully solve reported issues with
         the newest DevShareDir
