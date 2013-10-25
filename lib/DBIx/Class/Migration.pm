@@ -175,8 +175,8 @@ sub dbic_dh {
 
   my $dh = $self->deployment_handler_class->new({
     schema => $self->schema,
-    script_directory => catdir($self->target_dir, 'migrations'),
     %dbic_dh_args, @args,
+    script_directory => catdir($self->target_dir, 'migrations'),
   });
 
   return $dh;
