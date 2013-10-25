@@ -2,6 +2,11 @@ Revision history for DBIx-Class-Migration.
 
 NOTE: Date format is YEAR-MONTH-DAY
 
+0.044   2013-20-35
+        - POD fixs (MidLifeXis++)
+        - fix probably where a --targetdir override is not probably recognized
+        (agorman++)
+
 0.043   2013-10-21
         - Another attempt to fix the regression caused by changes to
         ::DevShareDir
