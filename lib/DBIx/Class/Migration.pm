@@ -254,6 +254,11 @@ sub _create_all_fixture_config_from_sources {
 
 sub _filter_private_sources { grep {$_!~/^__/} @_ }
 
+sub _filter_views {
+    my ($self, @sources) = @_;
+    grep { ref($self->schema->source($_)) !~ m/View$/ } @sources;
+}
+
 sub _prepare_fixture_conf_dir {
   my ($dir, $version) = @_;
   my $fixture_conf_dir = catdir($dir,
@@ -312,8 +317,9 @@ sub prepare {
     $self->target_dir, $schema_version);
 
   my @sources = _filter_private_sources($self->schema->sources);
+  my @real_tables = $self->_filter_views(@sources);
   my $all_tables_path = catfile($fixture_conf_dir,'all_tables.json');
-  _create_all_fixture_set($all_tables_path, @sources);
+  _create_all_fixture_set($all_tables_path, @real_tables);
 
   if(my $previous = _has_previous_version($schema_version)) {
     $self->prepare_up_down_grades($previous, $schema_version);
@@ -1181,6 +1187,7 @@ missed you.
     https://github.com/pnu
     https://github.com/n7st
     https://github.com/willsheppard
+    https://github.com/mulletboy2
 
 =head1 SEE ALSO
 
