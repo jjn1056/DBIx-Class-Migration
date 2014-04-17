@@ -17,7 +17,7 @@ Reviewing the documentation for L<Catalyst::Test> would be valuable, as well as
 L<Catalyst::Plugin::ConfigLoader> for a refresher on the idea of localized and
 enviroment specific configurations.
 
-=head1 Bootrap a basic Catalyst application
+=head1 Bootstrap a basic Catalyst application
 
 Update you C<dist.ini> file:
 
