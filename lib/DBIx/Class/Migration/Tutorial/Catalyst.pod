@@ -71,6 +71,11 @@ manually:
     mkdir share/html
     touch share/html/index.tt
 
+If you prefer to use a helper, you can also try
+L<https://metacpan.org/pod/Dist::Zilla::Plugin::Catalyst::New> it generates
+part of the files L<catalyst.pl> creates but is closer to the normal
+Dist::Zilla stuff.
+
 Now open C<lib/MusicBase/Web.pm> and change it to look like this:
 
     package MusicBase::Web;
