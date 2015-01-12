@@ -2,6 +2,9 @@ Revision history for DBIx-Class-Migration.
 
 NOTE: Date format is YEAR-MONTH-DAY
 
+        - Don't use config_dir from DBIx::Class::Fixtures as a Path::Class::Dir,
+          it no longer is one.
+
 0.044   2013-20-35
         - POD fixs (MidLifeXis++)
         - fix probably where a --targetdir override is not probably recognized
