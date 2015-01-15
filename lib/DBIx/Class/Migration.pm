@@ -5,7 +5,7 @@ our $VERSION = "0.044";
 use Moose;
 use JSON::XS;
 use File::Copy 'cp';
-use File::Spec::Functions 'catdir', 'catfile';
+use File::Spec::Functions 'catdir', 'catfile', 'updir';
 use File::Path 'mkpath', 'remove_tree';
 use DBIx::Class::Migration::Types 'LoadableClass', 'LoadableDBICSchemaClass';
 use Class::Load 'load_class';
@@ -397,7 +397,7 @@ sub dump_named_sets {
     directory_template => sub {
       my ($fixture, $params, $set) = @_;
       $set =~s/\.json//;
-      my $fixture_conf_dir = $fixture->config_dir->parent->subdir($set);
+      my $fixture_conf_dir = catfile($fixture->config_dir,updir,$set);
       mkpath($fixture_conf_dir)
         unless -d $fixture_conf_dir;
       return $fixture_conf_dir;
@@ -416,7 +416,7 @@ sub dump_all_sets {
     directory_template => sub {
       my ($fixture, $params, $set) = @_;
       $set =~s/\.json//;
-      my $fixture_conf_dir = $fixture->config_dir->parent->subdir($set);
+      my $fixture_conf_dir = catfile($fixture->config_dir,updir,$set);
       mkpath($fixture_conf_dir)
         unless -d $fixture_conf_dir;
       return $fixture_conf_dir;
@@ -427,7 +427,7 @@ sub dump_all_sets {
 sub delete_named_sets {
   my ($self, @sets) = @_;
   my $fixtures = $self->build_dbic_fixtures;
-  my @paths = map { $fixtures->config_dir->parent->subdir($_) } @sets;
+  my @paths = map { catfile($fixtures->config_dir,updir,$_) } @sets;
   foreach my $path (@paths) {
     $self->_delete_path($path);
   }
