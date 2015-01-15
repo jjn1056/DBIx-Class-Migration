@@ -46,43 +46,43 @@ Utility Commands:
 
 # DESCRIPTION
 
-[DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) is a state of the art solution to the problem
-of creating sane workflows for versioning [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) managed database
+[DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler) is a state of the art solution to the problem
+of creating sane workflows for versioning [DBIx::Class](https://metacpan.org/pod/DBIx::Class) managed database
 projects.  However, since it is more of a toolkit for building custom versioning
 and migration workflows than an expression of a particular migration practice,
 it might not always be the most approachable tool.  If you are starting a new
-[DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) project and you don't have a particular custom workflow need,
+[DBIx::Class](https://metacpan.org/pod/DBIx::Class) project and you don't have a particular custom workflow need,
 you might prefer to simply be given a reasonable clear and standard practice,
 rather than a toolkit with a set of example scripts.
 
-[DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) defines some logic which combines both
-[DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) and [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures), along with
+[DBIx::Class::Migration](https://metacpan.org/pod/DBIx::Class::Migration) defines some logic which combines both
+[DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler) and [DBIx::Class::Fixtures](https://metacpan.org/pod/DBIx::Class::Fixtures), along with
 a standard tutorial, to give you a simple and straightforward approach to
 solving the problem of how to best create database versions, migrations and
-testing data.  Additionally it builds on tools like [Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld) and
-[Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql) along with [DBD::Sqlite](http://search.cpan.org/perldoc?DBD::Sqlite) in order to assist you in quickly
+testing data.  Additionally it builds on tools like [Test::mysqld](https://metacpan.org/pod/Test::mysqld) and
+[Test::postgresql](https://metacpan.org/pod/Test::postgresql) along with [DBD::Sqlite](https://metacpan.org/pod/DBD::Sqlite) in order to assist you in quickly
 creating a local development database sandbox.  It offers some integration
-points to testing your database, via tools like [Test::DBIx::Class](http://search.cpan.org/perldoc?Test::DBIx::Class) in order to
+points to testing your database, via tools like [Test::DBIx::Class](https://metacpan.org/pod/Test::DBIx::Class) in order to
 make testing your database driven logic less painful.  Lastly, we offer some
 thoughts on good development patterns in using databases with application
-frameworks like [Catalyst](http://search.cpan.org/perldoc?Catalyst).
+frameworks like [Catalyst](https://metacpan.org/pod/Catalyst).
 
-[DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) offers code and advice based on my experience of using
-[DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) for several years, which hopefully can help you bootstrap a new 
-project.  The solutions given should work for you if you want to use [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class)
+[DBIx::Class::Migration](https://metacpan.org/pod/DBIx::Class::Migration) offers code and advice based on my experience of using
+[DBIx::Class](https://metacpan.org/pod/DBIx::Class) for several years, which hopefully can help you bootstrap a new 
+project.  The solutions given should work for you if you want to use [DBIx::Class](https://metacpan.org/pod/DBIx::Class)
 and have database migrations, but don't really know what to do next.  These
 solutions should scale upward from a small project to a medium project involving
 many developers and more than one target environment (DEV -> QA -> Production.)
 If you have very complex database versioning requirements, huge teams and
 difficult architectual issues, you might be better off building something on
-top of [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) directly.
+top of [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler) directly.
 
-[DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) is a base class upon which interfaces like
-[DBIx::Class::Migration::Script](http://search.cpan.org/perldoc?DBIx::Class::Migration::Script) are built.  
+[DBIx::Class::Migration](https://metacpan.org/pod/DBIx::Class::Migration) is a base class upon which interfaces like
+[DBIx::Class::Migration::Script](https://metacpan.org/pod/DBIx::Class::Migration::Script) are built.  
 
-Please see [DBIx::Class::Migration::Tutorial](http://search.cpan.org/perldoc?DBIx::Class::Migration::Tutorial) for more approachable
+Please see [DBIx::Class::Migration::Tutorial](https://metacpan.org/pod/DBIx::Class::Migration::Tutorial) for more approachable
 documentation.  If you want to read a high level feature overview, see
-[DBIx::Class::Migration::Features](http://search.cpan.org/perldoc?DBIx::Class::Migration::Features).  The remainder of this POD is API level
+[DBIx::Class::Migration::Features](https://metacpan.org/pod/DBIx::Class::Migration::Features).  The remainder of this POD is API level
 documentation on the various internals.
 
 # ATTRIBUTES
@@ -94,10 +94,10 @@ This class defines the following attributes.
 Accept Str.  Defaults to 'DBIx::Class::Migration::TargetDirSandboxBuilder'
 
 The name of the helper class which builds the class that builds database
-sandboxs.  By default we build database sandboxes in the ["target\_dir"](#target\_dir), which
-is what [DBIx::Class::Migration::TargetDirSandboxBuilder](http://search.cpan.org/perldoc?DBIx::Class::Migration::TargetDirSandboxBuilder) does.  We can also
+sandboxs.  By default we build database sandboxes in the ["target\_dir"](#target_dir), which
+is what [DBIx::Class::Migration::TargetDirSandboxBuilder](https://metacpan.org/pod/DBIx::Class::Migration::TargetDirSandboxBuilder) does.  We can also
 build database sandboxes in a temporary directory using
-[DBIx::Class::Migration::TempDirSandboxBuilder](http://search.cpan.org/perldoc?DBIx::Class::Migration::TempDirSandboxBuilder).  You might prefer that for
+[DBIx::Class::Migration::TempDirSandboxBuilder](https://metacpan.org/pod/DBIx::Class::Migration::TempDirSandboxBuilder).  You might prefer that for
 running tests, for example.
 
 ## db\_sandbox\_class
@@ -112,19 +112,19 @@ yourself.
 
 This must point to a class that expects `target_dir` and `schema_class` for
 initialization arguments and must define a method `make_sandbox` that returns
-an array which can be sent to ["connect" in DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema#connect).
+an array which can be sent to ["connect" in DBIx::Class::Schema](https://metacpan.org/pod/DBIx::Class::Schema#connect).
 
-This defaults to [DBIx::Class::Migration::SqliteSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::SqliteSandbox).  Currently we have
-support for MySQL and Postgresql via [DBIx::Class::Migration::MySQLSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::MySQLSandbox)
-and [DBIx::Class::Migration::PgSandbox](http://search.cpan.org/perldoc?DBIx::Class::Migration::PgSandbox), but you will need to side install
-[Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld) and [Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql) (In other words you'd need to add
+This defaults to [DBIx::Class::Migration::SqliteSandbox](https://metacpan.org/pod/DBIx::Class::Migration::SqliteSandbox).  Currently we have
+support for MySQL and Postgresql via [DBIx::Class::Migration::MySQLSandbox](https://metacpan.org/pod/DBIx::Class::Migration::MySQLSandbox)
+and [DBIx::Class::Migration::PgSandbox](https://metacpan.org/pod/DBIx::Class::Migration::PgSandbox), but you will need to side install
+[Test::mysqld](https://metacpan.org/pod/Test::mysqld) and [Test::postgresql](https://metacpan.org/pod/Test::postgresql) (In other words you'd need to add
 these `Test::*` namespace modules to your `Makefile.PL` or `dist.ini`).
 
 ## db\_sandbox
 
 Accepts: Object.  Not required.
 
-This is an instantiated object as defined by ["db\_sandbox\_class"](#db\_sandbox\_class).  It is a
+This is an instantiated object as defined by ["db\_sandbox\_class"](#db_sandbox_class).  It is a
 delegate for the work of automatically creating a local database sandbox that
 is useful for developers and for quickly bootstrapping a project.
 
@@ -134,43 +134,43 @@ Accepts Str.  Not Required (but if missing, you need to populate ["schema"](#sch
 
 This is the schema we use as the basis for creating, managing and running your
 deployments.  This should be the full package namespace defining your subclass
-of [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema).  For example `MyApp::Schema`.
+of [DBIx::Class::Schema](https://metacpan.org/pod/DBIx::Class::Schema).  For example `MyApp::Schema`.
 
-If the ["schema\_class"](#schema\_class) cannot be loaded, a hard exception will be thrown.
+If the ["schema\_class"](#schema_class) cannot be loaded, a hard exception will be thrown.
 
 ## schema\_args
 
 Accepts ArrayRef.  Required but lazily builds from defaults
 
-Provides arguments passed to `connect` on your ["schema\_class"](#schema\_class).  Should
+Provides arguments passed to `connect` on your ["schema\_class"](#schema_class).  Should
 connect to a database.
 
-This is an arrayref that would work the same as ["connect" in DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema#connect).
-If you choose to create an instance of [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) by providing a
-[schema\_class](http://search.cpan.org/perldoc?schema\_class), you can use this to customize how we connect to a database.
+This is an arrayref that would work the same as ["connect" in DBIx::Class::Schema](https://metacpan.org/pod/DBIx::Class::Schema#connect).
+If you choose to create an instance of [DBIx::Class::Migration](https://metacpan.org/pod/DBIx::Class::Migration) by providing a
+[schema\_class](https://metacpan.org/pod/schema_class), you can use this to customize how we connect to a database.
 
 If you don't provide a value, we will automatically create a SQLite based
 database connection with the following DSN:
 
     DBD:SQLite:[path to target_dir]/[db_file_name].db
 
-Where c<\[path to target\_dir\]> is ["target\_dir"](#target\_dir) and \[db\_file\_name\] is a converted
-version of ["schema\_class"](#schema\_class).  For example if you set [schema\_class](http://search.cpan.org/perldoc?schema\_class) to:
+Where c<\[path to target\_dir\]> is ["target\_dir"](#target_dir) and \[db\_file\_name\] is a converted
+version of ["schema\_class"](#schema_class).  For example if you set [schema\_class](https://metacpan.org/pod/schema_class) to:
 
     MyApp::Schema
 
 Then \[db\_file\_name\] would be `myapp-schema`.
 
 Basically, this means you can start testing your database designs right off
-without a lot of effort, just point at a [schema\_class](http://search.cpan.org/perldoc?schema\_class) and get deploying!
+without a lot of effort, just point at a [schema\_class](https://metacpan.org/pod/schema_class) and get deploying!
 
 ## schema
 
-Accepts: Object of [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema).  Not required.
+Accepts: Object of [DBIx::Class::Schema](https://metacpan.org/pod/DBIx::Class::Schema).  Not required.
 
-If you already have a connected schema (subclass of [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema))
-you can simple point to it, skipping [schema\_class](http://search.cpan.org/perldoc?schema\_class) and [schema\_args](http://search.cpan.org/perldoc?schema\_args).  You
-might for example be using [Catalyst](http://search.cpan.org/perldoc?Catalyst) and want to build deployments for a
+If you already have a connected schema (subclass of [DBIx::Class::Schema](https://metacpan.org/pod/DBIx::Class::Schema))
+you can simple point to it, skipping [schema\_class](https://metacpan.org/pod/schema_class) and [schema\_args](https://metacpan.org/pod/schema_args).  You
+might for example be using [Catalyst](https://metacpan.org/pod/Catalyst) and want to build deployments for a
 database that is listed in configuration:
 
     use MyCatalyst::App;
@@ -184,13 +184,13 @@ database that is listed in configuration:
 ## target\_dir\_builder\_class
 
 Accepts:  Str, Defaults to 'DBIx::Class::Migration::ShareDirBuilder'
-This is a class that is used as a helper to build ["target\_dir"](#target\_dir) should the
-user not provide a value.  Default is [DBIx::Class::Migration::ShareDirBuilder](http://search.cpan.org/perldoc?DBIx::Class::Migration::ShareDirBuilder)
+This is a class that is used as a helper to build ["target\_dir"](#target_dir) should the
+user not provide a value.  Default is [DBIx::Class::Migration::ShareDirBuilder](https://metacpan.org/pod/DBIx::Class::Migration::ShareDirBuilder)
 
 ## target\_dir\_builder
 
-An instance of whatever is in ["target\_dir\_builder\_class"](#target\_dir\_builder\_class).  Used by the lazy
-build method of ["target\_dir"](#target\_dir) to default a directory where the migrations are
+An instance of whatever is in ["target\_dir\_builder\_class"](#target_dir_builder_class).  Used by the lazy
+build method of ["target\_dir"](#target_dir) to default a directory where the migrations are
 actually placed.
 
 ## target\_dir
@@ -201,32 +201,32 @@ This is the directory we store our migration and fixture files.  Inside this
 directory we will create a `fixtures` and `migrations` sub-directory.
 
 Although you can specify the directory, if you leave it undefined, we will use
-[File::ShareDir::ProjectDistDir](http://search.cpan.org/perldoc?File::ShareDir::ProjectDistDir) to locate the `/share` directory for your
+[File::ShareDir::ProjectDistDir](https://metacpan.org/pod/File::ShareDir::ProjectDistDir) to locate the `/share` directory for your
 project and place the files there.  This is the recommended approach, and is
 considered a community practice in regards to where to store your distribution
-non code files.  Please see [File::ShareDir::ProjectDistDir](http://search.cpan.org/perldoc?File::ShareDir::ProjectDistDir) as well as
-[File::ShareDir](http://search.cpan.org/perldoc?File::ShareDir) for more information.
+non code files.  Please see [File::ShareDir::ProjectDistDir](https://metacpan.org/pod/File::ShareDir::ProjectDistDir) as well as
+[File::ShareDir](https://metacpan.org/pod/File::ShareDir) for more information.
 
-This uses whatever is in ["schema\_class"](#schema\_class) to determine your project (and look
+This uses whatever is in ["schema\_class"](#schema_class) to determine your project (and look
 for a `share` directory, which you'll need to create in your project root).
-If you don't have a ["schema\_class"](#schema\_class) defined, you must have a ["schema"](#schema),
+If you don't have a ["schema\_class"](#schema_class) defined, you must have a ["schema"](#schema),
 and we'll infer the class via `ref($self->schema)`.
 
-__NOTE:__ You'll need to make the `/share` directory if you are going to use
+**NOTE:** You'll need to make the `/share` directory if you are going to use
 the default option.  We don't automatically create it for you.
 
 ## schema\_loader\_class
 
 Accepts Str.  Required
 
-Because your application subclass of [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema) is going to
+Because your application subclass of [DBIx::Class::Schema](https://metacpan.org/pod/DBIx::Class::Schema) is going to
 change a lot, sometimes we need to generate our own schema and get one that is
 in a known, good state.  Mostly this is used by the commands to drop tables
 and clear tables.
 
-Defaults to [DBIx::Class::Migration::SchemaLoader](http://search.cpan.org/perldoc?DBIx::Class::Migration::SchemaLoader).  You'll probably only
+Defaults to [DBIx::Class::Migration::SchemaLoader](https://metacpan.org/pod/DBIx::Class::Migration::SchemaLoader).  You'll probably only
 need to change this if your database is crazy and you need to massage the
-init arguments to [DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader).
+init arguments to [DBIx::Class::Schema::Loader](https://metacpan.org/pod/DBIx::Class::Schema::Loader).
 
 ## schema\_loader
 
@@ -240,11 +240,11 @@ manually.
 
 Accepts Str.  Required
 
-This is the class we use when creating instances of [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures).
+This is the class we use when creating instances of [DBIx::Class::Fixtures](https://metacpan.org/pod/DBIx::Class::Fixtures).
 You'll probably need to review the docs for that and understand how configuration
 rules work in order to best take advantage of the system.
 
-Defaults to [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures).  You'll probably not need to change this
+Defaults to [DBIx::Class::Fixtures](https://metacpan.org/pod/DBIx::Class::Fixtures).  You'll probably not need to change this
 unless you have some unusual needs regarding fixtures.
 
 ## dbic\_fixtures\_extra\_args
@@ -252,18 +252,18 @@ unless you have some unusual needs regarding fixtures.
 Accepts HashRef. Required, but Defaults to Empty Hashref
 
 Allows you to pass some additional arguments when creating instances of
-["dbic\_fixture\_class"](#dbic\_fixture\_class).  These arguments can be used to override the default
+["dbic\_fixture\_class"](#dbic_fixture_class).  These arguments can be used to override the default
 initial arguments.
 
 ## deployment\_handler\_class
 
 Accepts Str.  Required
 
-This is the class we use when creating instances of [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).
+This is the class we use when creating instances of [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler).
 It would be ideal that you review those docs in order to better understand the
 overall architecture of the system.
 
-Defaults to [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).  You'll probably not need to
+Defaults to [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler).  You'll probably not need to
 change this unless you need a custom deployment handler, and if you do, I
 can't be sure this framework will work correctly, particularly if you are not
 useing monotonic versioning.
@@ -272,36 +272,36 @@ useing monotonic versioning.
 
 Accepts HashRef.  Required and defaults to an empty hashref.
 
-Used to pass custom args when building a [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).
+Used to pass custom args when building a [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler).
 Please see the docs for that class for more.  Useful args might be `databases`,
 `to_version` and `force_overwrite`.
 
 ## dbic\_dh
 
-Accepts Instance of [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).  Required but lazily
-built from default data and [dbic\_dh\_args](http://search.cpan.org/perldoc?dbic\_dh\_args).
+Accepts Instance of [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler).  Required but lazily
+built from default data and [dbic\_dh\_args](https://metacpan.org/pod/dbic_dh_args).
 
 You probably won't need to build your own deployment handler and pass it in
-(unlike [schema](http://search.cpan.org/perldoc?schema), where it might actually be useful).  Be careful it you do
+(unlike [schema](https://metacpan.org/pod/schema), where it might actually be useful).  Be careful it you do
 since this framework makes some assumptions about your deployment handler (for
 example we assume you are using the monotonic versioning).
 
-When this attribute is lazily built, we merge ["dbic\_dh\_args"](#dbic\_dh\_args) with the
+When this attribute is lazily built, we merge ["dbic\_dh\_args"](#dbic_dh_args) with the
 following defaults:
 
       schema => Points to $self->schema
       script_directory => Points to catdir($self->target_dir, 'migrations')
       databases => Inferred from your connected schema, defaults to SQLite
 
-["dbic\_dh\_args"](#dbic\_dh\_args) will overwrite the defaults, if you pass them.
+["dbic\_dh\_args"](#dbic_dh_args) will overwrite the defaults, if you pass them.
 
 ## extra\_schemaloader\_args
 
 Optional.  Accepts a HashRef of arguments you can use to influence how
-[DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader) works.  This HashRef would get passed as
-`loader_options` (see ["make\_schema\_at" in DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader#make\_schema\_at).
+[DBIx::Class::Schema::Loader](https://metacpan.org/pod/DBIx::Class::Schema::Loader) works.  This HashRef would get passed as
+`loader_options` (see ["make\_schema\_at" in DBIx::Class::Schema::Loader](https://metacpan.org/pod/DBIx::Class::Schema::Loader#make_schema_at).
 
-Meaningful options are described at [DBIx::Class::Schema::Loader::Base](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader::Base).
+Meaningful options are described at [DBIx::Class::Schema::Loader::Base](https://metacpan.org/pod/DBIx::Class::Schema::Loader::Base).
 
 # METHODS
 
@@ -309,7 +309,7 @@ This class defines the following methods for public use
 
 ## new
 
-Used to create an new instance of [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration).  There's a couple
+Used to create an new instance of [DBIx::Class::Migration](https://metacpan.org/pod/DBIx::Class::Migration).  There's a couple
 of paths to creating this instance.
 
 ### Specify a schema\_class and optionally schema\_args
@@ -321,16 +321,16 @@ of paths to creating this instance.
     );
 
 This is probably the most general approach, and is recommended unless you
-already have a connected instance of your [DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema) subclass.
+already have a connected instance of your [DBIx::Class::Schema](https://metacpan.org/pod/DBIx::Class::Schema) subclass.
 
-["schema\_args"](#schema\_args) would be anything you'd pass to ["connect" in DBIx::Class::Schema](http://search.cpan.org/perldoc?DBIx::Class::Schema#connect).
-see ["schema\_args"](#schema\_args) for how we construct default connect information if you
+["schema\_args"](#schema_args) would be anything you'd pass to ["connect" in DBIx::Class::Schema](https://metacpan.org/pod/DBIx::Class::Schema#connect).
+see ["schema\_args"](#schema_args) for how we construct default connect information if you
 choose to leave this undefined.
 
 ### Specify a schema
 
 There may be some cases when you already have a schema object constructed and
-would prefer to just use that.  For example, you may be using [Catalyst](http://search.cpan.org/perldoc?Catalyst) and
+would prefer to just use that.  For example, you may be using [Catalyst](https://metacpan.org/pod/Catalyst) and
 wish to build custom scripts using the built-in dependency and service lookup:
 
     use MyCatalyst::App;
@@ -364,11 +364,11 @@ an alternative location.
 ### OPTIONAL: Specify dbic\_dh\_args
 
 Optionally, you can specify additional arguments to the constructor for the
-["dbic\_dh"](#dbic\_dh) attribute.  Useful arguments might include additional `databases`
+["dbic\_dh"](#dbic_dh) attribute.  Useful arguments might include additional `databases`
 we should build fixtures for, `to_version` and `force_overwrite`.
 
-See [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) for more information on supported init
-arguments.  See ["dbic\_dh"](#dbic\_dh) for how we merge default arguments with your custom
+See ["" in DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler) for more information on supported init
+arguments.  See ["dbic\_dh"](#dbic_dh) for how we merge default arguments with your custom
 arguments.
 
 ### Other Initial Arguments
@@ -388,12 +388,12 @@ of the current `schema` version.  Sends this as a string to STDOUT
 
 ## prepare
 
-Creates a `fixtures` and `migrations` directory under ["target\_dir"](#target\_dir) (if they
+Creates a `fixtures` and `migrations` directory under ["target\_dir"](#target_dir) (if they
 don't already exist) and makes deployment files for the current schema.  If
-deployment files exist, will fail unless you ["overwrite\_migrations"](#overwrite\_migrations). 
+deployment files exist, will fail unless you ["overwrite\_migrations"](#overwrite_migrations). 
 
 The `migrations` directory reflects a directory structure as documented in
-[DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler).
+[DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler).
 
 If this is the first version, we create directories and initial DLL, etc.  For
 versions greater than 1, we will also generate diffs and copy any fixture
@@ -403,11 +403,11 @@ safety reasons, we never overwrite any fixture configs.
 ## install
 
 Installs either the current schema version (if already prepared) or the target
-version specified via any `to_version` flags sent as an [dbic\_dh\_args](http://search.cpan.org/perldoc?dbic\_dh\_args) to the
+version specified via any `to_version` flags sent as an [dbic\_dh\_args](https://metacpan.org/pod/dbic_dh_args) to the
 database which is connected via ["schema"](#schema).
 
 If you try to install to a database that has already been installed, you'll get
-an error.  See ["drop\_tables"](#drop\_tables).
+an error.  See ["drop\_tables"](#drop_tables).
 
 ## upgrade
 
@@ -443,8 +443,8 @@ version.
 
 ## make\_schema
 
-Given an existing database, reverse engineer a [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) Schema in the
-["target\_dir"](#target\_dir) (under `dumped_db`).  You can use this if you need to bootstrap
+Given an existing database, reverse engineer a [DBIx::Class](https://metacpan.org/pod/DBIx::Class) Schema in the
+["target\_dir"](#target_dir) (under `dumped_db`).  You can use this if you need to bootstrap
 your DBIC files.
 
 ## populate
@@ -453,23 +453,23 @@ Given an array of fixture set names, populate the current database version with
 the matching sets for that version.
 
 Skips the table `dbix_class_deploymenthandler_versions`, so you don't lose
-deployment info (this is different from ["drop\_tables"](#drop\_tables) which does delete it.)
+deployment info (this is different from ["drop\_tables"](#drop_tables) which does delete it.)
 
 ## diagram
 
 Experimental feature.  Although not specifically a migration task, I find it
 useful to output visuals of my databases.  This command will place a file in
-your ["target\_dir"](#target\_dir) called `db-diagram-vXXX.png` where `XXX` is he current
+your ["target\_dir"](#target_dir) called `db-diagram-vXXX.png` where `XXX` is he current
 `schema` version.
 
-This is using the Graphviz producer ([SQL::Translator::Producer::GraphViz](http://search.cpan.org/perldoc?SQL::Translator::Producer::GraphViz))
-which in turn requires [Graphviz](http://search.cpan.org/perldoc?Graphviz).  Since this is not always trivial to
+This is using the Graphviz producer ([SQL::Translator::Producer::GraphViz](https://metacpan.org/pod/SQL::Translator::Producer::GraphViz))
+which in turn requires [Graphviz](https://metacpan.org/pod/Graphviz).  Since this is not always trivial to
 install, I do not require it.  You will need to add it manually to your
 `Makefile.PL` or `dist.ini` and manage it yourself.
 
 This feature is experimental and currently does not offer any options, as I
 am still determining the best way to meet the need without exceeding the
-scope of [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration).  Consider this command a 'freebee' and
+scope of [DBIx::Class::Migration](https://metacpan.org/pod/DBIx::Class::Migration).  Consider this command a 'freebee' and
 please don't depend on it in your custom code.
 
 ## install\_if\_needed
@@ -524,9 +524,9 @@ control repository).
 
 # ENVIRONMENT
 
-When running [DBIx::Class::Migration](http://search.cpan.org/perldoc?DBIx::Class::Migration) we set some `%ENV` variables during
+When running [DBIx::Class::Migration](https://metacpan.org/pod/DBIx::Class::Migration) we set some `%ENV` variables during
 installation, up / downgrading, so that your Perl run scripts (see
-["DBIx::Class::DeploymentHandler::DeployMethod::SQL::Translator\\'PERL SCRIPTS'"](#DBIx::Class::DeploymentHandler::DeployMethod::SQL::Translator\\'PERL SCRIPTS'))
+["DBIx::Class::DeploymentHandler::DeployMethod::SQL::Translator\\'PERL SCRIPTS'"](#dbix-class-deploymenthandler-deploymethod-sql-translator-perl-scripts))
 can receive some useful information.  The Following `%ENV` variables are set:
 
     DBIC_MIGRATION_SCHEMA_CLASS => $self->schema_class
@@ -550,18 +550,18 @@ particular projects / people I'd like to thank:
 First, thanks to `mst` for providing me a big chunk of code that served to
 kickstart my work, and served as an valuable prototype.
 
-Thanks to `frew` for the awesome [DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler) which gives
+Thanks to `frew` for the awesome [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler) which gives
 us such a powerful base for organizing database versions.  Thanks to all the
-authors of [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures) for giving me a foundation for managing
-sets of data.  Lastly, thanks to the [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) cabal for all the work done
-in making the [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) ORM so amazingly powerful.
+authors of [DBIx::Class::Fixtures](https://metacpan.org/pod/DBIx::Class::Fixtures) for giving me a foundation for managing
+sets of data.  Lastly, thanks to the [DBIx::Class](https://metacpan.org/pod/DBIx::Class) cabal for all the work done
+in making the [DBIx::Class](https://metacpan.org/pod/DBIx::Class) ORM so amazingly powerful.
 
-Additionally thanks to the creators / maintainers for [Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld) and
-[Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql), which made it easy to create developer level sandboxes for
+Additionally thanks to the creators / maintainers for [Test::mysqld](https://metacpan.org/pod/Test::mysqld) and
+[Test::postgresql](https://metacpan.org/pod/Test::postgresql), which made it easy to create developer level sandboxes for
 these popular open source databases.
 
-As usual, thanks to the [Moose](http://search.cpan.org/perldoc?Moose) cabal for making Perl programming fun and
-beautiful.  Lastly, a shout-out to the [Dist::Zilla](http://search.cpan.org/perldoc?Dist::Zilla) cabal for making it so I
+As usual, thanks to the [Moose](https://metacpan.org/pod/Moose) cabal for making Perl programming fun and
+beautiful.  Lastly, a shout-out to the [Dist::Zilla](https://metacpan.org/pod/Dist::Zilla) cabal for making it so I
 don't need to write my own build and deployment tools.
 
 # AUTHOR
@@ -587,10 +587,10 @@ missed you.
 
 # SEE ALSO
 
-[DBIx::Class::DeploymentHandler](http://search.cpan.org/perldoc?DBIx::Class::DeploymentHandler), [DBIx::Class::Fixtures](http://search.cpan.org/perldoc?DBIx::Class::Fixtures), [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class),
-[DBIx::Class::Schema::Loader](http://search.cpan.org/perldoc?DBIx::Class::Schema::Loader), [Moose](http://search.cpan.org/perldoc?Moose), [DBIx::Class::Migration::Script](http://search.cpan.org/perldoc?DBIx::Class::Migration::Script),
-[DBIx::Class::Migration::Population](http://search.cpan.org/perldoc?DBIx::Class::Migration::Population), [dbic-migration](http://search.cpan.org/perldoc?dbic-migration), [SQL::Translator](http://search.cpan.org/perldoc?SQL::Translator),
-[Test::mysqld](http://search.cpan.org/perldoc?Test::mysqld), [Test::postgresql](http://search.cpan.org/perldoc?Test::postgresql).
+[DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler), [DBIx::Class::Fixtures](https://metacpan.org/pod/DBIx::Class::Fixtures), [DBIx::Class](https://metacpan.org/pod/DBIx::Class),
+[DBIx::Class::Schema::Loader](https://metacpan.org/pod/DBIx::Class::Schema::Loader), [Moose](https://metacpan.org/pod/Moose), [DBIx::Class::Migration::Script](https://metacpan.org/pod/DBIx::Class::Migration::Script),
+[DBIx::Class::Migration::Population](https://metacpan.org/pod/DBIx::Class::Migration::Population), [dbic-migration](https://metacpan.org/pod/dbic-migration), [SQL::Translator](https://metacpan.org/pod/SQL::Translator),
+[Test::mysqld](https://metacpan.org/pod/Test::mysqld), [Test::postgresql](https://metacpan.org/pod/Test::postgresql).
 
 # COPYRIGHT & LICENSE
 
