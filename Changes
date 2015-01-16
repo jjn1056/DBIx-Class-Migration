@@ -4,6 +4,8 @@ NOTE: Date format is YEAR-MONTH-DAY
 
 {{$NEXT}}
 
+0.04_5    2015-01-15 01:44:23+00:00 Europe/London
+
         - Don't use config_dir from DBIx::Class::Fixtures as a Path::Class::Dir,
           it no longer is one.
 
