@@ -4,6 +4,8 @@ NOTE: Date format is YEAR-MONTH-DAY
 
 {{$NEXT}}
 
+0.046     2015-01-26 03:10:37+00:00 Europe/London
+
         - Switch from Test::postgresql to Test::PostgreSQL
         ( the latter is a fork of the former )
 
