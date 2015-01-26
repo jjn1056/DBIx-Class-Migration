@@ -4,6 +4,8 @@ NOTE: Date format is YEAR-MONTH-DAY
 
 {{$NEXT}}
 
+0.04_7    2015-01-26 14:48:07+00:00 Europe/London
+
         - no changes from previous release, just removing examples from PAUSE indexing.
 
 0.046     2015-01-26 03:10:37+00:00 Europe/London
