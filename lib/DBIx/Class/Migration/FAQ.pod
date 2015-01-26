@@ -259,7 +259,7 @@ permanently, just add the following to a little bash script in my application
 
 I don't know enough about Postgresql to know if the above settings are good,
 but they work for my testing.  Corrections very welcome!  Ideally I'd try to
-find a way to offer a patch to L<Test::postgresql>, although this seems to be
+find a way to offer a patch to L<Test::PostgreSQL>, although this seems to be
 limited to people using Macs.
 
 =head1 How to Release
