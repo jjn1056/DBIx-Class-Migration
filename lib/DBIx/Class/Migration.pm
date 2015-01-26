@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.004_07";
+our $VERSION = "0.04_7";
 $VERSION = eval $VERSION;
 
 use Moose;
