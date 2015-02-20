@@ -9,7 +9,7 @@ dbic-migration - commandline tool to create and manage your migrations
 
 =head1 SYNOPSIS
 
-    dic-migration help
+    dbic-migration help
 
 =head1 DESCRIPTION
 
