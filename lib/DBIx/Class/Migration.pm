@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.048";
+our $VERSION = "0.049";
 $VERSION = eval $VERSION;
 
 use Moose;
@@ -21,11 +21,20 @@ has db_sandbox_class => (
 
 has db_sandbox => (is=>'ro', lazy_build=>1);
 
+has db_sandbox_dir => (is=>'ro', predicate=>'has_db_sandbox_dir', isa=>'Str');
+
 has db_sandbox_builder_class => (
   is => 'ro',
-  default => 'DBIx::Class::Migration::TargetDirSandboxBuilder',
   isa => LoadableClass,
+  lazy_build => 1,
   coerce=>1);
+
+  sub _build_db_sandbox_builder_class {
+    my $self = shift;
+    return $self->has_db_sandbox_dir ? 
+      'DBIx::Class::Migration::SandboxDirSandboxBuilder' : 
+        'DBIx::Class::Migration::TargetDirSandboxBuilder';
+  }
 
 has db_sandbox_builder => (is=>'ro', lazy_build=>1);
 
@@ -903,6 +912,25 @@ If you leave this undefined we default to using the C<share> directory in your
 distribution root.  This is generally the community supported place for non
 code data, but if you have huge fixture sets you might wish to place them in
 an alternative location.
+
+=head3 OPTIONAL: Specify a db_sandbox_dir
+
+Be default if you allow for a local database sandbox (as you might during early
+development and you don't want to work to make a database) that sandbox gets
+built in the 'target_dir'.  Since other bits in the target_dir are probably
+going to be in your project repository and the sandbox generally isnt, you 
+might wish to build the sandbox in an alternative location.  This setting
+allows that:
+
+    use DBIx::Class::Migration;
+    my $migration = DBIx::Class::Migration->new(
+      schema_class => 'MyApp::Schema',
+      schema_args => [@connect_info],
+      db_sandbox_dir => '~/opt/database-sandbox',
+    );
+
+This then gives you a nice totally standalone database sandbox which you can
+reuse for other projects, etc.
 
 =head3 OPTIONAL: Specify dbic_dh_args
 

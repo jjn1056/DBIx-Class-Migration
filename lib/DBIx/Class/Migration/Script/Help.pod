@@ -44,6 +44,7 @@ The following is a summary of available commands
   include/s (I,lib/s) : Adds the listed paths to @INC.
   schema_class (S)    : The DBIx::Class::Schema subclass you are migrating
   target_dir (D)      : Where to put (or find) your migration files
+  sandbox_dir         : Specific an alternative path for your database sandbox
   username (U)
   password (P)
   dsn                 : connection info to the database you are migrating
