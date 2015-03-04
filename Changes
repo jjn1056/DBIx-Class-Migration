@@ -1,8 +1,10 @@
 Revision history for DBIx-Class-Migration.
 
-NOTE: Date format is YEAR-MONTH-DAY
-
-{{$NEXT}}
+0.049   2013-09-18
+        - New feature 'db_sandbox_dir' which allows you to specify an alternative
+          location for a sandbox.
+        - Removed some Dzil components I didn't understand or seem to think I
+          really benefitted from.
 
 0.048     2015-02-20 17:00:51+00:00 Europe/London
 
