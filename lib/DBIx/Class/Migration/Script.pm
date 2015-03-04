@@ -171,7 +171,10 @@ sub _build_migration {
     $args{db_sandbox_builder_class} = $plus ? $class : "DBIx::Class::Migration::$class";
   }
 
-  $args{db_sandbox_dir} = $self->sandbox_dir if $self->has_sandbox_dir;
+  # Because this attribute uses the ENV thing, its always going to meet the 'has'
+  # Requirement, but it will be '' so we can also check for truthiness.
+  $args{db_sandbox_dir} = $self->sandbox_dir
+    if $self->has_sandbox_dir && $self->sandbox_dir;
   
   return $self->migration_class->new(%args);
 }
