@@ -188,7 +188,9 @@ sub make_sandbox {
 ## I have to stop the database manually, not sure why, something borks 
 ## postgresql when SQLT->translate in DBIC-DH is called.
 
-sub DEMOLISH { shift->test_postgresql->stop(SIGINT) }
+#sub DEMOLISH { shift->test_postgresql->stop(SIGINT) }
+
+# ^ 03/04/2015 commenting this out since I 'think' its not an issue anymore
 
 __PACKAGE__->meta->make_immutable;
 
