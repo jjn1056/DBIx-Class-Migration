@@ -104,6 +104,11 @@ NEW_SCOPE_FOR_SCHEMA: {
 
   $migration->install;
 
+  isa_ok(
+    my $schema = $migration->schema, 'Local::Schema',
+    'got a reasonable looking schema');
+
+
   ok $schema->resultset('Country')->find({code=>'fra'}),
     'got some previously inserted data';
 
@@ -140,7 +145,7 @@ TEST_SEQUENCE_RESTORE: {
   ok( my $migration = DBIx::Class::Migration->new(
     schema_class=>'Local::Schema',
     db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
-  'created migration with schema_class #3');
+  'created migration with schema_class #4');
 
   ## First we are going to blow away the database from previous tests
 
