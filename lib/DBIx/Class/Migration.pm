@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.053";
+our $VERSION = "0.054";
 $VERSION = eval $VERSION;
 
 use Moose;
@@ -490,7 +490,7 @@ sub diagram {
   my $dimension = int sqrt($number_tables * 13);
   my $trans = SQL::Translator->new(
     parser => 'SQL::Translator::Parser::DBIx::Class',
-    parser_args => { package => $self->schema },
+    parser_args => { dbic_schema => $self->schema },
     producer => 'GraphViz',
     producer_args => {
       skip_tables => 'dbix_class_deploymenthandler_versions',

@@ -1,6 +1,9 @@
 Revision history for DBIx-Class-Migration.
 
-0.053   2015-02=05
+0.054   2015-02-05
+        - Change use of deprecated config name in SQLT
+
+0.053   2015-02-05
         - Even more careful disconnection on DEMOLISH
 
 0.052   2015-02-05
