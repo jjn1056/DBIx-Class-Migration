@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.052";
+our $VERSION = "0.053";
 $VERSION = eval $VERSION;
 
 use Moose;
@@ -556,7 +556,7 @@ before [qw/install upgrade downgrade/], sub {
 
 sub DEMOLISH {
   my $self = shift;
-  return unless $self->has_schema;
+  return unless $self->has_schema && $self->schema;
   if(my $storage = $self->schema->storage) {
     $storage->disconnect;
   }

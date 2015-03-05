@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.053   2015-02=05
+        - Even more careful disconnection on DEMOLISH
+
 0.052   2015-02-05
         - Don't disconnect on DEMOLISH if the schema already is gone
 
