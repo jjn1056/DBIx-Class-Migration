@@ -1,5 +1,15 @@
 Revision history for DBIx-Class-Migration.
 
+0.051   2015-02-05
+        - Removed postgresqlsandbox shutdown hack (I think this issue is long fixed
+          in DBIC:DH and I can't honestly recall the exact problem...
+        - Fixed bad test case that was not properly scoping $schema, leading to
+          trouble.
+        - More explicit disconnect of schema when the migration object goes out of
+          scope.  This should reduce or eliminate "Cleanup" warnings when trying to
+          shutdown Postgresql and the $schema is still connected.
+        - Added some docs on the Postgresql sandbox helpers I added yesterday.
+
 0.050   2015-02-04
         - New script helpers for Postgresql sandboxs
         - Corrected some dates in the changelog

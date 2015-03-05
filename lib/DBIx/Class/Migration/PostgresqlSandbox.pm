@@ -230,9 +230,11 @@ above permanent.
 NOTE: You might find installing L<DBD::Pg> to be easier if you edit the
 C<$PATH> before trying to install it.
 
-In addition to the Postgresql sandbox, we create three helper scripts C<start>,
+In addition to the Postgresql sandbox, we create several helper scripts C<start>,
 C<stop> and C<use> which can be used to start, stop and open shell level access
-to you mysql sandbox.
+to you mysql sandbox.  C<dump> lets you easily access pg_dump and C<config> is
+a Perl library that returns a hashref of the connection info, which is suitable
+to use in L<DBIx::Class> Schema connect.
 
 These helper scripts will be located in a child directory of your C<target_dir>
 (which defaults to C<share> under your project root directory).  For example:
@@ -252,6 +254,8 @@ If your schema class is C<MyApp::Schema> you should see helper scripts like
         /fixtures
         /myapp-schema
           /bin
+            config
+            dump
             start
             stop
             use
