@@ -548,6 +548,17 @@ before [qw/install upgrade downgrade/], sub {
   );
 };
 
+# We need to explicitly disconnect so that we can properly
+# shutdown some databases (like Postgresql) without generating
+# errors in cleanup.  Basically if we don't disconnect we often
+# end up with blocking commands running on the server at the time
+# we are trying to shut it down.
+
+sub DEMOLISH {
+  my $self = shift;
+  $self->schema->storage->disconnect;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
