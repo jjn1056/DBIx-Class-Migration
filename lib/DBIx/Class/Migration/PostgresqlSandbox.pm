@@ -119,6 +119,54 @@ USE
   chmod oct("0755"), catfile($bin, 'use');
 }
 
+sub _write_dump {
+  my $base_dir = (my $self = shift)->test_postgresql->base_dir;
+  mkpath(my $bin = catdir($base_dir, 'bin'));
+  open( my $fh, '>', catfile($bin, 'dump'))
+    || die "Cannot open $bin/dump: $!";
+
+  my $test_postgresql = $self->test_postgresql;
+  my $postmaster = $test_postgresql->{postmaster};
+  my $psql = $postmaster;
+  $psql =~s/postmaster$/pg_dump/; # ugg
+  my $port = $test_postgresql->{port};
+
+  print $fh <<USE;
+#!/usr/bin/env sh
+
+$psql -h localhost --user postgres --port $port \$@
+USE
+
+  close($fh);
+
+  chmod oct("0755"), catfile($bin, 'dump');
+}
+
+sub _write_config {
+  my $base_dir = (my $self = shift)->test_postgresql->base_dir;
+  mkpath(my $bin = catdir($base_dir, 'bin'));
+  open( my $fh, '>', catfile($bin, 'config'))
+    || die "Cannot open $bin/config $!";
+
+  my $test_postgresql = $self->test_postgresql;
+  my $postmaster = $test_postgresql->{postmaster};
+  my $psql = $postmaster;
+  $psql =~s/postmaster$/pg_dump/; # ugg
+  my $port = $test_postgresql->{port};
+
+  print $fh <<USE;
+#!/usr/bin/env perl
+
+my \$connect_info => { dsn => 'DBI:Pg:dbname=template1;host=localhost;port=$port', user => 'postgres', password => '' }
+
+USE
+
+  close($fh);
+
+  chmod oct("0755"), catfile($bin, 'config');
+}
+
+
 sub make_sandbox {
   my $self = shift;
   my $base_dir = $self->_generate_sandbox_dir;
@@ -127,6 +175,9 @@ sub make_sandbox {
     $self->_write_start;
     $self->_write_stop;
     $self->_write_use;
+    $self->_write_dump;
+    $self->_write_config;
+
     my $port = $self->test_postgresql->port;
     return "DBI:Pg:dbname=template1;host=127.0.0.1;port=$port",'postgres','';
   } else {

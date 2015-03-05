@@ -1,6 +1,10 @@
 Revision history for DBIx-Class-Migration.
 
-0.049   2013-09-18
+0.050   2015-02-04
+        - New script helpers for Postgresql sandboxs
+        - Corrected some dates in the changelog
+
+0.049   2015-02-04
         - New feature 'db_sandbox_dir' which allows you to specify an alternative
           location for a sandbox.
         - Removed some Dzil components I didn't understand or seem to think I
