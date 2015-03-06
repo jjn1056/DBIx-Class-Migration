@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration.
 
+0.055   2014-02-05
+        - Specify higher minimum versions to try and narrow down massive
+          failure reports on CPAN testers.  Please give me a shout if any
+          of these version minimum increases cause you trouble.
+
 0.054   2015-02-05
         - Change use of deprecated config name in SQLT
 
