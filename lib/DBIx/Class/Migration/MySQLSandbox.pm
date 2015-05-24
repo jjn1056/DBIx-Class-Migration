@@ -40,7 +40,7 @@ sub _build_test_mysqld {
   if( -d $base_dir) {
     $auto_start = 1;
     my $conf = Config::MySQL::Reader->read_file( catfile($base_dir, 'etc', 'my.cnf') ) ||
-      die "Can't read my.cnf file";
+      $self->log_die( "Can't read my.cnf file" );
     $my_cnf = { socket => $conf->{mysqld}->{socket} };
     if( -e $conf->{mysqld}->{socket}) {
       $auto_start = 0;
@@ -61,7 +61,7 @@ sub _write_start {
   my $base_dir = (my $self = shift)->test_mysqld->base_dir;
   mkpath(my $bin = catdir($base_dir, 'bin'));
   open( my $fh, '>', catfile($bin, 'start'))
-    || die "Cannot open $bin/start: $!";
+    || $self->log_die( "Cannot open $bin/start: $!" );
 
   my $mysqld = $self->test_mysqld->{mysqld};
   my $my_cnf = catfile($base_dir, 'etc', 'my.cnf');
@@ -80,7 +80,7 @@ sub _write_stop {
   my $base_dir = (my $self = shift)->test_mysqld->base_dir;
   mkpath(my $bin = catdir($base_dir, 'bin'));
   open( my $fh, '>', catfile($bin, 'stop'))
-    || die "Cannot open $bin/stop: $!";
+    || $self->log_die( "Cannot open $bin/stop: $!" );
 
   my $PIDFILE = $self->test_mysqld->{my_cnf}->{'pid-file'};
   print $fh <<STOP;
@@ -98,7 +98,7 @@ sub _write_use {
   my $base_dir = (my $self = shift)->test_mysqld->base_dir;
   mkpath(my $bin = catdir($base_dir, 'bin'));
   open( my $fh, '>', catfile($bin, 'use'))
-    || die "Cannot open $bin/use: $!";
+    || $self->log_die( "Cannot open $bin/use: $!" );
 
   my $mysqld = $self->test_mysqld->{mysqld};
   my $SOCKET = $self->test_mysqld->my_cnf->{socket};
@@ -127,7 +127,7 @@ sub make_sandbox {
     $self->_write_use;
     return $self->test_mysqld->dsn;
   } else {
-    die "can't start a mysql sandbox";
+    $self->log_die( "can't start a mysql sandbox" );
   }
 }
 

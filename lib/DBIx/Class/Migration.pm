@@ -12,6 +12,14 @@ use DBIx::Class::Migration::Types 'LoadableClass', 'LoadableDBICSchemaClass';
 use Class::Load 'load_class';
 use Devel::PartialDump;
 use SQL::Translator;
+use Log::Any '$log', default_adapter => 'Stderr';
+use Carp 'croak';
+
+sub _log_die {
+  my ($msg) = @_;
+  $log->error($msg);
+  croak $msg;
+}
 
 has db_sandbox_class => (
   is => 'ro',
@@ -81,7 +89,7 @@ has target_dir_builder => ( is => 'ro', lazy_build => 1);
     return $self->has_schema_class ?
       $self->schema_class : $self->has_schema ?
         ref($self->schema) :
-          die "Can't infer schema class without a --schema or --schema_class";
+          _log_die "Can't infer schema class without a --schema or --schema_class";
   }
 
   sub _build_target_dir_builder {
@@ -177,9 +185,9 @@ sub dbic_dh {
   my %dbic_dh_args = $self->normalized_dbic_dh_args;
 
   (load_class "SQL::Translator::Producer::$_" ||
-    die "No SQLT Producer for $_") for @{$dbic_dh_args{databases}};
+    _log_die "No SQLT Producer for $_") for @{$dbic_dh_args{databases}};
 
-  die "A \$VERSION needs to be specified in your schema class ${\$self->_infer_schema_class}"
+  _log_die "A \$VERSION needs to be specified in your schema class ${\$self->_infer_schema_class}"
   unless $self->schema->schema_version;
 
 
@@ -231,7 +239,7 @@ sub status {
 sub _create_file_at_path {
   my ($path, $data) = @_;
   open(my $fh, '>', $path)
-    || die "Can't create $path: $!";
+    || _log_die "Can't create $path: $!";
   print $fh $data;
   close $fh;
 }
@@ -289,14 +297,14 @@ sub _copy_from_to {
   my ($from_dir, $to_dir) = @_;
   print "Copying Fixture Confs from $from_dir to $to_dir\n";
   (cp($_, $to_dir)
-    || die "Could not copy $_: $!")
+    || _log_die "Could not copy $_: $!")
       for _only_from_when_not_to($from_dir, $to_dir);
 }
 
 sub prepare_up_down_grades {
   my ($self, $previous, $schema_version) = @_;
   $self->dbic_dh->version_storage_is_installed
-    || die "No Database to create up or downgrades from!";
+    || _log_die "No Database to create up or downgrades from!";
 
   if($self->dbic_dh->database_version < $schema_version) {
     $self->prepare_upgrade;
@@ -310,7 +318,7 @@ sub prepare_up_down_grades {
 sub prepare {
   my $self = shift;
   my $schema_version = $self->dbic_dh->schema_version
-    || die "Your Schema has no version!";
+    || _log_die "Your Schema has no version!";
 
   $self->prepare_install;
   my $fixture_conf_dir = _prepare_fixture_conf_dir(
@@ -473,7 +481,7 @@ sub populate_set_to_schema {
 
 sub populate {
   (my $self = shift)->dbic_dh->version_storage_is_installed
-    || die "No Database to populate!";
+    || _log_die "No Database to populate!";
 
   my $version = $self->dbic_dh->database_version;
   my $schema = $self->_schema_from_database;
@@ -487,7 +495,7 @@ sub populate {
 
 sub make_schema {
   (my $self = shift)->dbic_dh->version_storage_is_installed
-    || die "No Database to make Schema from!";
+    || _log_die "No Database to make Schema from!";
   my $schema = $self->schema_loader
     ->generate_dump(
       $self->_infer_schema_class,
@@ -512,7 +520,7 @@ sub diagram {
       out_file  => $self->_diagram_default_outfile });
 
   $trans->translate
-    or die $trans->error;
+    or _log_die $trans->error;
 }
 
   sub _diagram_default_outfile {
@@ -1190,6 +1198,7 @@ missed you.
     https://github.com/mulletboy2
     https://github.com/mohawk2
     https://github.com/manwar
+    https://github.com/upasana-me
 
 =head1 SEE ALSO
 

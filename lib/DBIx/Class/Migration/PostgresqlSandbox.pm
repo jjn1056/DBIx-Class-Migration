@@ -40,7 +40,7 @@ sub _build_test_postgresql {
 
   unless($auto_start) {
     open ( my $pid_fh, '<', catdir($base_dir, 'data','postmaster.pid')) ||
-      die "Can't open PID file";
+      $self->log_die( "Can't open PID file" );
     my @lines = <$pid_fh>;
     close ($pid_fh);
     $config{port} = $lines[3];
@@ -49,7 +49,7 @@ sub _build_test_postgresql {
   if(my $testdb = Test::Postgresql58->new(%config)) {
     return $testdb;
   } else {
-    die $Test::Postgresql58::errstr;
+    $self->log_die( $Test::Postgresql58::errstr );
   }
 }
 
@@ -57,7 +57,7 @@ sub _write_start {
   my $base_dir = (my $self = shift)->test_postgresql->base_dir;
   mkpath(my $bin = catdir($base_dir, 'bin'));
   open( my $fh, '>', catfile($bin, 'start'))
-    || die "Cannot open $bin/start: $!";
+    || $self->log_die( "Cannot open $bin/start: $!" );
 
   my $test_postgresql = $self->test_postgresql;
   my $postmaster = $test_postgresql->{postmaster};
@@ -79,7 +79,7 @@ sub _write_stop {
   my $base_dir = (my $self = shift)->test_postgresql->base_dir;
   mkpath(my $bin = catdir($base_dir, 'bin'));
   open( my $fh, '>', catfile($bin, 'stop'))
-    || die "Cannot open $bin/stop: $!";
+    || $self->log_die( "Cannot open $bin/stop: $!" );
 
   my $test_postgresql = $self->test_postgresql;
   my $postmaster = $test_postgresql->{postmaster};
@@ -100,7 +100,7 @@ sub _write_use {
   my $base_dir = (my $self = shift)->test_postgresql->base_dir;
   mkpath(my $bin = catdir($base_dir, 'bin'));
   open( my $fh, '>', catfile($bin, 'use'))
-    || die "Cannot open $bin/use: $!";
+    || $self->log_die( "Cannot open $bin/use: $!" );
 
   my $test_postgresql = $self->test_postgresql;
   my $postmaster = $test_postgresql->{postmaster};
@@ -123,7 +123,7 @@ sub _write_dump {
   my $base_dir = (my $self = shift)->test_postgresql->base_dir;
   mkpath(my $bin = catdir($base_dir, 'bin'));
   open( my $fh, '>', catfile($bin, 'dump'))
-    || die "Cannot open $bin/dump: $!";
+    || $self->log_die( "Cannot open $bin/dump: $!" );
 
   my $test_postgresql = $self->test_postgresql;
   my $postmaster = $test_postgresql->{postmaster};
@@ -146,7 +146,7 @@ sub _write_config {
   my $base_dir = (my $self = shift)->test_postgresql->base_dir;
   mkpath(my $bin = catdir($base_dir, 'bin'));
   open( my $fh, '>', catfile($bin, 'config'))
-    || die "Cannot open $bin/config $!";
+    || $self->log_die( "Cannot open $bin/config $!" );
 
   my $test_postgresql = $self->test_postgresql;
   my $postmaster = $test_postgresql->{postmaster};
@@ -181,7 +181,7 @@ sub make_sandbox {
     my $port = $self->test_postgresql->port;
     return "DBI:Pg:dbname=template1;host=127.0.0.1;port=$port",'postgres','';
   } else {
-    die "can't start a postgresql sandbox";
+    $self->log_die( "can't start a postgresql sandbox" );
   }
 }
 

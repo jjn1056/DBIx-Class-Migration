@@ -3,6 +3,20 @@ package DBIx::Class::Migration::ShareDirBuilder;
 use Moose;
 use version 0.77;
 use File::ShareDir::ProjectDistDir 0.3.1 ();
+use Log::Any '$log', default_adapter => 'Stderr';
+use Carp 'croak';
+
+sub _log_die {
+  my ($msg) = @_;
+  $log->error($msg);
+  croak $msg;
+}
+
+has log => (
+    is  => 'ro',
+    isa => 'Log::Any::Proxy',
+    default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
+);
 
 has schema_class => (
   is => 'ro',
@@ -30,7 +44,7 @@ sub build {
     last unless $class =~s/::[^\:\:]+$//;
   }
 
-  return $sharedir || die "Can't find a share ($sharedir) for $class";
+  return $sharedir || _log_die "Can't find a share ($sharedir) for $class";
 
 }
 

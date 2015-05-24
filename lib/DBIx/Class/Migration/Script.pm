@@ -5,8 +5,16 @@ use MooseX::Attribute::ENV;
 use Pod::Find ();
 use Pod::Usage ();
 use DBIx::Class::Migration::Types 'LoadableClass', 'ArraySQLTProducers';
+use Log::Any;
+use Carp 'croak';
 
 with 'MooseX::Getopt';
+
+sub _log_die {
+  my ($self, $msg) = @_;
+  $self->log->error($msg);
+  croak $msg;
+}
 
 sub ENV_PREFIX {
   $ENV{DBIC_MIGRATION_ENV_PREFIX}
@@ -18,6 +26,12 @@ use constant {
   SANDBOX_MYSQL => 'MySQLSandbox',
   SANDBOX_POSTGRESQL => 'PostgresqlSandbox',
 };
+
+has log => (
+    is  => 'ro',
+    isa => 'Log::Any::Proxy',
+    default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
+);
 
 has includes => (
   traits => ['Getopt'],
@@ -235,7 +249,7 @@ sub run {
     foreach my $cmd ($argv, @extra_argv) {
       $self->can("cmd_${cmd}") ?
         $self->${\"cmd_${cmd}"} :
-        die "No such command ${cmd}\n";
+        $self->_log_die( "No such command ${cmd}\n" );
     }
 
   }
