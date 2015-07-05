@@ -447,7 +447,7 @@ sub delete_named_sets {
     my ($self, $path) = @_;
     return unless -d $path;
     print "Deleting $path \n";
-    $path->rmtree;
+    remove_tree($path);
   }
 
 
