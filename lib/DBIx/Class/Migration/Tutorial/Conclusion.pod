@@ -4,7 +4,7 @@ DBIx::Class::Migration::Tutorial::Conclusion - Final thoughts
 
 =head1 GOAL
 
-A quite recap and thoughts about where to go next.
+A quick recap and thoughts about where to go next.
 
 =head1 SUMMARY
 
