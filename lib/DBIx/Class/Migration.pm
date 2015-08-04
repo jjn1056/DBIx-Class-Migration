@@ -334,10 +334,11 @@ sub drop_tables {
     foreach my $source ($schema->sources) {
       my $table = $schema->source($source)->name;
       print "Dropping table $table\n";
+      my $tableq = $schema->storage->dbh->quote_identifier($table);
       if(ref($schema->storage) =~m/Pg$/) {
-        $schema->storage->dbh->do("drop table $table CASCADE");
+        $schema->storage->dbh->do("drop table $tableq CASCADE");
       } else {
-        $schema->storage->dbh->do("drop table $table");
+        $schema->storage->dbh->do("drop table $tableq");
       }
     }
   });
