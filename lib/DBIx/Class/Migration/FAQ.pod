@@ -214,6 +214,24 @@ be dumping.  We will just assume that whatever the Schema version is, is correct
 This can of course lead to bad or undumpable fixtures should your Schema and the
 unversioned DB not match properly.  Buyer beware!
 
+=head1 How do I specify the character set for a database or table?
+
+=head2 MySQL
+
+Specifying the default character set for the whole database should be done when
+initially creating the database, which is outside the scope of
+L<DBIx::Class::Migration>. Remember that the default character set of the whole
+database will still show in the properties of individual tables if the table
+does not have its own specified.
+
+To specify the character set of an individual table, use sqlt_deploy_hook {} in
+the DBIC result source:
+
+  sub sqlt_deploy_hook {
+    my ($self, $sqlt_table) = @_;
+    $sqlt_table->options({'DEFAULT CHARACTER SET' => 'utf8'});
+  }
+
 =head1 Error: "`' is not a module name"
 
 Sorry this error is vague and I am working on a fix.  You will get this if you
