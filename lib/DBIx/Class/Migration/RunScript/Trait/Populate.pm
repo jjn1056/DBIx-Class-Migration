@@ -2,13 +2,20 @@ package DBIx::Class::Migration::RunScript::Trait::Populate;
 
 use Moose::Role;
 use File::Spec::Functions 'catdir', 'catfile';
+use JSON::XS;
 
 requires 'schema';
 
 sub populate {
   my ($self, @sets) = @_;
+
+  my $fixtures_init_args =
+    JSON::XS->new->decode( $ENV{DBIC_MIGRATION_FIXTURES_INIT_ARGS} );
+  my $fixtures_obj =
+    $ENV{DBIC_MIGRATION_FIXTURES_CLASS}->new($fixtures_init_args);
+
   foreach my $set(@sets) {
-  $ENV{DBIC_MIGRATION_FIXTURES_OBJ}->populate({
+    $fixtures_obj->populate({
     no_deploy => 1,
     schema => $self->schema,
     directory => catdir($ENV{DBIC_MIGRATION_FIXTURE_DIR}, $set) });

@@ -366,8 +366,8 @@ sub _prepare_fixture_data_dir {
   return $fixture_conf_dir;
 }
 
-sub build_dbic_fixtures {
-  my $dbic_fixtures = (my $self = shift)->dbic_fixture_class;
+sub build_dbic_fixtures_init_args {
+  my $self = shift;
   my $version = $self->dbic_dh->version_storage_is_installed ?
     $self->dbic_dh->database_version : do {
       print "Since this database is not versioned, we will assume version ";
@@ -379,12 +379,15 @@ sub build_dbic_fixtures {
 
   print "Reading configurations from $conf_dir\n";
 
-  my $init_args = {
+  return {
     config_dir => $conf_dir,
     debug => ($ENV{DBIC_MIGRATION_DEBUG}||0),
     %{$self->dbic_fixtures_extra_args}};
+}
 
-  $dbic_fixtures->new($init_args);
+sub build_dbic_fixtures {
+  my $dbic_fixtures = (my $self = shift)->dbic_fixture_class;
+  $dbic_fixtures->new($self->build_dbic_fixtures_init_args);
 }
 
 sub _schema_from_database {
@@ -537,7 +540,9 @@ before [qw/install upgrade downgrade/], sub {
   my ($self, @args) = @_;
   %ENV = (
     %ENV,
-    DBIC_MIGRATION_FIXTURES_OBJ => $self->build_dbic_fixtures,
+    DBIC_MIGRATION_FIXTURES_CLASS => $self->dbic_fixture_class,
+    DBIC_MIGRATION_FIXTURES_INIT_ARGS => JSON::XS->new->encode($self->build_dbic_fixtures_init_args),
+#    DBIC_MIGRATION_FIXTURES_OBJ => $self->build_dbic_fixtures,
     DBIC_MIGRATION_SCHEMA_CLASS => $self->schema_class,
     DBIC_MIGRATION_TARGET_DIR => $self->target_dir,
     DBIC_MIGRATION_FIXTURE_DIR => catdir($self->target_dir, 'fixtures', $self->dbic_dh->schema_version),

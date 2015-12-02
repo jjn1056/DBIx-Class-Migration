@@ -52,7 +52,7 @@ use DBIx::Class::Migration::RunScript;
 migrate {
   my $self = shift;
   if($self->set_has_fixtures('all_tables')) {
-    $self->populate('all_tables');
+    lives_ok { $self->populate('all_tables') } "->populate('all_tables')";
   } else {
     $self->schema
       ->resultset('Country')
@@ -63,7 +63,7 @@ migrate {
         ['fra'],
       ]);
 
-    $self->dump('all_tables');
+    lives_ok { $self->dump('all_tables') } "->dump('all_tables')";
     ok $self->set_has_fixtures('all_tables'),
       'Fixture Set exists!';
   }
