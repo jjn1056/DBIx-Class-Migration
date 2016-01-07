@@ -542,7 +542,7 @@ before [qw/install upgrade downgrade/], sub {
   %ENV = (
     %ENV,
     DBIC_MIGRATION_FIXTURES_CLASS => $self->dbic_fixture_class,
-    DBIC_MIGRATION_FIXTURES_INIT_ARGS => JSON::XS->new->encode($self->build_dbic_fixtures_init_args),
+    DBIC_MIGRATION_FIXTURES_INIT_ARGS => JSON->new->encode($self->build_dbic_fixtures_init_args),
 #    DBIC_MIGRATION_FIXTURES_OBJ => $self->build_dbic_fixtures,
     DBIC_MIGRATION_SCHEMA_CLASS => $self->schema_class,
     DBIC_MIGRATION_TARGET_DIR => $self->target_dir,
