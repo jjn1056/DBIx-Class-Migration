@@ -2,7 +2,7 @@ package DBIx::Class::Migration::RunScript::Trait::Populate;
 
 use Moose::Role;
 use File::Spec::Functions 'catdir', 'catfile';
-use JSON::XS;
+use JSON::MaybeXS;
 
 requires 'schema';
 
@@ -10,7 +10,7 @@ sub populate {
   my ($self, @sets) = @_;
 
   my $fixtures_init_args =
-    JSON::XS->new->decode( $ENV{DBIC_MIGRATION_FIXTURES_INIT_ARGS} );
+    JSON::MaybeXS->new->decode( $ENV{DBIC_MIGRATION_FIXTURES_INIT_ARGS} );
   my $fixtures_obj =
     $ENV{DBIC_MIGRATION_FIXTURES_CLASS}->new($fixtures_init_args);
 
