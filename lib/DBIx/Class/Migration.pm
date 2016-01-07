@@ -4,7 +4,7 @@ our $VERSION = "0.057";
 $VERSION = eval $VERSION;
 
 use Moose;
-use JSON::XS;
+use JSON::MaybeXS qw(JSON);
 use File::Copy 'cp';
 use File::Spec::Functions 'catdir', 'catfile', 'updir';
 use File::Path 'mkpath', 'remove_tree';
@@ -244,7 +244,7 @@ sub _sets_data_from_sources {
 }
 
 sub _create_all_fixture_config_from_sources {
-  JSON::XS->new->pretty(1)->encode({
+  JSON->new->pretty(1)->encode({
     "belongs_to" => { "fetch" => 0 },
     "has_many" => { "fetch" => 0 },
     "might_have" => { "fetch" => 0 },
