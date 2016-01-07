@@ -3,12 +3,19 @@ package DBIx::Class::Migration::RunScript::Trait::Dump;
 use Moose::Role;
 use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath';
+use JSON::XS;
 
 requires 'schema';
 
 sub dump {
   my ($self, @sets) = @_;
-  $ENV{DBIC_MIGRATION_FIXTURES_OBJ}->dump_config_sets({
+
+  my $fixtures_init_args =
+    JSON::XS->new->decode( $ENV{DBIC_MIGRATION_FIXTURES_INIT_ARGS} );
+  my $fixtures_obj =
+    $ENV{DBIC_MIGRATION_FIXTURES_CLASS}->new($fixtures_init_args);
+
+  $fixtures_obj->dump_config_sets({
     schema => $self->schema,
     configs => [map { "$_.json" } @sets],
     directory_template => sub {
