@@ -1,5 +1,14 @@
 Revision history for DBIx-Class-Migration.
 
+0.058   2016-01-07
+        - https://github.com/jjn1056/DBIx-Class-Migration/pull/61 (doc update)
+        - https://github.com/jjn1056/DBIx-Class-Migration/pull/64 (find local perl install better)
+        - https://github.com/jjn1056/DBIx-Class-Migration/pull/53 (use JSON module with more reliable author)
+        - https://github.com/jjn1056/DBIx-Class-Migration/pull/57 (quote table names better)
+        - https://github.com/jjn1056/DBIx-Class-Migration/pull/56 (properly delete stuff)
+        - https://github.com/jjn1056/DBIx-Class-Migration/pull/68 (work properly on newer Perl)
+        - Thanks for all the PRs, sorry I was slow to pick this up :(
+
 0.057   2015-03-24
         - Lowered some dependency versions to solve reported installation
           issues (Some stuff is not 'dual lived' and only gets updated with
