@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!perl
 
 (require DBIx::Class::Migration::Script)
   ->run_with_options;
