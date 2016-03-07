@@ -142,6 +142,17 @@ yourself:
 
 Patches to fix this, or suggestions welcomed.
 
+=head1 How to run a Migration Script before changing the Schema
+
+If you need to run a Migration Perl Script before the SQL Changes are applied
+to your Database, you have to name your Upgrade Files properly.
+
+    share/migrations/_common/upgrade/5-6/001_transform.pl
+    share/migrations/MySQL/upgrade/5-6/002_auto.sql
+    
+Migration will run the upgrades by the Numbers, no matter in which Upgrade Folder
+they are specified.
+
 =head1 Can I use this even if I don't want to use DBIx::Class?
 
 Not everyone loves using an ORM.  Personally I've found L<DBIx::Class> to be
