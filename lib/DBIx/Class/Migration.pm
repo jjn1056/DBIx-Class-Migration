@@ -838,7 +838,7 @@ overall architecture of the system.
 Defaults to L<DBIx::Class::DeploymentHandler>.  You'll probably not need to
 change this unless you need a custom deployment handler, and if you do, I
 can't be sure this framework will work correctly, particularly if you are not
-useing monotonic versioning.
+using monotonic versioning.
 
 =head2 dbic_dh_args
 

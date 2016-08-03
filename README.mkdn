@@ -266,7 +266,7 @@ overall architecture of the system.
 Defaults to [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler).  You'll probably not need to
 change this unless you need a custom deployment handler, and if you do, I
 can't be sure this framework will work correctly, particularly if you are not
-useing monotonic versioning.
+using monotonic versioning.
 
 ## dbic\_dh\_args
 
