@@ -1,7 +1,7 @@
 package DBIx::Class::Migration::PostgresqlSandbox;
 
 use Moose;
-use Test::PostgreSQL;
+use Test::Postgresql58;
 use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath';
 use POSIX qw(SIGINT);
@@ -35,8 +35,8 @@ sub _build_test_postgresql {
   my %config = (
     auto_start => $auto_start,
     base_dir => $base_dir,
-    initdb_args => $Test::PostgreSQL::Defaults{initdb_args},
-    postmaster_args => $Test::PostgreSQL::Defaults{postmaster_args});
+    initdb_args => $Test::Postgresql58::Defaults{initdb_args},
+    postmaster_args => $Test::Postgresql58::Defaults{postmaster_args});
 
   unless($auto_start) {
     open ( my $pid_fh, '<', catdir($base_dir, 'data','postmaster.pid')) ||
@@ -46,10 +46,10 @@ sub _build_test_postgresql {
     $config{port} = $lines[3];
   }
 
-  if(my $testdb = Test::PostgreSQL->new(%config)) {
+  if(my $testdb = Test::Postgresql58->new(%config)) {
     return $testdb;
   } else {
-    die $Test::PostgreSQL::errstr;
+    die $Test::Postgresql58::errstr;
   }
 }
 
@@ -213,7 +213,7 @@ DBIx::Class::Migration::PostgresqlSandbox - Autocreate a postgresql sandbox
 
 This automatically creates a postgresql sandbox in your C<target_dir> that you can
 use for initial prototyping, development and demonstration.  If you want to
-use this, you will need to add L<Test::PostgreSQL> to your C<Makefile.PL> or your
+use this, you will need to add L<Test::Postgresql58> to your C<Makefile.PL> or your
 C<dist.ini> file, and get that installed properly.  It also requires that you
 have Postgresql installed locally (although Postgresql does not need to be running, as
 long as we can find in $PATH the binary installation).  If your copy of Postgresql
@@ -268,7 +268,7 @@ queries).
 
 =head1 SEE ALSO
 
-L<DBIx::Class::Migration>, L<DBD::Pg>, L<Test::PostgreSQL>.
+L<DBIx::Class::Migration>, L<DBD::Pg>, L<Test::Postgresql58>.
 
 =head1 AUTHOR
 

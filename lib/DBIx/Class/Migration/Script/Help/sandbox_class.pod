@@ -31,7 +31,7 @@ computer (and if not it is trivial to install).
 You can change this to either 'PostgresqlSandbox' or 'MySQLSandbox', which will
 create a sandbox using either L<DBIx::Class::Migration::MySQLSandbox> or 
 L<DBIx::Class::Migration::PostgresqlSandbox> (which in term require the separate
-installation of either L<Test::mysqld> or L<Test::PostgreSQL>).
+installation of either L<Test::mysqld> or L<Test::Postgresql58>).
 
 Like some of the other option flags you can specify with an %ENV setting:
 
