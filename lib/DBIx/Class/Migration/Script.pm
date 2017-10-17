@@ -121,6 +121,8 @@ has migration => (
         push @schema_args, {} unless $self->has_dbi_connect_attrs;
         push @schema_args, $self->dbic_connect_attrs;
       }
+    } else {
+      print "no --dsn argument was found, defaulting to a local SQLite database";
     }
     return @schema_args;
   }

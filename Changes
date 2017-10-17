@@ -1,5 +1,10 @@
 Revision history for DBIx-Class-Migration.
 
+0.059   2017-10-17
+        - Merged in some PRs around typos
+        - Merged PR to convert to Test::Postgresql58
+        - Use modern versions of dependencies
+        
 0.058   2016-01-07
         - https://github.com/jjn1056/DBIx-Class-Migration/pull/61 (doc update)
         - https://github.com/jjn1056/DBIx-Class-Migration/pull/64 (find local perl install better)
