@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.060   2017-10-17
+        - fixed VERSION mistake in previous release
+
 0.059   2017-10-17
         - Merged in some PRs around typos
         - Merged PR to convert to Test::Postgresql58
