@@ -134,9 +134,9 @@ Sometimes you just need to populate data for your scripts, such as during
 testing and you don't want to expose a full migrations interface and let
 someone accidently wipe your database with one command.  This utility is
 designed to assist.  It is basically a thin wrapper on L<DBIx::Class::Fixtures>
-that is just aware of L<DBIx::Class::Migrations> conventions.
+that is just aware of L<DBIx::Class::Migration> conventions.
 
-You create an instance of this similarly to L<DBIx::Class::Migrations>, except
+You create an instance of this similarly to L<DBIx::Class::Migration>, except
 you can't pass any arguments related to L<DBIx::Class::DeploymentHandler> since
 you don't have one :).  You can create it from an existing schema, or build it
 from a schema_class and schema_args, and optional set a target directory (or

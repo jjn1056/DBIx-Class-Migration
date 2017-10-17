@@ -191,8 +191,8 @@ given version, manage fixtures, do some sane testing, etc.  Maybe you'll even
 be able to convince people to try out L<DBIx::Class>!
 
 By the way, if you wanted, you can always dump the generated version of your
-classes using C<make_schema> (see L<DBIx::Class::Migrations/make_schema> and
-L<DBIx::Class::Migrations::Script/make_schema>).
+classes using C<make_schema> (see L<DBIx::Class::Migration/make_schema> and
+L<DBIx::Class::Migration::Script/make_schema>).
 
 =head1 I am using MySQL and when the migration fails, it doesn't ROLLBACK
 
