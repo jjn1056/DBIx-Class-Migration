@@ -122,7 +122,7 @@ has migration => (
         push @schema_args, $self->dbic_connect_attrs;
       }
     } else {
-      print "no --dsn argument was found, defaulting to a local SQLite database";
+      warn "no --dsn argument was found, defaulting to a local SQLite database\n";
     }
     return @schema_args;
   }
