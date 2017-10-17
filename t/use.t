@@ -36,7 +36,7 @@ BEGIN {
 
   SKIP: {
     skip "Don't test pg classes", 1
-      unless try_load_class('Test::PostgreSQL');
+      unless try_load_class('Test::Postgresql58');
     use_ok 'DBIx::Class::Migration::PostgresqlSandbox';
   };
 

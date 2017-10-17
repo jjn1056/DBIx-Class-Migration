@@ -10,7 +10,7 @@ use lib 't/lib';
 use DBIx::Class::Migration;
 use File::Spec::Functions 'catfile';
 use File::Path 'rmtree';
-use Test::Requires qw(Test::PostgreSQL);
+use Test::Requires qw(Test::Postgresql58);
 
 ok(
   my $migration = DBIx::Class::Migration->new(

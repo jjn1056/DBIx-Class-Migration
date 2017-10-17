@@ -463,7 +463,7 @@ computer (and if not it is trivial to install).
 You can change this to either 'PostgresqlSandbox' or 'MySQLSandbox', which will
 create a sandbox using either L<DBIx::Class::Migration::MySQLSandbox> or 
 L<DBIx::Class::Migration::PostgresqlSandbox> (which in term require the separate
-installation of either L<Test::mysqld> or L<Test::PostgreSQL>).  If you are
+installation of either L<Test::mysqld> or L<Test::Postgresql58>).  If you are
 using one of those open source databases in production, its probably a good
 idea to use them in development as well, since there are enough small
 differences between them that could make your code break if you used sqlite for
