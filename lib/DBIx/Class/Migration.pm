@@ -369,11 +369,13 @@ sub _prepare_fixture_data_dir {
 
 sub build_dbic_fixtures_init_args {
   my $self = shift;
-  my $version = $self->dbic_dh->version_storage_is_installed ?
-    $self->dbic_dh->database_version : do {
+  my $dh = $self->dbic_dh;
+  my $version = $dh->version_storage_is_installed ?
+    $dh->database_version : do {
+      my $version = $dh->to_version || $dh->schema_version;
       print "Since this database is not versioned, we will assume version ";
-      print "${\$self->dbic_dh->schema_version}\n";
-      $self->dbic_dh->schema_version;
+      print "$version\n";
+      $version;
     };
 
   my $conf_dir = _prepare_fixture_conf_dir($self->target_dir, $version);
