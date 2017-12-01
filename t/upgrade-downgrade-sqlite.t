@@ -231,6 +231,28 @@ CHECK_DOWNGRADE: {
 
 }
 
+TO_VERSION: {
+
+  ok(
+    my $migration = DBIx::Class::Migration->new(
+      schema_class=>'Local::v2::Schema',
+      schema_args => $schema_args,
+      dbic_dh_args=> {
+        to_version => 1,
+      },
+    ),
+    'created migration with to_version');
+
+  $migration->drop_tables;
+
+  use Capture::Tiny qw( capture );
+  my ($stdout, $stderr, $retval) = capture { $migration->install };
+
+  like $stdout, qr{assume version 1}, 'Assume version from to_version';
+  like $stdout, qr{1/conf}, 'Configuration files from to_version version';
+  is $migration->dbic_dh->database_version, 1, 'Installed specified version';
+}
+
 done_testing;
 
 END {
