@@ -5,7 +5,7 @@ DBIx::Class::Migration::Tutorial - How to use DBIx::Class::Migration
 =head1 SYNOPSIS
 
 This is a tutorial for the database migration and fixture generation tools
-described at the usage / api level at L<DBIx::Class::Migration:Script> and
+described at the usage / api level at L<DBIx::Class::Migration::Script> and
 L<DBIx::Class::Migration>.  Although reviewing those docs would be helpful, I would
 not consider it required for the tutorial.  However, I would expect you are
 familiar with L<DBIx::Class> and that you are aware of the dependent projects
