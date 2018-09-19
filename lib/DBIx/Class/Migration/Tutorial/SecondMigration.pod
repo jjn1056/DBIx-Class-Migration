@@ -310,7 +310,7 @@ have not yet examined:
 
 So that only does part of the job.  First of all, we can't really add a NOT NULL
 column without default values, since that's going to be a constraint.  Also the
-foriegn key is missing.  That's because it seems SQLite doesn't let you alter
+foreign key is missing.  That's because it seems SQLite doesn't let you alter
 a table to add that kind of constraint.  Let's look at the DDL for the new
 artist table from the full ddl in C<share/migrations/SQLite/deploy/2/001-auto.sql>:
 

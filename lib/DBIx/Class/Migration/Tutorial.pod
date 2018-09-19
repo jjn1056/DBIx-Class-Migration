@@ -42,14 +42,14 @@ natural progression in learning.
 =head1 INTRODUCTION
 
 Dealing with change in your database can be a vexing problem.  You need the
-ability manage database versions (how your database changes over time).  You
+ability to manage database versions (how your database changes over time).  You
 need to be able to upgrade seamlessly from one version to another.  You need
 to be able to manage database and system data, and how they change over time.
 Additionally you may need to be able to create subsets of data for testing,
 and the ability to reset the database to a given state at any time.
 
-There's a lot of frameworks that claim to make this easy.  Generally this is
-partially achieve by limiting the scope of changes allowed, and reducing your
+There are a lot of frameworks that claim to make this easy.  Generally this is
+partially achieved by limiting the scope of changes allowed, and reducing your
 ability to take maximum advantage of your database features.  I'm not going to
 make that claim, since L<DBIx::Class::Migration> is part of the L<DBIx::Class>
 software ecosystem, and since that is an ORM that maximized your ability
