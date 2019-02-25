@@ -199,13 +199,16 @@ You should review this DDL to make sure it properly reflects your schema.
 L<DBIx::Class::DeploymentHandler> will build full DDL for each of the databases
 you are creating migrations for.  We feel this is the best approach since it
 lets you take maximum advantage of your target database.  By default, if you
-don't specify a database (using the C<database> option flag) we build migrations
-for SQLite, since that is easy to use and test, but you can always build any
-of the supported databases.  For example if you ran the following:
+don't specify a database (using the C<database> option flag - only needed
+if you aren't doing the "default" thing; L<DBIx::Class::Migration>
+will figure out the right thing to do in nearly all circumstances)
+we build migrations for SQLite, since that is easy to use and test,
+but you can always build any of the supported databases. For example if
+you ran the following:
 
     dbic-migration -Ilib prepare --database MySQL --database SQLite
 
-We'd build migrations for both MySQL and SQLite.  We'll try that later on, for
+We'd build migrations for both MySQL and SQLite. We'll try that later on, for
 now let's stick to SQLite, since that is very low effort and you have plenty
 to learn already!
 
