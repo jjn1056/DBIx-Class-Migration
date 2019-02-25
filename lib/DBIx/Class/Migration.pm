@@ -1179,6 +1179,8 @@ missed you.
     https://github.com/moltar
     https://github.com/andyjones
     https://github.com/pnu
+    https://github.com/n7st
+    https://github.com/willsheppard
 
 =head1 SEE ALSO
 
