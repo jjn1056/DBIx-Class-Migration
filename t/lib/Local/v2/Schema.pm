@@ -1,7 +1,5 @@
-package Local::v2::Schema;
+package Local::v2::Schema 2;
 use base 'DBIx::Class::Schema';
-
-our $VERSION = 2;
 
 __PACKAGE__->load_namespaces;
 
