@@ -22,7 +22,7 @@ String (default: SqliteSandbox)
 
 If you don't have a target database for your migrations (as you might not for
 your development setup, or during initial prototyping) we automatically create
-a local database sandbox in your L</target_dir>.
+a local database sandbox in your L<"DBIx::Class::Migration::Script/target_dir">.
 
 By default this sandbox is a file based L<DBD::Sqlite> database, which is an
 easy option since changes are good this is already installed on your development

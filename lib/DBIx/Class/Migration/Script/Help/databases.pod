@@ -20,16 +20,18 @@ Str or Array of Str (default: SQLite)
 
 =back
 
-Used when building L</migration> to define the target databases we are building
-migration files for.  You can name any of the databases currently supported by
-L<SQLT>.  If you leave this undefined we will derive a value based on the value
-of L</dsn>.  For example, if your L</dsn> is "DBI:SQLite:test.db", we will set
-the value of L</databases> to C<['SQLite']>.
+Used when building L<"DBIx::Class::Migration::Script/migration"> to define the target
+databases we are building migration files for.  You can name any of the databases
+currently supported by L<SQLT>.  If you leave this undefined we will derive a value
+based on the value of L<"DBIx::Class::Migration::Script/dsn">.  For example, if your
+L<"DBIx::Class::Migration::Script/dsn"> is "DBI:SQLite:test.db", we will set
+the value of L<"DBIx::Class::Migration::Script/databases"> to C<['SQLite']>.
 
 
 You can prepare deployment for any database type that L<SQLT> understand.  By
 default we only prepare a deployment version for the database which matches
-the L<dsn> you specified but you can use this to prepare additional deployments
+the L<"DBIx::Class::Migration::Script/dsn"> you specified but you can use this
+to prepare additional deployments
 
     dbic-migration prepare --database SQLite --database MySQL --PostgreSQL
 
