@@ -101,7 +101,7 @@ C<share/myapp-schema/> you can add these lines to your C<.gitignore>
     share/musicbase-schema/*
     share/musicbase-schema.db
 
-Other source control systems have similiar approaches (recipies welcome for 
+Other source control systems have similiar approaches (recipes welcome for
 sharing).
 
 =head1 What's the command to run migrations on an existing database?
@@ -116,7 +116,7 @@ Would be the general approach.
 =head1 Error: Trouble creating a MySQL Sandbox when running AppArmor
 
 Its been reported that the developer database sandboxing feature doens't
-work properly when using AppArmor.  I guess AppArmor considers this a 
+work properly when using AppArmor.  I guess AppArmor considers this a
 security violation.  Currently I don't have a reported workaround other than
 to just disable AppArmor, which for developer level machines may or may not
 be a problem.
@@ -155,7 +155,7 @@ to your Database, you have to name your Upgrade Files properly.
 
     share/migrations/_common/upgrade/5-6/001_transform.pl
     share/migrations/MySQL/upgrade/5-6/002_auto.sql
-    
+
 Migration will run the upgrades by the Numbers, no matter in which Upgrade Folder
 they are specified.
 
@@ -280,10 +280,10 @@ There will be more like this:
     FATAL:  could not create shared memory segment: Cannot allocate memory
     DETAIL:  Failed system call was shmget(key=1, size=2138112, 03600).
     HINT:  This error usually means that PostgreSQL's request for a shared memory
-    segment exceeded available memory or swap space, or exceeded your kernel's 
-    SHMALL parameter.  You can either reduce the request size or reconfigure 
+    segment exceeded available memory or swap space, or exceeded your kernel's
+    SHMALL parameter.  You can either reduce the request size or reconfigure
     the kernel with larger SHMALL.  To reduce the request size (currently 2138112
-    bytes), reduce PostgreSQL's shared memory usage, perhaps by reducing 
+    bytes), reduce PostgreSQL's shared memory usage, perhaps by reducing
     shared_buffers or max_connections.
 
 The solution is as presented.  Since I prefer not to change my system settings
@@ -358,5 +358,3 @@ See L<DBIx::Class::Migration> for author information
 See L<DBIx::Class::Migration> for copyright and license information
 
 =cut
-
-
