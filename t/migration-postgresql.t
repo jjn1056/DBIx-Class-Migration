@@ -13,9 +13,8 @@ use File::Spec::Functions 'catfile';
 use File::Path 'rmtree';
 use Test::Requires qw(Test::Postgresql58);
 use File::Temp 'tempdir';
-use Cwd 'abs_path'; # if no abs_path, need "." in @INC
 
-my $dir = tempdir(DIR => abs_path('t'), CLEANUP => 1);
+my $dir = tempdir(DIR => 't', CLEANUP => 1);
 
 ok(
   my $migration = DBIx::Class::Migration->new(

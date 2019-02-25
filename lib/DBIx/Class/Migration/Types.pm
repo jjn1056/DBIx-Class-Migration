@@ -14,9 +14,14 @@ package #hide from PAUSE
 
 use MooseX::Types::LoadableClass 'LoadableClass';
 use MooseX::Types::Moose 'Str', 'ClassName', 'ArrayRef';
-use MooseX::Types -declare => [ 'LoadableDBICSchemaClass', 'SQLTProducer', 'ArraySQLTProducers' ];
+use MooseX::Types -declare => [
+  'LoadableDBICSchemaClass',
+  'SQLTProducer', 'ArraySQLTProducers',
+  'AbsolutePath',
+];
 use Module::Find ();
 use MooseX::Getopt::OptionTypeMap ();
+use File::Spec::Functions 'file_name_is_absolute', 'rel2abs';
 
 subtype LoadableDBICSchemaClass,
   as LoadableClass,
@@ -47,6 +52,15 @@ subtype ArraySQLTProducers,
 MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
   ArraySQLTProducers() => '=s@'
 );
+
+subtype AbsolutePath,
+  as Str,
+  where { file_name_is_absolute $_ },
+  ;
+coerce AbsolutePath,
+  from Str,
+  via { rel2abs $_ },
+  ;
 
 1;
 

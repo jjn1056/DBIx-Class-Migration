@@ -8,7 +8,10 @@ use JSON::MaybeXS qw(JSON);
 use File::Copy 'cp';
 use File::Spec::Functions 'catdir', 'catfile', 'updir';
 use File::Path 'mkpath', 'remove_tree';
-use DBIx::Class::Migration::Types 'LoadableClass', 'LoadableDBICSchemaClass';
+use DBIx::Class::Migration::Types qw(
+  LoadableClass LoadableDBICSchemaClass
+  AbsolutePath
+);
 use Class::Load 'load_class';
 use Devel::PartialDump;
 use SQL::Translator;
@@ -99,7 +102,7 @@ has target_dir_builder => ( is => 'ro', lazy_build => 1);
       ->new(schema_class=>$inferred_schema_class);
   }
 
-has target_dir => (is=>'ro', isa=>'Str', lazy_build=>1);
+has target_dir => (is => 'ro', isa=> AbsolutePath, coerce => 1, lazy_build=>1);
 
   sub _build_target_dir {
     shift->target_dir_builder->build;

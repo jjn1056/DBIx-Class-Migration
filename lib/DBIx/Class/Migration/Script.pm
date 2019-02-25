@@ -4,7 +4,9 @@ use Moose;
 use MooseX::Attribute::ENV;
 use Pod::Find ();
 use Pod::Usage ();
-use DBIx::Class::Migration::Types 'LoadableClass', 'ArraySQLTProducers';
+use DBIx::Class::Migration::Types qw(
+  LoadableClass ArraySQLTProducers AbsolutePath
+);
 use Log::Any;
 use Carp 'croak';
 
@@ -45,7 +47,8 @@ has schema => (is=>'ro', predicate=>'has_schema');
 has schema_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
   predicate=>'has_schema_class', env_prefix=>ENV_PREFIX, cmd_aliases => 'S');
 
-has target_dir => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa=> 'Str',
+has target_dir => (traits => [ 'Getopt', 'ENV' ],
+  is => 'ro', isa=> AbsolutePath, coerce => 1,
   predicate=>'has_target_dir', env_prefix=>ENV_PREFIX, cmd_aliases => 'dir');
 
 has sandbox_dir => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa=> 'Str',

@@ -7,9 +7,8 @@ use Test::Most;
 use DBIx::Class::Migration;
 use File::Spec::Functions 'catfile';
 use File::Temp 'tempdir';
-use Cwd 'abs_path'; # if no abs_path, need "." in @INC
 
-my $dir = tempdir(DIR => abs_path('t'), CLEANUP => 1);
+my $dir = tempdir(DIR => 't', CLEANUP => 1);
 
 my ($target_dir, $schema_args);  # Outer Scope so we can reuse
 

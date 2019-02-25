@@ -4,6 +4,7 @@ Revision history for DBIx-Class-Migration.
         - update DBIx::Class::DeploymentHandler dep to 0.002222 - thanks @KES777 for report
         - POD improvements - thanks @manwar
         - use Log::Any for errors - thanks @upasana-me
+        - coerce target_dir to absolute to work right on 5.26+
 
 0.061   2019-02-25
         - POD improvements - thanks @n7st and @willsheppard
