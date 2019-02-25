@@ -60,7 +60,7 @@ rather than a toolkit with a set of example scripts.
 a standard tutorial, to give you a simple and straightforward approach to
 solving the problem of how to best create database versions, migrations and
 testing data.  Additionally it builds on tools like [Test::mysqld](https://metacpan.org/pod/Test::mysqld) and
-[Test::postgresql](https://metacpan.org/pod/Test::postgresql) along with [DBD::Sqlite](https://metacpan.org/pod/DBD::Sqlite) in order to assist you in quickly
+[Test::Postgresql58](https://metacpan.org/pod/Test::Postgresql58) along with [DBD::Sqlite](https://metacpan.org/pod/DBD::Sqlite) in order to assist you in quickly
 creating a local development database sandbox.  It offers some integration
 points to testing your database, via tools like [Test::DBIx::Class](https://metacpan.org/pod/Test::DBIx::Class) in order to
 make testing your database driven logic less painful.  Lastly, we offer some
@@ -68,7 +68,7 @@ thoughts on good development patterns in using databases with application
 frameworks like [Catalyst](https://metacpan.org/pod/Catalyst).
 
 [DBIx::Class::Migration](https://metacpan.org/pod/DBIx::Class::Migration) offers code and advice based on my experience of using
-[DBIx::Class](https://metacpan.org/pod/DBIx::Class) for several years, which hopefully can help you bootstrap a new 
+[DBIx::Class](https://metacpan.org/pod/DBIx::Class) for several years, which hopefully can help you bootstrap a new
 project.  The solutions given should work for you if you want to use [DBIx::Class](https://metacpan.org/pod/DBIx::Class)
 and have database migrations, but don't really know what to do next.  These
 solutions should scale upward from a small project to a medium project involving
@@ -78,7 +78,7 @@ difficult architectual issues, you might be better off building something on
 top of [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler) directly.
 
 [DBIx::Class::Migration](https://metacpan.org/pod/DBIx::Class::Migration) is a base class upon which interfaces like
-[DBIx::Class::Migration::Script](https://metacpan.org/pod/DBIx::Class::Migration::Script) are built.  
+[DBIx::Class::Migration::Script](https://metacpan.org/pod/DBIx::Class::Migration::Script) are built.
 
 Please see [DBIx::Class::Migration::Tutorial](https://metacpan.org/pod/DBIx::Class::Migration::Tutorial) for more approachable
 documentation.  If you want to read a high level feature overview, see
@@ -117,7 +117,7 @@ an array which can be sent to ["connect" in DBIx::Class::Schema](https://metacpa
 This defaults to [DBIx::Class::Migration::SqliteSandbox](https://metacpan.org/pod/DBIx::Class::Migration::SqliteSandbox).  Currently we have
 support for MySQL and Postgresql via [DBIx::Class::Migration::MySQLSandbox](https://metacpan.org/pod/DBIx::Class::Migration::MySQLSandbox)
 and [DBIx::Class::Migration::PgSandbox](https://metacpan.org/pod/DBIx::Class::Migration::PgSandbox), but you will need to side install
-[Test::mysqld](https://metacpan.org/pod/Test::mysqld) and [Test::postgresql](https://metacpan.org/pod/Test::postgresql) (In other words you'd need to add
+[Test::mysqld](https://metacpan.org/pod/Test::mysqld) and [Test::Postgresql58](https://metacpan.org/pod/Test::Postgresql58) (In other words you'd need to add
 these `Test::*` namespace modules to your `Makefile.PL` or `dist.ini`).
 
 ## db\_sandbox
@@ -361,6 +361,25 @@ distribution root.  This is generally the community supported place for non
 code data, but if you have huge fixture sets you might wish to place them in
 an alternative location.
 
+### OPTIONAL: Specify a db\_sandbox\_dir
+
+Be default if you allow for a local database sandbox (as you might during early
+development and you don't want to work to make a database) that sandbox gets
+built in the 'target\_dir'.  Since other bits in the target\_dir are probably
+going to be in your project repository and the sandbox generally isnt, you
+might wish to build the sandbox in an alternative location.  This setting
+allows that:
+
+    use DBIx::Class::Migration;
+    my $migration = DBIx::Class::Migration->new(
+      schema_class => 'MyApp::Schema',
+      schema_args => [@connect_info],
+      db_sandbox_dir => '~/opt/database-sandbox',
+    );
+
+This then gives you a nice totally standalone database sandbox which you can
+reuse for other projects, etc.
+
 ### OPTIONAL: Specify dbic\_dh\_args
 
 Optionally, you can specify additional arguments to the constructor for the
@@ -390,7 +409,7 @@ of the current `schema` version.  Sends this as a string to STDOUT
 
 Creates a `fixtures` and `migrations` directory under ["target\_dir"](#target_dir) (if they
 don't already exist) and makes deployment files for the current schema.  If
-deployment files exist, will fail unless you ["overwrite\_migrations"](#overwrite_migrations). 
+deployment files exist, will fail unless you ["overwrite\_migrations"](#overwrite_migrations).
 
 The `migrations` directory reflects a directory structure as documented in
 [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler).
@@ -557,7 +576,7 @@ sets of data.  Lastly, thanks to the [DBIx::Class](https://metacpan.org/pod/DBIx
 in making the [DBIx::Class](https://metacpan.org/pod/DBIx::Class) ORM so amazingly powerful.
 
 Additionally thanks to the creators / maintainers for [Test::mysqld](https://metacpan.org/pod/Test::mysqld) and
-[Test::postgresql](https://metacpan.org/pod/Test::postgresql), which made it easy to create developer level sandboxes for
+[Test::Postgresql58](https://metacpan.org/pod/Test::Postgresql58), which made it easy to create developer level sandboxes for
 these popular open source databases.
 
 As usual, thanks to the [Moose](https://metacpan.org/pod/Moose) cabal for making Perl programming fun and
@@ -584,17 +603,21 @@ missed you.
     https://github.com/moltar
     https://github.com/andyjones
     https://github.com/pnu
+    https://github.com/n7st
+    https://github.com/willsheppard
+    https://github.com/mulletboy2
+    https://github.com/mohawk2
 
 # SEE ALSO
 
 [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler), [DBIx::Class::Fixtures](https://metacpan.org/pod/DBIx::Class::Fixtures), [DBIx::Class](https://metacpan.org/pod/DBIx::Class),
 [DBIx::Class::Schema::Loader](https://metacpan.org/pod/DBIx::Class::Schema::Loader), [Moose](https://metacpan.org/pod/Moose), [DBIx::Class::Migration::Script](https://metacpan.org/pod/DBIx::Class::Migration::Script),
 [DBIx::Class::Migration::Population](https://metacpan.org/pod/DBIx::Class::Migration::Population), [dbic-migration](https://metacpan.org/pod/dbic-migration), [SQL::Translator](https://metacpan.org/pod/SQL::Translator),
-[Test::mysqld](https://metacpan.org/pod/Test::mysqld), [Test::postgresql](https://metacpan.org/pod/Test::postgresql).
+[Test::mysqld](https://metacpan.org/pod/Test::mysqld), [Test::Postgresql58](https://metacpan.org/pod/Test::Postgresql58).
 
 # COPYRIGHT & LICENSE
 
-Copyright 2013, John Napiorkowski [email:jjnapiork@cpan.org](email:jjnapiork@cpan.org)
+Copyright 2013-2015, John Napiorkowski [email:jjnapiork@cpan.org](email:jjnapiork@cpan.org)
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

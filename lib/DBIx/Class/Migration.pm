@@ -1,6 +1,6 @@
 package DBIx::Class::Migration;
 
-our $VERSION = "0.060";
+our $VERSION = "0.061";
 $VERSION = eval $VERSION;
 
 use Moose;
@@ -31,8 +31,8 @@ has db_sandbox_builder_class => (
 
   sub _build_db_sandbox_builder_class {
     my $self = shift;
-    return $self->has_db_sandbox_dir ? 
-      'DBIx::Class::Migration::SandboxDirSandboxBuilder' : 
+    return $self->has_db_sandbox_dir ?
+      'DBIx::Class::Migration::SandboxDirSandboxBuilder' :
         'DBIx::Class::Migration::TargetDirSandboxBuilder';
   }
 
@@ -79,8 +79,8 @@ has target_dir_builder => ( is => 'ro', lazy_build => 1);
   sub _infer_schema_class {
     my $self = shift;
     return $self->has_schema_class ?
-      $self->schema_class : $self->has_schema ? 
-        ref($self->schema) : 
+      $self->schema_class : $self->has_schema ?
+        ref($self->schema) :
           die "Can't infer schema class without a --schema or --schema_class";
   }
 
@@ -123,7 +123,7 @@ has dbic_fixture_class => (
 
 has dbic_fixtures_extra_args => ( is=>'ro', isa=>'HashRef', lazy_build=>1);
 
-  sub _build_dbic_fixtures_extra_args { 
+  sub _build_dbic_fixtures_extra_args {
     return +{};
   }
 
@@ -135,7 +135,7 @@ has deployment_handler_class => (
 
 has extra_schemaloader_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
 
-  sub _build_extra_schemaloader_args { 
+  sub _build_extra_schemaloader_args {
     return +{};
   }
 
@@ -646,7 +646,7 @@ thoughts on good development patterns in using databases with application
 frameworks like L<Catalyst>.
 
 L<DBIx::Class::Migration> offers code and advice based on my experience of using
-L<DBIx::Class> for several years, which hopefully can help you bootstrap a new 
+L<DBIx::Class> for several years, which hopefully can help you bootstrap a new
 project.  The solutions given should work for you if you want to use L<DBIx::Class>
 and have database migrations, but don't really know what to do next.  These
 solutions should scale upward from a small project to a medium project involving
@@ -656,7 +656,7 @@ difficult architectual issues, you might be better off building something on
 top of L<DBIx::Class::DeploymentHandler> directly.
 
 L<DBIx::Class::Migration> is a base class upon which interfaces like
-L<DBIx::Class::Migration::Script> are built.  
+L<DBIx::Class::Migration::Script> are built.
 
 Please see L<DBIx::Class::Migration::Tutorial> for more approachable
 documentation.  If you want to read a high level feature overview, see
@@ -944,7 +944,7 @@ an alternative location.
 Be default if you allow for a local database sandbox (as you might during early
 development and you don't want to work to make a database) that sandbox gets
 built in the 'target_dir'.  Since other bits in the target_dir are probably
-going to be in your project repository and the sandbox generally isnt, you 
+going to be in your project repository and the sandbox generally isnt, you
 might wish to build the sandbox in an alternative location.  This setting
 allows that:
 
@@ -987,7 +987,7 @@ of the current C<schema> version.  Sends this as a string to STDOUT
 
 Creates a C<fixtures> and C<migrations> directory under L</target_dir> (if they
 don't already exist) and makes deployment files for the current schema.  If
-deployment files exist, will fail unless you L</overwrite_migrations>. 
+deployment files exist, will fail unless you L</overwrite_migrations>.
 
 The C<migrations> directory reflects a directory structure as documented in
 L<DBIx::Class::DeploymentHandler>.
