@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+use strict;
+use warnings;
 BEGIN {
   use Test::Most;
   plan skip_all => 'DBICM_TEST_MYSQL not set'

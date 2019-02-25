@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+use strict;
+use warnings;
 use Test::Most;
 use Test::Requires { 'Capture::Tiny' => 0.19 };
 use DBIx::Class::Migration::Script;

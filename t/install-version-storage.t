@@ -2,7 +2,6 @@
 
 use strict;
 use warnings;
-
 use lib 't/lib';
 use Test::Most;
 use DBIx::Class::Migration;

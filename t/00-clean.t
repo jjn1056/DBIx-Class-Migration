@@ -3,6 +3,8 @@
 ## Just a test class to make sure we have a nice, clean target_dir
 ## in case a previous test run make a mess.
 
+use strict;
+use warnings;
 use lib 't/lib';
 use Test::Most;
 use DBIx::Class::Migration::Population;

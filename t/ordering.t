@@ -4,6 +4,8 @@
 ## Postgresql, when we try to restore data from a fixture set and we
 ## populate a table that has FKs to another table we have not yet restored.
 
+use strict;
+use warnings;
 BEGIN {
   use Test::Most;
   plan skip_all => 'DBICM_TEST_PG not set'

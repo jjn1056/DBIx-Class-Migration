@@ -1,3 +1,5 @@
+use strict;
+use warnings;
 use Test::Most tests=>16;
 use Class::Load 'try_load_class';
  
