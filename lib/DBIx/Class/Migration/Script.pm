@@ -69,10 +69,7 @@ has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
 has sql_translator_args => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
   predicate=>'has_sql_translator_args');
 
-# When register with MooseX::Getopt::OptionTypeMap->add_option_type_to_map,
-# stores with long name. has_option_type looks up with literal name in
-# attr declaration, so must match.
-has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'DBIx::Class::Migration::_Types::ArraySQLTProducers',
+has databases => (traits => [ 'Getopt' ], is => 'ro', isa => ArraySQLTProducers,
   predicate=>'has_databases', cmd_aliases => 'database');
 
 has sandbox_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
