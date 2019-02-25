@@ -19,6 +19,15 @@ lives_ok {
   ]);
 }; 
 
+throws_ok {
+  DBIx::Class::Migration::Script->run_with_options(argv => [
+    "status",
+    "--schema_class" => 'Local::Schema',
+    "--target_dir" => $dir,
+    "--database" => 'DefinitelyNotValid',
+  ]);
+} qr/Unknown database type/;
+
 local $Local::Schema::VERSION = undef;
 
 throws_ok {

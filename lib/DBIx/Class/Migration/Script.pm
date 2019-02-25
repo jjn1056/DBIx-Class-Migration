@@ -2,9 +2,9 @@ package DBIx::Class::Migration::Script;
 
 use Moose;
 use MooseX::Attribute::ENV;
-use MooseX::Types::LoadableClass 'LoadableClass';
 use Pod::Find ();
 use Pod::Usage ();
+use DBIx::Class::Migration::Types 'LoadableClass', 'ArraySQLTProducers';
 
 with 'MooseX::Getopt';
 
@@ -55,7 +55,10 @@ has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
 has sql_translator_args => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
   predicate=>'has_sql_translator_args');
 
-has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'ArrayRef',
+# When register with MooseX::Getopt::OptionTypeMap->add_option_type_to_map,
+# stores with long name. has_option_type looks up with literal name in
+# attr declaration, so must match.
+has databases => (traits => [ 'Getopt' ], is => 'ro', isa => 'DBIx::Class::Migration::_Types::ArraySQLTProducers',
   predicate=>'has_databases', cmd_aliases => 'database');
 
 has sandbox_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',

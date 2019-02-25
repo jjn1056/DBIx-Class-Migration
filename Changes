@@ -4,6 +4,7 @@ Revision history for DBIx-Class-Migration.
         - POD improvements - thanks @n7st and @willsheppard
         - make the tests work running in parallel
         - Ignore Views when running 'prepare' - thanks @mulletboy2
+        - say valid possibilities if --database= invalid
 
 0.060   2017-10-17
         - fixed VERSION mistake in previous release
