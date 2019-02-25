@@ -47,12 +47,18 @@ Github (L<https://github.com/jjn1056/DBIx-Class-Migration>), clone the repo
 down to your work environment and install project dependencies:
 
     cpanm Dist::Zilla
-    dzil authordeps | cpanm
-    dzil listdeps | cpanm
+    (dzil authordeps; dzil listdeps) |
+      (unset AUTHOR_TESTING RELEASE_TESTING; cpanm)
 
 You should first have a Modern Perl setup, including L<local::lib>.  If you
 need help installing Perl and getting started, please take a look at the
 Learning Perl website: L<http://learn.perl.org/installing/>
+
+If L<Test::Postgresql58> fails to install, you are probably running with
+parallel testing. Try this:
+
+    (unset AUTHOR_TESTING RELEASE_TESTING HARNESS_OPTIONS;
+      cpanm Test::Postgresql58)
 
 =head1 Dist::Zilla?
 
@@ -159,7 +165,7 @@ Not everyone loves using an ORM.  Personally I've found L<DBIx::Class> to be
 the only ORM that gets enough out of my way that I prefer it over plain SQL,
 and I highly recommend you give it a go.  However if you don't want to, or can
 not convince your fellow programers (yet :) ), here's one way to still use this
-migrations and fixtures system.  Strictly speaking, we are stilling using
+migrations and fixtures system.  Strictly speaking, we are still using
 L<DBIx::Class> behind the scenes, just you don't have to know about it or
 use it.
 
