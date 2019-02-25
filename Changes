@@ -2,6 +2,7 @@ Revision history for DBIx-Class-Migration.
 
 0.061   
         - POD improvements - thanks @n7st and @willsheppard
+        - make the tests work running in parallel
 
 0.060   2017-10-17
         - fixed VERSION mistake in previous release

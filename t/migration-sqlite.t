@@ -7,9 +7,16 @@ use Test::Most;
 use DBIx::Class::Migration;
 use File::Spec::Functions 'catfile';
 use File::Path 'rmtree';
+use File::Temp 'tempdir';
+use Cwd 'abs_path'; # if no abs_path, need "." in @INC
+
+my $dir = tempdir(DIR => abs_path('t'), CLEANUP => 1);
 
 ok(
-  my $migration = DBIx::Class::Migration->new(schema_class=>'Local::Schema'),
+  my $migration = DBIx::Class::Migration->new(
+    schema_class=>'Local::Schema',
+    target_dir => $dir,
+  ),
   'created migration with schema_class');
 
 isa_ok(
@@ -65,9 +72,9 @@ builder {
 
 END
 
-close($perl_run);
+ok close($perl_run), "wrote file";
 
-$migration->install;
+ok $migration->install, 'install ok';
 
 ok $schema->resultset('Country')->find({code=>'fra'}),
   'got some previously inserted data';
@@ -93,10 +100,11 @@ ok $schema->resultset('Country')->find({code=>'fra'}),
 $migration->drop_tables;
 
 NEW_SCOPE_FOR_SCHEMA: {
-
   my $migration = DBIx::Class::Migration->new(
-    schema_class=>'Local::Schema');
-    
+    schema_class=>'Local::Schema',
+    target_dir => $dir,
+  );
+
   $migration->install;
 
   ok $schema->resultset('Country')->find({code=>'fra'}),
@@ -107,13 +115,6 @@ NEW_SCOPE_FOR_SCHEMA: {
 
   ok $schema->resultset('Country')->find({code=>'bel'}),
     'got some previously inserted data';
-
 }
 
 done_testing;
-
-END {
-  rmtree catfile($migration->target_dir, 'migrations');
-  rmtree catfile($migration->target_dir, 'fixtures');
-  unlink catfile($migration->target_dir, 'local-schema.db');
-}

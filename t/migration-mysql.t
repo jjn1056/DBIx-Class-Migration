@@ -7,17 +7,22 @@ BEGIN {
   plan skip_all => 'DBICM_TEST_MYSQL not set'
     unless $ENV{DBICM_TEST_MYSQL} || $ENV{AUTHOR_MODE};
 }
-
 use lib 't/lib';
 use DBIx::Class::Migration;
-use File::Spec::Functions 'catfile', 'catdir', 'splitpath';
+use File::Spec::Functions 'catfile', 'splitpath';
 use File::Path 'rmtree';
 use Test::Requires qw(Test::mysqld);
+use File::Temp 'tempdir';
+
+my $dir = tempdir(CLEANUP => 1); # can't put under "t" as mysqld refuses
+chmod 0777, $dir; # default is very secure but mysqld cannot get at it
 
 ok(
   my $migration = DBIx::Class::Migration->new(
     schema_class=>'Local::Schema',
-    db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
+    target_dir => $dir,
+    db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox',
+  ),
   'created migration with schema_class');
 
 isa_ok(
@@ -105,14 +110,13 @@ ok $schema->resultset('Country')->find({code=>'fra'}),
 
 $migration->drop_tables;
 
-my $cleanup_dir = $migration->target_dir;
-
 $migration = undef;
 
 NEW_SCOPE_FOR_SCHEMA: {
 
   ok( my $migration = DBIx::Class::Migration->new(
     schema_class=>'Local::Schema',
+    target_dir => $dir,
     db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
   'created migration with schema_class');
 
@@ -138,6 +142,7 @@ NEW_SCOPE_FOR_SCHEMA: {
 
       ok( my $migration = DBIx::Class::Migration->new(
         schema_class=>'Local::Schema',
+        target_dir => $dir,
         db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
         'created migration with schema_class 3');
 
@@ -169,6 +174,7 @@ NEW_SCOPE_FOR_SCHEMA: {
 
       ok( my $migration = DBIx::Class::Migration->new(
         schema_class=>'Local::Schema',
+        target_dir => $dir,
         db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
         'created migration with schema_class 4');
 
@@ -187,6 +193,7 @@ SCOPE_FOR_PARALLEL_TEMP: {
 
     ok( my $migration1 = DBIx::Class::Migration->new(
       schema_class=>'Local::Schema',
+      target_dir => $dir,
       db_sandbox_builder_class => 'DBIx::Class::Migration::TempDirSandboxBuilder',
       db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
         'created migration with schema_class in temp 1');
@@ -195,6 +202,7 @@ SCOPE_FOR_PARALLEL_TEMP: {
 
     ok( my $migration2 = DBIx::Class::Migration->new(
       schema_class=>'Local::Schema',
+      target_dir => $dir,
       db_sandbox_builder_class => 'DBIx::Class::Migration::TempDirSandboxBuilder',
       db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
         'created migration with schema_class in temp 2');
@@ -203,6 +211,7 @@ SCOPE_FOR_PARALLEL_TEMP: {
 
     ok( my $migration3 = DBIx::Class::Migration->new(
       schema_class=>'Local::Schema',
+      target_dir => $dir,
       db_sandbox_builder_class => 'DBIx::Class::Migration::TempDirSandboxBuilder',
       db_sandbox_class=>'DBIx::Class::Migration::MySQLSandbox'),
         'created migration with schema_class in temp 3');
@@ -211,10 +220,3 @@ SCOPE_FOR_PARALLEL_TEMP: {
 }
 
 done_testing;
-
-END {
-  rmtree catfile($cleanup_dir, 'migrations');
-  rmtree catfile($cleanup_dir, 'fixtures');
-  rmtree catfile($cleanup_dir, 'local-schema');
-}
-

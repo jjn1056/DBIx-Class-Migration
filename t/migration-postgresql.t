@@ -7,17 +7,22 @@ BEGIN {
   plan skip_all => 'DBICM_TEST_PG not set'
     unless $ENV{DBICM_TEST_PG} || $ENV{AUTHOR_MODE};
 }
-
 use lib 't/lib';
 use DBIx::Class::Migration;
 use File::Spec::Functions 'catfile';
 use File::Path 'rmtree';
 use Test::Requires qw(Test::Postgresql58);
+use File::Temp 'tempdir';
+use Cwd 'abs_path'; # if no abs_path, need "." in @INC
+
+my $dir = tempdir(DIR => abs_path('t'), CLEANUP => 1);
 
 ok(
   my $migration = DBIx::Class::Migration->new(
     schema_class=>'Local::Schema',
-    db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
+    target_dir => $dir,
+    db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox',
+  ),
   'created migration with schema_class');
 
 isa_ok(
@@ -90,8 +95,6 @@ ok $schema->resultset('Country')->find({code=>'fra'}),
 
 $migration->drop_tables;
 
-my $cleanup_dir = $migration->target_dir;
-
 $migration = undef;
 
 NEW_SCOPE_FOR_SCHEMA: {
@@ -101,7 +104,9 @@ NEW_SCOPE_FOR_SCHEMA: {
 
   ok( my $migration = DBIx::Class::Migration->new(
     schema_class=>'Local::Schema',
-    db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
+    db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox',
+    target_dir => $dir,
+  ),
   'created migration with schema_class #2');
 
   $migration->install;
@@ -127,7 +132,9 @@ NEW_SCOPE_FOR_SCHEMA: {
 
     ok( my $migration = DBIx::Class::Migration->new(
       schema_class=>'Local::Schema',
-      db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
+      db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox',
+      target_dir => $dir,
+    ),
       'created migration with schema_class #3');
 
     isa_ok(
@@ -146,7 +153,9 @@ TEST_SEQUENCE_RESTORE: {
 
   ok( my $migration = DBIx::Class::Migration->new(
     schema_class=>'Local::Schema',
-    db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
+    db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox',
+    target_dir => $dir,
+  ),
   'created migration with schema_class #4');
 
   ## First we are going to blow away the database from previous tests
@@ -181,10 +190,3 @@ TEST_SEQUENCE_RESTORE: {
 }
 
 done_testing;
-
-END {
-  rmtree catfile($cleanup_dir, 'migrations');
-  rmtree catfile($cleanup_dir, 'fixtures');
-  rmtree catfile($cleanup_dir, 'local-schema');
-}
-

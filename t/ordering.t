@@ -11,19 +11,21 @@ BEGIN {
   plan skip_all => 'DBICM_TEST_PG not set'
     unless $ENV{DBICM_TEST_PG} || $ENV{AUTHOR_MODE};
 }
-
 use lib 't/lib';
 use DBIx::Class::Migration;
-use File::Spec::Functions 'catfile';
-use File::Path 'rmtree';
 use Test::Requires qw(Test::Postgresql58);
+use File::Temp 'tempdir';
+
+my $dir = tempdir(DIR => 't', CLEANUP => 1);
 
 ## Create the migration object and set it up for test
 
 ok(
   my $migration = DBIx::Class::Migration->new(
     schema_class=>'Local::Schema',
-    db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox'),
+    target_dir => $dir,
+    db_sandbox_class=>'DBIx::Class::Migration::PostgresqlSandbox',
+  ),
   'created migration with schema_class');
 
 isa_ok(
@@ -103,10 +105,3 @@ ok $schema->resultset('Artist')->find({name=>'Artist1'}),
   'got some restored  data';
 
 done_testing;
-
-END {
-  my $cleanup_dir = $migration->target_dir;
-  rmtree catfile($cleanup_dir, 'migrations');
-  rmtree catfile($cleanup_dir, 'fixtures');
-  rmtree catfile($cleanup_dir, 'local-schema');
-}

@@ -6,14 +6,20 @@ use lib 't/lib';
 use Test::Most;
 use DBIx::Class::Migration;
 use File::Spec::Functions 'catfile';
-use File::Path 'rmtree';
+use File::Temp 'tempdir';
+use Cwd 'abs_path'; # if no abs_path, need "." in @INC
+
+my $dir = tempdir(DIR => abs_path('t'), CLEANUP => 1);
 
 my ($target_dir, $schema_args);  # Outer Scope so we can reuse
 
 SCHEMA_V1: {
 
   ok(
-    my $migration = DBIx::Class::Migration->new(schema_class=>'Local::Schema'),
+    my $migration = DBIx::Class::Migration->new(
+      schema_class=>'Local::Schema',
+      target_dir => $dir,
+    ),
     'created migration with schema_class');
 
   $migration->prepare;
@@ -91,13 +97,14 @@ SCHEMA_V2: {
   ok(
     my $migration = DBIx::Class::Migration->new(
       schema_class=>'Local::v2::Schema',
-      schema_args => $schema_args),
+      schema_args => $schema_args,
+      target_dir => $dir,
+    ),
     'created migration with schema_class and args');
 
   isa_ok(
     my $schema = $migration->schema, 'Local::v2::Schema',
    'got a reasonable looking schema');
-
 
   $migration->prepare;
 
@@ -218,7 +225,10 @@ END
 CHECK_DOWNGRADE: {
 
   ok(
-    my $migration = DBIx::Class::Migration->new(schema_class=>'Local::Schema'),
+    my $migration = DBIx::Class::Migration->new(
+      schema_class=>'Local::Schema',
+      target_dir => $dir,
+    ),
     'created migration with schema_class');
 
   isa_ok(
@@ -234,9 +244,3 @@ CHECK_DOWNGRADE: {
 }
 
 done_testing;
-
-END {
-  rmtree catfile($target_dir, 'migrations');
-  rmtree catfile($target_dir, 'fixtures');
-  unlink catfile($target_dir, 'local-schema.db');
-}
