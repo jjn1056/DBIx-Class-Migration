@@ -1,6 +1,7 @@
 Revision history for DBIx-Class-Migration.
 
 0.062   
+        - update DBIx::Class::DeploymentHandler dep to 0.002222 - thanks @KES777 for report
         - POD improvements - thanks @manwar
 
 0.061   2019-02-25
