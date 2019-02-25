@@ -1189,6 +1189,7 @@ missed you.
     https://github.com/willsheppard
     https://github.com/mulletboy2
     https://github.com/mohawk2
+    https://github.com/manwar
 
 =head1 SEE ALSO
 

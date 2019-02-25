@@ -75,7 +75,7 @@ Value: Str or Array of Str (default: SQLite).  Optional.
 By default we create migrations for SQLite.  You can use this option to change
 that default, or to write our migrations for more than one database
 
-You can prepare deployment for any database type that L<SQLT> understands.
+You can prepare deployment for any database type that L<SQL::Translator> understands.
 
     dbic-migration prepare --database SQLite --database MySQL --PostgreSQL
 

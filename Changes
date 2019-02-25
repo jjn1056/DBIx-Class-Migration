@@ -1,6 +1,9 @@
 Revision history for DBIx-Class-Migration.
 
-0.061   
+0.062   
+        - POD improvements - thanks @manwar
+
+0.061   2019-02-25
         - POD improvements - thanks @n7st and @willsheppard
         - make the tests work running in parallel
         - Ignore Views when running 'prepare' - thanks @mulletboy2

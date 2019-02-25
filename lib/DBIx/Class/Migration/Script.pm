@@ -427,9 +427,9 @@ Accepts ArrayRef.  Not Required.
 
 Used when building L</migration> to define the target databases we are building
 migration files for.  You can name any of the databases currently supported by
-L<SQLT>.  If you leave this undefined we will derive a value based on the value
+L<SQL::Translator>.  If you leave this undefined we will derive a value based on the value
 of L</dsn>.  For example, if your L</dsn> is "DBI:SQLite:test.db", we will set
-the valuye of L</databases> to C<['SQLite']>.
+the value of L</databases> to C<['SQLite']>.
 
 =head2 sql_translator_args
 
