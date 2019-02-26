@@ -1,6 +1,6 @@
 Revision history for DBIx-Class-Migration.
 
-0.063   
+0.063   2019-02-26
         - pass on dbic_connect_attrs even if no dsn - thanks @abeverley for report
         - handle SQL keywords in identifiers - thanks @ikapelyukhin for report
 
