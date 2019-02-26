@@ -110,7 +110,9 @@ has target_dir => (is => 'ro', isa=> AbsolutePath, coerce => 1, lazy_build=>1);
 
 has dbic_dh_args => (is=>'rw', isa=>'HashRef', lazy_build=>1);
 
-  sub _build_dbic_dh_args { +{} }
+  sub _build_dbic_dh_args {
+    +{ sql_translator_args => { quote_identifiers => 1 } }
+  }
 
 has schema_loader_class => (
   is => 'ro',
@@ -410,10 +412,13 @@ sub build_dbic_fixtures {
 
 sub _schema_from_database {
   my $self = shift;
-  return $self->schema_loader
+  my $schema = $self->schema_loader
     ->schema_from_database(
       $self->_infer_schema_class,
       %{$self->extra_schemaloader_args});
+  # SQL_IDENTIFIER_QUOTE_CHAR
+  $schema->storage->sql_maker->quote_char($schema->storage->dbh->get_info(29));
+  $schema;
 }
 
 sub dump_named_sets {
@@ -864,6 +869,10 @@ Accepts HashRef.  Required and defaults to an empty hashref.
 Used to pass custom args when building a L<DBIx::Class::DeploymentHandler>.
 Please see the docs for that class for more.  Useful args might be C<databases>,
 C<to_version> and C<force_overwrite>.
+
+Defaults to a hash setting C<sql_translator_args>'s C<quote_identifiers>
+to a true value, which despite being documented as the default, is not
+the case in practice.
 
 =head2 dbic_dh
 

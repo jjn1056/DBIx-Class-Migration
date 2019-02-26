@@ -11,8 +11,12 @@ use File::Temp 'tempdir';
 my $dir = tempdir(DIR => 't', CLEANUP => 1);
 
 ## Create an in-memory sqlite version of the test schema
-(my $schema = Local::Schema->connect('dbi:SQLite::memory:'))
-  ->deploy;
+ok my $schema = Local::Schema->connect('dbi:SQLite::memory:');
+
+# SQL_IDENTIFIER_QUOTE_CHAR
+$schema->storage->sql_maker->quote_char($schema->storage->dbh->get_info(29));
+
+$schema->deploy;
 
 ## Connect a DBIC migration to that
 ok(

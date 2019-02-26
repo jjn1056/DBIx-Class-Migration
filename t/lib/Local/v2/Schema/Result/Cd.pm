@@ -10,6 +10,12 @@ __PACKAGE__->add_columns(
   'title' => {
     data_type => 'varchar',
     size => '96',
+  },
+  'order' => {
+    # use SQL word to exercise quoting
+    data_type => 'varchar',
+    size => '96',
+    is_nullable => 1,
   });
 
 __PACKAGE__->set_primary_key('cd_id');

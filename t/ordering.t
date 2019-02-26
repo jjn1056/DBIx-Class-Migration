@@ -32,6 +32,9 @@ isa_ok(
   my $schema = $migration->schema, 'Local::Schema',
   'got a reasonable looking schema');
 
+# SQL_IDENTIFIER_QUOTE_CHAR
+$schema->storage->sql_maker->quote_char($schema->storage->dbh->get_info(29));
+
 ## Create the deployment files
 
 $migration->prepare;

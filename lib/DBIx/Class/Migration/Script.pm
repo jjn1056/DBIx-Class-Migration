@@ -70,7 +70,8 @@ has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
   predicate=>'has_to_version', cmd_aliases => 'V');
 
 has sql_translator_args => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
-  predicate=>'has_sql_translator_args');
+  predicate=>'has_sql_translator_args',
+  default => sub { +{ quote_identifiers => 1 }});
 
 has databases => (traits => [ 'Getopt' ], is => 'ro', isa => ArraySQLTProducers,
   predicate=>'has_databases', cmd_aliases => 'database');
@@ -454,7 +455,9 @@ L<SQL::Translator>, for example:
 
     producer_args => { postgres_version => '9.1' }
 
-to define the database version for SQL producer.
+to define the database version for SQL producer. Defaults to setting
+C<quote_identifiers> to a true value, which despite being documented as
+the default, is not the case in practice.
 
 =head2 fixture_sets
 
