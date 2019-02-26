@@ -130,16 +130,15 @@ has migration => (
     if($self->dsn) {
       push @schema_args, ($self->dsn,
        $self->username, $self->password);
-    
-      if($self->has_dbi_connect_attrs) {
-        push @schema_args, $self->dbi_connect_attrs;
-      }
-      if($self->has_dbic_connect_attrs) {
-        push @schema_args, {} unless $self->has_dbi_connect_attrs;
-        push @schema_args, $self->dbic_connect_attrs;
-      }
     } else {
       warn "no --dsn argument was found, defaulting to a local SQLite database\n";
+    }
+    if($self->has_dbi_connect_attrs) {
+      push @schema_args, $self->dbi_connect_attrs;
+    }
+    if($self->has_dbic_connect_attrs) {
+      push @schema_args, {} unless $self->has_dbi_connect_attrs;
+      push @schema_args, $self->dbic_connect_attrs;
     }
     return @schema_args;
   }
