@@ -195,7 +195,6 @@ sub dbic_dh {
   _log_die "A \$VERSION needs to be specified in your schema class ${\$self->_infer_schema_class}"
   unless $self->schema->schema_version;
 
-
   my $dh = $self->deployment_handler_class->new({
     schema => $self->schema,
     %dbic_dh_args, @args,
@@ -565,7 +564,6 @@ before [qw/install upgrade downgrade/], sub {
     %ENV,
     DBIC_MIGRATION_FIXTURES_CLASS => $self->dbic_fixture_class,
     DBIC_MIGRATION_FIXTURES_INIT_ARGS => JSON::MaybeXS->new->encode($self->build_dbic_fixtures_init_args),
-#    DBIC_MIGRATION_FIXTURES_OBJ => $self->build_dbic_fixtures,
     DBIC_MIGRATION_SCHEMA_CLASS => $self->schema_class,
     DBIC_MIGRATION_TARGET_DIR => $self->target_dir,
     DBIC_MIGRATION_FIXTURE_DIR => catdir($self->target_dir, 'fixtures', $self->dbic_dh->schema_version),
