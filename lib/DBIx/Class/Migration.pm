@@ -748,7 +748,7 @@ database connection with the following DSN:
 
     DBD:SQLite:[path to target_dir]/[db_file_name].db
 
-Where c<[path to target_dir]> is L</target_dir> and [db_file_name] is a converted
+Where C<[path to target_dir]> is L</target_dir> and [db_file_name] is a converted
 version of L</schema_class>.  For example if you set L<schema_class> to:
 
     MyApp::Schema

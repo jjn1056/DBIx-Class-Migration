@@ -154,7 +154,7 @@ database connection with the following DSN:
 
     DBD:SQLite:[path to target_dir]/[db_file_name].db
 
-Where c<\[path to target\_dir\]> is ["target\_dir"](#target_dir) and \[db\_file\_name\] is a converted
+Where `[path to target_dir]` is ["target\_dir"](#target_dir) and \[db\_file\_name\] is a converted
 version of ["schema\_class"](#schema_class).  For example if you set [schema\_class](https://metacpan.org/pod/schema_class) to:
 
     MyApp::Schema
