@@ -1,5 +1,3 @@
-#!/usr/bin/env perl
-
 ## This is a test case used to try and replicate a reported issue with
 ## Postgresql, when we try to restore data from a fixture set and we
 ## populate a table that has FKs to another table we have not yet restored.
