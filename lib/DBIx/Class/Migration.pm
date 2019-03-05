@@ -387,7 +387,8 @@ sub _prepare_fixture_data_dir {
 
 sub build_dbic_fixtures_init_args {
   my $self = shift;
-  my $version = $self->dbic_dh->version_storage_is_installed ?
+  my $version = $self->dbic_dh_args->{to_version};
+  $version ||= $self->dbic_dh->version_storage_is_installed ?
     $self->dbic_dh->database_version : do {
       print "Since this database is not versioned, we will assume version ";
       print "${\$self->dbic_dh->schema_version}\n";

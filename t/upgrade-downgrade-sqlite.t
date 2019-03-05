@@ -3,7 +3,7 @@ use warnings;
 use lib 't/lib';
 use Test::Most;
 use DBIx::Class::Migration;
-use File::Spec::Functions 'catfile';
+use File::Spec::Functions 'catfile', 'catdir', 'rel2abs';
 use File::Temp 'tempdir';
 
 my $dir = tempdir(DIR => 't', CLEANUP => 1);
@@ -238,6 +238,28 @@ CHECK_DOWNGRADE: {
 
   is $rocker->name, 'Rocker One';
 
+}
+
+CHECK_TO_VERSION_FIXTURE: {
+  # keep same fixtures, zap SQLite DB so start from fresh
+  my $file = $schema_args->[0];
+  $file =~ s#^(.*?:){2}##;
+  ok unlink($file), "deleted db '$file' ok";
+  require DBIx::Class::Migration::Script;
+  local @ARGV = (
+    '--schema_class' => 'Local::v2::Schema',
+    '--to_version' => 1,
+    '--target_dir' => $dir,
+    'install'
+  );
+  ok(
+    my $migration = DBIx::Class::Migration::Script->new_with_options,
+    'created migration with lowered to_version');
+
+  is $migration->to_version, 1, 'DH has correct version';
+  is $migration->migration->build_dbic_fixtures_init_args->{config_dir},
+    rel2abs(catdir($dir, qw(fixtures 1 conf))), 'DBICF has correct version';
+  $migration->run;
 }
 
 done_testing;
