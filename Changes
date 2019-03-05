@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.065   
+        - POD improvements - thanks @manwar
+
 0.064   2019-03-05
         - on "install" with -V, use right fixtures - thanks @KES777 for report
 

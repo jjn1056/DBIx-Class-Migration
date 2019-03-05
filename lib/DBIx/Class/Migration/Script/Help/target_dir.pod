@@ -22,7 +22,7 @@ String that represents a filesystem path
 
 A directory path that is used to store your fixtures and migration
 files.  By default this will be the C<share> directory for the application
-where your L<"DBIx::Class::Migration::Script/schema_class"> resides.
+where your L<DBIx::Class::Migration::Script/"schema_class"> resides.
 I recommend you leave it alone since
 this is a reasonable Perl convention for non code data, and there's a decent
 ecosystem of tools around it, however if you need to place the files in an
