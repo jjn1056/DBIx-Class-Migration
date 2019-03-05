@@ -270,15 +270,13 @@ using monotonic versioning.
 
 ## dbic\_dh\_args
 
-Accepts HashRef.  Required and defaults to an empty hashref.
+Accepts HashRef.  Required and defaults to a hashref setting
+`sql_translator_args`'s `quote_identifiers` to a true value, which
+despite being documented as the default, is not the case in practice.
 
 Used to pass custom args when building a [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler).
 Please see the docs for that class for more.  Useful args might be `databases`,
 `to_version` and `force_overwrite`.
-
-Defaults to a hash setting `sql_translator_args`'s `quote_identifiers`
-to a true value, which despite being documented as the default, is not
-the case in practice.
 
 ## dbic\_dh
 

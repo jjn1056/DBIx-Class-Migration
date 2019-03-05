@@ -863,15 +863,13 @@ using monotonic versioning.
 
 =head2 dbic_dh_args
 
-Accepts HashRef.  Required and defaults to an empty hashref.
+Accepts HashRef.  Required and defaults to a hashref setting
+C<sql_translator_args>'s C<quote_identifiers> to a true value, which
+despite being documented as the default, is not the case in practice.
 
 Used to pass custom args when building a L<DBIx::Class::DeploymentHandler>.
 Please see the docs for that class for more.  Useful args might be C<databases>,
 C<to_version> and C<force_overwrite>.
-
-Defaults to a hash setting C<sql_translator_args>'s C<quote_identifiers>
-to a true value, which despite being documented as the default, is not
-the case in practice.
 
 =head2 dbic_dh
 
