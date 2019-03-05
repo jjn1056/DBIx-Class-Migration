@@ -1,6 +1,6 @@
 Revision history for DBIx-Class-Migration.
 
-0.064   
+0.064   2019-03-05
         - on "install" with -V, use right fixtures - thanks @KES777 for report
 
 0.063   2019-02-26
