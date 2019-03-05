@@ -336,7 +336,6 @@ recent updates.
 
 =item Make the Distribution
 
-    dzil build
     dzil release
     dzil clean
 
