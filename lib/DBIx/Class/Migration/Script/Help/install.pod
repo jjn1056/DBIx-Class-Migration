@@ -10,9 +10,9 @@ DBIx::Class::Migration::Script::Help::install - Install a migration version
 
 Installs a prepared migration to  either the current schema version or the target
 version specified via L</to_version> to the database connected via the L</dsn>,
-L<"DBIx::Class::Migration::Script/username"> and L<"DBIx::Class::Migration::Script/password">
+L<DBIx::Class::Migration::Script/"username"> and L<DBIx::Class::Migration::Script/"password">
 (or to a developer level sandbox as defined by the
-L<"DBIx::Class::Migration::Script/sandbox_class">).
+L<DBIx::Class::Migration::Script/"sandbox_class">).
 
 You can't install to a database if the tables already exist.  See C<drop_tables>.
 
@@ -78,7 +78,7 @@ Aliases: P
 
 Connection information to an already created and running instance of a database.
 If you don't specify this, we will assume you want a developer level sandbox (
-See L<"DBIx::Class::Migration::Script/sandbox_class">).
+See L<DBIx::Class::Migration::Script/"sandbox_class">).
 
 =head2 dbic_fixture_class
 
