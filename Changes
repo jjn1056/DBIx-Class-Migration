@@ -1,6 +1,6 @@
 Revision history for DBIx-Class-Migration.
 
-0.065   
+0.065   2019-03-07
         - POD improvements - thanks @manwar
         - handle "package NAME VERSION" - thanks @kivilahtio for report
 
