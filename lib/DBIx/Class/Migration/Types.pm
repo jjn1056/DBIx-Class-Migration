@@ -12,6 +12,7 @@ __PACKAGE__->provide_types_from(
 package #hide from PAUSE
   DBIx::Class::Migration::_Types;
 
+use Class::Load 'load_class';
 use MooseX::Types::LoadableClass 'LoadableClass';
 use MooseX::Types::Moose 'Str', 'ClassName', 'ArrayRef';
 use MooseX::Types -declare => [
@@ -34,7 +35,7 @@ coerce LoadableDBICSchemaClass,
 my $sqltp = 'SQL::Translator::Producer';
 subtype SQLTProducer,
   as Str,
-  where { eval "require $sqltp\::$_; 1" },
+  where { eval { load_class "$sqltp\::$_"; 1 } },
   ;
 
 # Despite being declared as an ArrayRef here, it shows its "parent" as Object

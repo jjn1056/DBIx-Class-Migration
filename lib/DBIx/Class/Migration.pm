@@ -12,7 +12,6 @@ use DBIx::Class::Migration::Types qw(
   LoadableClass LoadableDBICSchemaClass
   AbsolutePath
 );
-use Class::Load 'load_class';
 use Devel::PartialDump;
 use SQL::Translator;
 use Log::Any '$log', default_adapter => 'Stderr';
@@ -188,9 +187,6 @@ sub normalized_dbic_dh_args {
 sub dbic_dh {
   my ($self, @args) = @_;
   my %dbic_dh_args = $self->normalized_dbic_dh_args;
-
-  (load_class "SQL::Translator::Producer::$_" ||
-    _log_die "No SQLT Producer for $_") for @{$dbic_dh_args{databases}};
 
   _log_die "A \$VERSION needs to be specified in your schema class ${\$self->_infer_schema_class}"
   unless $self->schema->schema_version;
