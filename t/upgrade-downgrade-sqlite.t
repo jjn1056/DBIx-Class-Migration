@@ -106,12 +106,12 @@ SCHEMA_V2: {
   $migration->prepare;
 
   ## Lets massage the upgrade and downgrade files
-  ok( -e (my $upgrade = catfile($target_dir, 'migrations', 'SQLite', 'upgrade', '1-2', '001-auto.sql')));
-  ok( -e (my $downgrade = catfile($target_dir, 'migrations', 'SQLite', 'downgrade', '2-1', '001-auto.sql')));
-
+  my $upgrade = catfile($target_dir, 'migrations', 'SQLite', 'upgrade', '1-2', '001-auto.sql');
+  my $downgrade = catfile($target_dir, 'migrations', 'SQLite', 'downgrade', '2-1', '001-auto.sql');
+  ok -e $upgrade, "found $upgrade";
+  ok -e $downgrade, "found $downgrade";
   open(my $upgrade_fh, ">", $upgrade )
     || die "Cannot open: $!";
-
   print $upgrade_fh <<'END';
 
 ;
