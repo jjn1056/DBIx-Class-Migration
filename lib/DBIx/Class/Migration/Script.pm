@@ -4,9 +4,7 @@ use Moose;
 use MooseX::Attribute::ENV;
 use Pod::Find ();
 use Pod::Usage ();
-use DBIx::Class::Migration::Types qw(
-  LoadableClass ArraySQLTProducers AbsolutePath
-);
+use DBIx::Class::Migration::Types -all;
 use Log::Any;
 use Carp 'croak';
 
@@ -31,74 +29,74 @@ use constant {
 
 has log => (
     is  => 'ro',
-    isa => 'Log::Any::Proxy',
+    isa => InstanceOf['Log::Any::Proxy'],
     default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
 );
 
 has includes => (
   traits => ['Getopt'],
   is => 'ro',
-  isa => 'ArrayRef',
+  isa => ArrayRef,
   predicate => 'has_includes',
   cmd_aliases => ['include','I', 'lib','libs']);
 
 has schema => (is=>'ro', predicate=>'has_schema');
 
-has schema_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+has schema_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => Str,
   predicate=>'has_schema_class', env_prefix=>ENV_PREFIX, cmd_aliases => 'S');
 
 has target_dir => (traits => [ 'Getopt', 'ENV' ],
-  is => 'ro', isa=> 'Str',
+  is => 'ro', isa=> Str,
   predicate=>'has_target_dir', env_prefix=>ENV_PREFIX, cmd_aliases => 'dir');
 
-has sandbox_dir => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa=> 'Str',
+has sandbox_dir => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa=> Str,
   predicate=>'has_sandbox_dir', env_prefix=>ENV_PREFIX);
 
-has username => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+has username => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => Str,
   default => '', env_prefix=>ENV_PREFIX, cmd_aliases => 'U');
 
-has password => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+has password => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => Str,
   default => '', env_prefix=>ENV_PREFIX, cmd_aliases => 'P');
 
 has dsn => (traits => [ 'Getopt', 'ENV' ], is => 'ro',
-  env_prefix=>ENV_PREFIX, isa => 'Str');
+  env_prefix=>ENV_PREFIX, isa => Str);
 
-has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => 'Bool',
+has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => Bool,
   predicate=>'has_force_overwrite', cmd_aliases => 'O');
 
-has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => 'Int',
+has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => Int,
   predicate=>'has_to_version', cmd_aliases => 'V');
 
-has sql_translator_args => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
+has sql_translator_args => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
   predicate=>'has_sql_translator_args',
   default => sub { +{ quote_identifiers => 1 }});
 
 has databases => (traits => [ 'Getopt' ], is => 'ro', isa => ArraySQLTProducers,
   predicate=>'has_databases', cmd_aliases => 'database');
 
-has sandbox_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => 'Str',
+has sandbox_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => Str,
   predicate=>'has_sandbox_class', default=>SANDBOX_SQLITE,
   cmd_aliases => ['T','sb'], env_prefix=>ENV_PREFIX);
 
-has dbic_fixture_class => (traits => [ 'Getopt' ], is => 'ro', isa => 'Str',
+has dbic_fixture_class => (traits => [ 'Getopt' ], is => 'ro', isa => Str,
   predicate=>'has_dbic_fixture_class');
 
-has dbic_fixtures_extra_args => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
+has dbic_fixtures_extra_args => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
   predicate=>'has_dbic_fixtures_extra_args');
 
-has dbic_connect_attrs => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
+has dbic_connect_attrs => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
   predicate=>'has_dbic_connect_attrs');
 
-has dbi_connect_attrs => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
+has dbi_connect_attrs => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
   predicate=>'has_dbi_connect_attrs');
 
-has extra_schemaloader_args => (traits => [ 'Getopt' ], is => 'ro', isa => 'HashRef',
+has extra_schemaloader_args => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
   predicate=>'has_extra_schemaloader_args');
 
 has fixture_sets => (
   traits => [ 'Getopt' ],
   is=>'ro',
-  isa=>'ArrayRef',
+  isa=>ArrayRef,
   default => sub { +['all_tables'] },
   cmd_aliases => 'fixture_set');
 
@@ -115,10 +113,10 @@ has migration_class => (
   traits => [ 'NoGetopt'],
   default => 'DBIx::Class::Migration',
   isa => LoadableClass,
-  coerce => 1);
+);
 
 has migration_sandbox_builder_class => (traits => [ 'Getopt' ],
-  is => 'ro', isa => 'Str', predicate=>'has_migration_sandbox_builder_class');
+  is => 'ro', isa => Str, predicate=>'has_migration_sandbox_builder_class');
 
 has migration => (
   is => 'ro',

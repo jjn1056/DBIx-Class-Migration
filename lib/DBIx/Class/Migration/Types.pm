@@ -1,30 +1,25 @@
 package DBIx::Class::Migration::Types;
 
-use base 'MooseX::Types::Combine';
-
-# tell perl this inline package has already been loaded
-$INC{'DBIx/Class/Migration/_Types.pm'} = __FILE__;
-
-__PACKAGE__->provide_types_from(
-  'MooseX::Types::LoadableClass',
-  'DBIx::Class::Migration::_Types');
-
-package #hide from PAUSE
-  DBIx::Class::Migration::_Types;
+use Type::Library
+  -base,
+  -declare => (
+    'LoadableDBICSchemaClass',
+    'SQLTProducer', 'ArraySQLTProducers',
+    'AbsolutePath',
+  );
+use Type::Utils -all;
+BEGIN { extends "Types::Standard" };
 
 use Class::Load 'load_class';
-use MooseX::Types::LoadableClass 'LoadableClass';
-use MooseX::Types::Moose 'Str', 'ClassName', 'ArrayRef';
-use MooseX::Types -declare => [
-  'LoadableDBICSchemaClass',
-  'SQLTProducer', 'ArraySQLTProducers',
-  'AbsolutePath',
-];
 use Module::Find ();
 use MooseX::Getopt::OptionTypeMap ();
 use File::Spec::Functions 'file_name_is_absolute', 'rel2abs';
 
-subtype LoadableDBICSchemaClass,
+declare LoadableClass,
+  as Str,
+  where { load_class $_ };
+
+declare LoadableDBICSchemaClass,
   as LoadableClass,
   message { "$_ is not the name of a loadable schema class.  You probably have a typo, or some problem with \@INC"};
 
@@ -33,7 +28,7 @@ coerce LoadableDBICSchemaClass,
   via { to_LoadableClass($_); $_ };
 
 my $sqltp = 'SQL::Translator::Producer';
-subtype SQLTProducer,
+declare SQLTProducer,
   as Str,
   where { eval { load_class "$sqltp\::$_"; 1 } },
   ;
@@ -42,7 +37,7 @@ subtype SQLTProducer,
 # and not as ArrayRef. Therefore, the natural "parent" chaining in
 # MooseX::Getopt::OptionTypeMap->has_option_type doesn't work right, so
 # we need to declare it manually below with add_option_type_to_map.
-subtype ArraySQLTProducers,
+declare ArraySQLTProducers,
   as ArrayRef[SQLTProducer],
   message {
     join '',
@@ -54,7 +49,7 @@ MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
   ArraySQLTProducers() => '=s@'
 );
 
-subtype AbsolutePath,
+declare AbsolutePath,
   as Str,
   where { file_name_is_absolute $_ },
   ;
@@ -67,22 +62,22 @@ coerce AbsolutePath,
 
 =head1 NAME
 
-DBIx::Class::Migration::Types - Custom Moose Types
+DBIx::Class::Migration::Types - Custom Type::Tiny Types
 
 =head1 SYNOPSIS
 
-  use DBIx::Class::Migration::Types 'Schema';
-  use Moose;
+  use DBIx::Class::Migration::Types -all;
+  use Moo;
 
-  has 'schema' => isa=>Schema;
+  has 'schema' => isa=>LoadableClass;
 
 =head1 DESCRIPTION
 
-Custom Types for Moose.  Probably nothing here you need to worry about.
+Custom L<Type::Tiny> types. Probably nothing here you need to worry about.
 
 =head1 SEE ALSO
 
-L<DBIx::Class::Migration>, L<MooseX::Types>, L<MooseX::Types::LoadableClass>
+L<DBIx::Class::Migration>, L<Type::Tiny>
 
 =head1 AUTHOR
 

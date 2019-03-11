@@ -8,10 +8,7 @@ use JSON::MaybeXS qw(JSON);
 use File::Copy 'cp';
 use File::Spec::Functions 'catdir', 'catfile', 'updir';
 use File::Path 'mkpath', 'remove_tree';
-use DBIx::Class::Migration::Types qw(
-  LoadableClass LoadableDBICSchemaClass
-  AbsolutePath
-);
+use DBIx::Class::Migration::Types -all;
 use Devel::PartialDump;
 use SQL::Translator;
 use Log::Any '$log', default_adapter => 'Stderr';
@@ -27,17 +24,17 @@ has db_sandbox_class => (
   is => 'ro',
   default => 'DBIx::Class::Migration::SqliteSandbox',
   isa => LoadableClass,
-  coerce => 1);
+);
 
 has db_sandbox => (is=>'ro', lazy_build=>1);
 
-has db_sandbox_dir => (is=>'ro', predicate=>'has_db_sandbox_dir', isa=>'Str');
+has db_sandbox_dir => (is=>'ro', predicate=>'has_db_sandbox_dir', isa=>Str);
 
 has db_sandbox_builder_class => (
   is => 'ro',
   isa => LoadableClass,
   lazy_build => 1,
-  coerce=>1);
+);
 
   sub _build_db_sandbox_builder_class {
     my $self = shift;
@@ -65,7 +62,7 @@ has schema_class => (
   isa => LoadableDBICSchemaClass,
   coerce=>1);
 
-has schema_args => (is=>'ro', isa=>'ArrayRef', lazy_build=>1);
+has schema_args => (is=>'ro', isa=>ArrayRef, lazy_build=>1);
 
   sub _build_schema_args {
     +[ shift->db_sandbox->make_sandbox ];
@@ -82,7 +79,7 @@ has target_dir_builder_class => (
   is => 'ro',
   default => 'DBIx::Class::Migration::ShareDirBuilder',
   isa => LoadableClass,
-  coerce=>1);
+);
 
 has target_dir_builder => ( is => 'ro', lazy_build => 1);
 
@@ -107,7 +104,7 @@ has target_dir => (is => 'ro', isa=> AbsolutePath, coerce => 1, lazy_build=>1);
     shift->target_dir_builder->build;
   }
 
-has dbic_dh_args => (is=>'rw', isa=>'HashRef', lazy_build=>1);
+has dbic_dh_args => (is=>'rw', isa=>HashRef, lazy_build=>1);
 
   sub _build_dbic_dh_args {
     +{ sql_translator_args => { quote_identifiers => 1 } }
@@ -117,7 +114,7 @@ has schema_loader_class => (
   is => 'ro',
   default => 'DBIx::Class::Migration::SchemaLoader',
   isa => LoadableClass,
-  coerce=>1);
+);
 
 has schema_loader => (is=>'ro', lazy_build=>1);
 
@@ -131,9 +128,9 @@ has dbic_fixture_class => (
   is => 'ro',
   default => 'DBIx::Class::Fixtures',
   isa => LoadableClass,
-  coerce=>1);
+);
 
-has dbic_fixtures_extra_args => ( is=>'ro', isa=>'HashRef', lazy_build=>1);
+has dbic_fixtures_extra_args => ( is=>'ro', isa=>HashRef, lazy_build=>1);
 
   sub _build_dbic_fixtures_extra_args {
     return +{};
@@ -143,9 +140,9 @@ has deployment_handler_class => (
   is => 'ro',
   default => 'DBIx::Class::DeploymentHandler',
   isa => LoadableClass,
-  coerce=>1);
+);
 
-has extra_schemaloader_args => (is=>'ro', isa=>'HashRef', lazy_build=>1);
+has extra_schemaloader_args => (is=>'ro', isa=>HashRef, lazy_build=>1);
 
   sub _build_extra_schemaloader_args {
     return +{};

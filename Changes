@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.068   
+        - convert to Type::Tiny
+
 0.067   2019-03-14
         - zap redundant RE bit that confuses 5.8.9
         - update DBIx::Class::Fixtures dep to 1.001039

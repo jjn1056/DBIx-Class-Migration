@@ -5,6 +5,7 @@ use Moose::Exporter;
 use Text::Brew qw(distance);
 use Log::Any;
 use Carp 'croak';
+use DBIx::Class::Migration::Types -all;
 
 Moose::Exporter->setup_import_methods(
   as_is => ['builder', 'migrate']);
@@ -19,16 +20,16 @@ sub _log_die {
 
 has log => (
     is  => 'ro',
-    isa => 'Log::Any::Proxy',
+    isa => InstanceOf['Log::Any::Proxy'],
     default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
 );
 
 has '+_trait_namespace' => (default=>'+Trait');
-has 'dbh' => (is=>'rw', isa=>'Object');
-has 'version_set' => (is=>'rw', isa=>'ArrayRef');
+has 'dbh' => (is=>'rw', isa=>Object);
+has 'version_set' => (is=>'rw', isa=>ArrayRef);
 has 'runs' => (
   is=>'ro',
-  isa=>'CodeRef',
+  isa=>CodeRef,
   required=>1);
 
 sub run {

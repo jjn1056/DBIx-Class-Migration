@@ -5,6 +5,7 @@ use version 0.77;
 use File::ShareDir::ProjectDistDir 0.3.1 ();
 use Log::Any '$log', default_adapter => 'Stderr';
 use Carp 'croak';
+use DBIx::Class::Migration::Types -all;
 
 sub _log_die {
   my ($msg) = @_;
@@ -14,13 +15,13 @@ sub _log_die {
 
 has log => (
     is  => 'ro',
-    isa => 'Log::Any::Proxy',
+    isa => InstanceOf['Log::Any::Proxy'],
     default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
 );
 
 has schema_class => (
   is => 'ro',
-  isa => 'Str',
+  isa => Str,
   required => 1);
 
 sub filename_from_class {
