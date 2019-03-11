@@ -24,7 +24,7 @@ has test_mysqld => (is=>'ro', lazy_build=>1);
 
   sub _generate_unique_socket {
     my $schema_path_part = (my $self = shift)->_generate_schema_path_part;
-    my $sockdir = catdir( tempdir, $schema_path_part);
+    my $sockdir = catdir( tempdir(CLEANUP => 1), $schema_path_part);
 
     mkpath($sockdir) unless -d $sockdir;
     return  catfile( $sockdir, 'mysqld.sock');
