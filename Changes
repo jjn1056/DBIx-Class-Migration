@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.066   
+        - default migrations dir = 'share/migrations' again - thanks @KES777 for report
+
 0.065   2019-03-07
         - POD improvements - thanks @manwar
         - handle "package NAME VERSION" - thanks @kivilahtio for report
