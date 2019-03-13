@@ -12,7 +12,6 @@ BEGIN { extends "Types::Standard" };
 
 use Class::Load 'load_class';
 use Module::Find ();
-use MooseX::Getopt::OptionTypeMap ();
 use File::Spec::Functions 'file_name_is_absolute', 'rel2abs';
 
 declare LoadableClass,
@@ -33,10 +32,6 @@ declare SQLTProducer,
   where { eval { load_class "$sqltp\::$_"; 1 } },
   ;
 
-# Despite being declared as an ArrayRef here, it shows its "parent" as Object
-# and not as ArrayRef. Therefore, the natural "parent" chaining in
-# MooseX::Getopt::OptionTypeMap->has_option_type doesn't work right, so
-# we need to declare it manually below with add_option_type_to_map.
 declare ArraySQLTProducers,
   as ArrayRef[SQLTProducer],
   message {
@@ -45,9 +40,6 @@ declare ArraySQLTProducers,
       map {s#$sqltp\::##; "$_\n"} Module::Find::findallmod($sqltp);
   },
   ;
-MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
-  ArraySQLTProducers() => '=s@'
-);
 
 declare AbsolutePath,
   as Str,

@@ -8,7 +8,7 @@ use DBIx::Class::Migration::Types -all;
 use Log::Any;
 use Carp 'croak';
 
-with 'MooseX::Getopt';
+use MooX::Options protect_argv => 0;
 
 sub _log_die {
   my ($self, $msg) = @_;
@@ -33,72 +33,105 @@ has log => (
     default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
 );
 
-has includes => (
-  traits => ['Getopt'],
+option includes => (
   is => 'ro',
   isa => ArrayRef,
   predicate => 'has_includes',
-  cmd_aliases => ['include','I', 'lib','libs']);
+  short => join('|', qw(include I lib libs)),
+  format => 's@',
+);
 
 has schema => (is=>'ro', predicate=>'has_schema');
 
-has schema_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => Str,
-  predicate=>'has_schema_class', env_prefix=>ENV_PREFIX, cmd_aliases => 'S');
+option schema_class => (traits => [ 'ENV' ], is => 'ro', isa => Str,
+  predicate=>'has_schema_class', env_prefix=>ENV_PREFIX,
+  short => 'S', format => 's',
+);
 
-has target_dir => (traits => [ 'Getopt', 'ENV' ],
+option target_dir => (traits => [ 'ENV' ],
   is => 'ro', isa=> Str,
-  predicate=>'has_target_dir', env_prefix=>ENV_PREFIX, cmd_aliases => 'dir');
+  predicate=>'has_target_dir', env_prefix=>ENV_PREFIX,
+  short => 'dir', format => 's',
+);
 
-has sandbox_dir => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa=> Str,
-  predicate=>'has_sandbox_dir', env_prefix=>ENV_PREFIX);
+option sandbox_dir => (traits => [ 'ENV' ], is => 'ro', isa=> Str,
+  predicate=>'has_sandbox_dir', env_prefix=>ENV_PREFIX,
+  format => 's',
+);
 
-has username => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => Str,
-  default => '', env_prefix=>ENV_PREFIX, cmd_aliases => 'U');
+option username => (traits => [ 'ENV' ], is => 'ro', isa => Str,
+  default => '', env_prefix=>ENV_PREFIX, short => 'U',
+  format => 's',
+);
 
-has password => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => Str,
-  default => '', env_prefix=>ENV_PREFIX, cmd_aliases => 'P');
+option password => (traits => [ 'ENV' ], is => 'ro', isa => Str,
+  default => '', env_prefix=>ENV_PREFIX, short => 'P',
+  format => 's',
+);
 
-has dsn => (traits => [ 'Getopt', 'ENV' ], is => 'ro',
-  env_prefix=>ENV_PREFIX, isa => Str);
+option dsn => (traits => [ 'ENV' ], is => 'ro',
+  env_prefix=>ENV_PREFIX, isa => Str,
+  format => 's',
+);
 
-has force_overwrite => (traits => [ 'Getopt' ], is => 'ro', isa => Bool,
-  predicate=>'has_force_overwrite', cmd_aliases => 'O');
+option force_overwrite => (is => 'ro', isa => Bool,
+  predicate=>'has_force_overwrite',
+  short => 'O',
+);
 
-has to_version => (traits => [ 'Getopt' ], is => 'ro', isa => Int,
-  predicate=>'has_to_version', cmd_aliases => 'V');
+option to_version => (is => 'ro', isa => Int,
+  predicate=>'has_to_version',
+  short => 'V', format => 'i',
+);
 
-has sql_translator_args => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
+option sql_translator_args => (is => 'ro', isa => HashRef,
   predicate=>'has_sql_translator_args',
-  default => sub { +{ quote_identifiers => 1 }});
+  default => sub { +{ quote_identifiers => 1 }},
+  format => 's%',
+);
 
-has databases => (traits => [ 'Getopt' ], is => 'ro', isa => ArraySQLTProducers,
-  predicate=>'has_databases', cmd_aliases => 'database');
+option databases => (is => 'ro', isa => ArraySQLTProducers,
+  predicate=>'has_databases',
+  short => 'database', format => 's@',
+);
 
-has sandbox_class => (traits => [ 'Getopt', 'ENV' ], is => 'ro', isa => Str,
+option sandbox_class => (traits => [ 'ENV' ], is => 'ro', isa => Str,
   predicate=>'has_sandbox_class', default=>SANDBOX_SQLITE,
-  cmd_aliases => ['T','sb'], env_prefix=>ENV_PREFIX);
+  env_prefix=>ENV_PREFIX,
+  short => 'T|sb', format => 's',
+);
 
-has dbic_fixture_class => (traits => [ 'Getopt' ], is => 'ro', isa => Str,
-  predicate=>'has_dbic_fixture_class');
+option dbic_fixture_class => (is => 'ro', isa => Str,
+  predicate=>'has_dbic_fixture_class',
+  format => 's',
+);
 
-has dbic_fixtures_extra_args => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
-  predicate=>'has_dbic_fixtures_extra_args');
+option dbic_fixtures_extra_args => (is => 'ro', isa => HashRef,
+  predicate=>'has_dbic_fixtures_extra_args',
+  format => 's%',
+);
 
-has dbic_connect_attrs => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
-  predicate=>'has_dbic_connect_attrs');
+option dbic_connect_attrs => (is => 'ro', isa => HashRef,
+  predicate=>'has_dbic_connect_attrs',
+  format => 's%',
+);
 
-has dbi_connect_attrs => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
-  predicate=>'has_dbi_connect_attrs');
+option dbi_connect_attrs => (is => 'ro', isa => HashRef,
+  predicate=>'has_dbi_connect_attrs',
+  format => 's%',
+);
 
-has extra_schemaloader_args => (traits => [ 'Getopt' ], is => 'ro', isa => HashRef,
-  predicate=>'has_extra_schemaloader_args');
+option extra_schemaloader_args => (is => 'ro', isa => HashRef,
+  predicate=>'has_extra_schemaloader_args',
+  format => 's%',
+);
 
-has fixture_sets => (
-  traits => [ 'Getopt' ],
+option fixture_sets => (
   is=>'ro',
   isa=>ArrayRef,
   default => sub { +['all_tables'] },
-  cmd_aliases => 'fixture_set');
+  short => 'fixture_set', format => 's@',
+);
 
   sub _delegated_commands {
     map { 'cmd_'.$_ => $_ } qw(
@@ -110,13 +143,14 @@ has fixture_sets => (
 
 has migration_class => (
   is => 'ro',
-  traits => [ 'NoGetopt'],
   default => 'DBIx::Class::Migration',
   isa => LoadableClass,
 );
 
-has migration_sandbox_builder_class => (traits => [ 'Getopt' ],
-  is => 'ro', isa => Str, predicate=>'has_migration_sandbox_builder_class');
+option migration_sandbox_builder_class => (
+  is => 'ro', isa => Str, predicate=>'has_migration_sandbox_builder_class',
+  format => 's%',
+);
 
 has migration => (
   is => 'ro',
@@ -236,7 +270,7 @@ sub _defaults {
 
 sub run {
   my ($self) = @_;
-  my ($argv, @extra_argv) = @{$self->extra_argv};
+  my ($argv, @extra_argv) = @ARGV;
 
   $self->_import_libs(@{$self->includes})
     if $self->has_includes;
@@ -262,6 +296,28 @@ sub run_with_options {
 sub new_with_defaults {
   my $class = shift;
   return $class->new_with_options($class->_defaults, @_);
+}
+
+{
+# overrides MooX::Options::Role's one to not exit() on ->new exception
+no warnings 'redefine';
+sub new_with_options {
+  my ($class, %params) = @_;
+  my %cmdline_params = $class->parse_options(%params);
+  if ($cmdline_params{h}) {
+    return $class->options_usage($params{h}, $cmdline_params{h});
+  }
+  if ($cmdline_params{help} ) {
+    return $class->options_help($params{help}, $cmdline_params{help});
+  }
+  if ($cmdline_params{man}) {
+    return $class->options_man($cmdline_params{man});
+  }
+  if ($cmdline_params{usage} ) {
+    return $class->options_short_usage($params{usage}, $cmdline_params{usage});
+  }
+  $class->new(%cmdline_params);
+}
 }
 
 sub run_if_script {
@@ -572,7 +628,7 @@ for creating temporary sandboxes when you want to test your migrations.
 
     dbic-migration -Ilib install
 
-Since this class consumes the L<MooseX::GetOpt> role, it can be run directly
+Since this class uses L<MooX::Options>, it can be run directly
 as a commandline application.  The following is a list of commands we support
 as well as the options / flags associated with each command.
 
@@ -779,7 +835,7 @@ script wrapper).
 =head2 run_with_options
 
 Given a Hash of initial arguments, merges those with the results of values passed
-on the commandline (via L<MooseX::Getopt>) and run.
+on the commandline (via L<MooX::Options>) and run.
 
 =head2 run
 

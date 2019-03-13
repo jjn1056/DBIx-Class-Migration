@@ -16,9 +16,10 @@ lives_ok {
     "--target_dir" => $dir,
   );
   DBIx::Class::Migration::Script->run_with_options;
-};
+} 'status = ok';
 
 throws_ok {
+  # MooX::Options on ->new failing prints to STDERR, doesn't re-throw
   local @ARGV = (
     "status",
     "--schema_class" => 'Local::Schema',
@@ -26,7 +27,7 @@ throws_ok {
     "--database" => 'DefinitelyNotValid',
   );
   DBIx::Class::Migration::Script->run_with_options;
-} qr/Unknown database type/;
+} qr/Unknown database type/, 'status invalid db = right message';
 
 throws_ok {
   local $Local::Schema::VERSION = undef;
@@ -36,6 +37,6 @@ throws_ok {
     "--target_dir" => $dir,
   );
   DBIx::Class::Migration::Script->run_with_options;
-} qr/A \$VERSION needs to be specified in your schema class Local\:\:Schema/;
+} qr/A \$VERSION needs to be specified in your schema class Local\:\:Schema/, 'status no version = not ok';
 
 done_testing;
