@@ -18,6 +18,15 @@ lives_ok {
   DBIx::Class::Migration::Script->run_with_options;
 } 'status = ok';
 
+lives_ok {
+  local $ENV{DBIC_MIGRATION_SCHEMA_CLASS} = 'Local::Schema';
+  local @ARGV = (
+    "status",
+    "--target_dir" => $dir,
+  );
+  DBIx::Class::Migration::Script->run_with_options;
+} 'status = ok with ENV';
+
 throws_ok {
   # MooX::Options on ->new failing prints to STDERR, doesn't re-throw
   local @ARGV = (
