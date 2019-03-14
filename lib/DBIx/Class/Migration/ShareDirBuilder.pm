@@ -41,7 +41,7 @@ sub build {
   my $sharedir;
   while($class) {
     last if $sharedir = eval { dist_dir( class_to_distname($class) ) };
-    last unless $class =~s/::[^\:\:]+$//;
+    last unless $class =~s/::[^:]+$//;
   }
 
   return $sharedir || _log_die "Can't find a share for $given_class";
