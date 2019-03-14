@@ -10,30 +10,32 @@ use_ok 'Local::Schema';
 my $dir = tempdir(DIR => 't', CLEANUP => 1);
 
 lives_ok {
-  DBIx::Class::Migration::Script->run_with_options(argv => [
+  local @ARGV = (
     "status",
     "--schema_class" => 'Local::Schema',
     "--target_dir" => $dir,
-  ]);
-}; 
+  );
+  DBIx::Class::Migration::Script->run_with_options;
+};
 
 throws_ok {
-  DBIx::Class::Migration::Script->run_with_options(argv => [
+  local @ARGV = (
     "status",
     "--schema_class" => 'Local::Schema',
     "--target_dir" => $dir,
     "--database" => 'DefinitelyNotValid',
-  ]);
+  );
+  DBIx::Class::Migration::Script->run_with_options;
 } qr/Unknown database type/;
 
-local $Local::Schema::VERSION = undef;
-
 throws_ok {
-  DBIx::Class::Migration::Script->run_with_options(argv => [
+  local $Local::Schema::VERSION = undef;
+  local @ARGV = (
     "status",
     "--schema_class" => 'Local::Schema',
     "--target_dir" => $dir,
-  ]);
+  );
+  DBIx::Class::Migration::Script->run_with_options;
 } qr/A \$VERSION needs to be specified in your schema class Local\:\:Schema/;
 
 done_testing;

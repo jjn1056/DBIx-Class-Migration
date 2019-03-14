@@ -8,7 +8,8 @@ plan skip_all => 'DBICM_TEST_HELP not set'
   unless $ENV{DBICM_TEST_HELP} || $ENV{AUTHOR_MODE};
 
 ok(my $r = Capture::Tiny::capture_stdout {
-  DBIx::Class::Migration::Script->run_with_options(argv =>["help"]);
+  local @ARGV = ("help");
+  DBIx::Class::Migration::Script->run_with_options;
 });
 
 like $r,
