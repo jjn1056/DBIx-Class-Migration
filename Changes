@@ -1,6 +1,6 @@
 Revision history for DBIx-Class-Migration.
 
-0.068   
+0.068   2019-03-15
         - convert to Type::Tiny
         - convert to MooX::Options
         - convert to MooX::Attribute::ENV

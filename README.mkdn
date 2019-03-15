@@ -615,7 +615,7 @@ missed you.
 # SEE ALSO
 
 [DBIx::Class::DeploymentHandler](https://metacpan.org/pod/DBIx::Class::DeploymentHandler), [DBIx::Class::Fixtures](https://metacpan.org/pod/DBIx::Class::Fixtures), [DBIx::Class](https://metacpan.org/pod/DBIx::Class),
-[DBIx::Class::Schema::Loader](https://metacpan.org/pod/DBIx::Class::Schema::Loader), [Moose](https://metacpan.org/pod/Moose), [DBIx::Class::Migration::Script](https://metacpan.org/pod/DBIx::Class::Migration::Script),
+[DBIx::Class::Schema::Loader](https://metacpan.org/pod/DBIx::Class::Schema::Loader), [Moo](https://metacpan.org/pod/Moo), [DBIx::Class::Migration::Script](https://metacpan.org/pod/DBIx::Class::Migration::Script),
 [DBIx::Class::Migration::Population](https://metacpan.org/pod/DBIx::Class::Migration::Population), [dbic-migration](https://metacpan.org/pod/dbic-migration), [SQL::Translator](https://metacpan.org/pod/SQL::Translator),
 [Test::mysqld](https://metacpan.org/pod/Test::mysqld), [Test::Postgresql58](https://metacpan.org/pod/Test::Postgresql58).
 
