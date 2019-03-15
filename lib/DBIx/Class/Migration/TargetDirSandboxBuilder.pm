@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::TargetDirSandboxBuilder;
 
-use Moose;
+use Moo;
 
 has migration => (
   is => 'ro',

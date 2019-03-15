@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::ShareDirBuilder;
 
-use Moose;
+use Moo;
 use version 0.77;
 use File::ShareDir::ProjectDistDir 0.3.1 ();
 use Log::Any '$log', default_adapter => 'Stderr';

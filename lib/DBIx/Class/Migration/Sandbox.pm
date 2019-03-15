@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::Sandbox;
 
-use Moose::Role;
+use Moo::Role;
 use Log::Any;
 use Carp 'croak';
 use DBIx::Class::Migration::Types -all;

@@ -1,6 +1,6 @@
 package Test::DBIx::Class::FixtureCommand::Population;
 
-use Moose;
+use Moo;
 use DBIx::Class::Migration::Population;
 
 with 'Test::DBIx::Class::Role::FixtureCommand';

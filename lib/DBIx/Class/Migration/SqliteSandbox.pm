@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::SqliteSandbox;
 
-use Moose;
+use Moo;
 use File::Spec::Functions 'catfile';
 
 with 'DBIx::Class::Migration::Sandbox';

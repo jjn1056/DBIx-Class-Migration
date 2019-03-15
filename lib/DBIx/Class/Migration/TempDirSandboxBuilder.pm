@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::TempDirSandboxBuilder;
 
-use Moose;
+use Moo;
 use File::Temp 'tempdir';
 
 has migration => (

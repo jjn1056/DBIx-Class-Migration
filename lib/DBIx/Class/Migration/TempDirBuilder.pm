@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::TempDirBuilder;
 
-use Moose;
+use Moo;
 use File::Temp 'tempdir';
 use DBIx::Class::Migration::Types -all;
 

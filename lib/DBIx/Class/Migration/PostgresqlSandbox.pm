@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::PostgresqlSandbox;
 
-use Moose;
+use Moo;
 use Test::Postgresql58;
 use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath';
@@ -9,7 +9,7 @@ use DBIx::Class::Migration::Types -all;
 
 with 'DBIx::Class::Migration::Sandbox';
 
-has test_postgresql => (is=>'ro', isa=>Object, lazy_build=>1);
+has test_postgresql => (is=>'lazy', isa=>Object);
 
   sub _generate_sandbox_dir {
     my $schema_class = (my $self = shift)->schema_class;

@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::MySQLSandbox;
 
-use Moose;
+use Moo;
 use Test::mysqld;
 use File::Spec::Functions 'catdir', 'catfile', 'splitpath';
 use File::Path 'mkpath';
@@ -9,7 +9,7 @@ use Config::MySQL::Reader;
 
 with 'DBIx::Class::Migration::Sandbox';
 
-has test_mysqld => (is=>'ro', lazy_build=>1);
+has test_mysqld => (is=>'lazy');
 
   sub _generate_schema_path_part {
     my $schema_class = (my $self = shift)->schema_class;

@@ -1,6 +1,6 @@
 package  DBIx::Class::Migration::SchemaLoader;
 
-use Moose;
+use Moo;
 use DBIx::Class::Schema::Loader;
 
 has schema => (is=>'ro', required=>1);
