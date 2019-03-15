@@ -1,7 +1,7 @@
 package DBIx::Class::Migration::Script;
 
-use Moose;
-use MooseX::Attribute::ENV;
+use Moo;
+use MooX::Attribute::ENV;
 use Pod::Find ();
 use Pod::Usage ();
 use DBIx::Class::Migration::Types -all;
@@ -28,9 +28,9 @@ use constant {
 };
 
 has log => (
-    is  => 'ro',
-    isa => InstanceOf['Log::Any::Proxy'],
-    default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
+  is  => 'ro',
+  isa => InstanceOf['Log::Any::Proxy'],
+  default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
 );
 
 option includes => (
@@ -41,87 +41,104 @@ option includes => (
   format => 's@',
 );
 
-has schema => (is=>'ro', predicate=>'has_schema');
+has schema => (
+  is=>'ro', predicate=>'has_schema',
+);
 
-option schema_class => (traits => [ 'ENV' ], is => 'ro', isa => Str,
+option schema_class => (
+  is => 'ro', isa => Str,
   predicate=>'has_schema_class', env_prefix=>ENV_PREFIX,
   short => 'S', format => 's',
 );
 
-option target_dir => (traits => [ 'ENV' ],
+option target_dir => (
   is => 'ro', isa=> Str,
   predicate=>'has_target_dir', env_prefix=>ENV_PREFIX,
   short => 'dir', format => 's',
 );
 
-option sandbox_dir => (traits => [ 'ENV' ], is => 'ro', isa=> Str,
+option sandbox_dir => (
+  is => 'ro', isa=> Str,
   predicate=>'has_sandbox_dir', env_prefix=>ENV_PREFIX,
   format => 's',
 );
 
-option username => (traits => [ 'ENV' ], is => 'ro', isa => Str,
+option username => (
+  is => 'ro', isa => Str,
   default => '', env_prefix=>ENV_PREFIX, short => 'U',
   format => 's',
 );
 
-option password => (traits => [ 'ENV' ], is => 'ro', isa => Str,
+option password => (
+  is => 'ro', isa => Str,
   default => '', env_prefix=>ENV_PREFIX, short => 'P',
   format => 's',
 );
 
-option dsn => (traits => [ 'ENV' ], is => 'ro',
+option dsn => (
+  is => 'ro',
   env_prefix=>ENV_PREFIX, isa => Str,
   format => 's',
 );
 
-option force_overwrite => (is => 'ro', isa => Bool,
+option force_overwrite => (
+  is => 'ro', isa => Bool,
   predicate=>'has_force_overwrite',
   short => 'O',
 );
 
-option to_version => (is => 'ro', isa => Int,
+option to_version => (
+  is => 'ro', isa => Int,
   predicate=>'has_to_version',
   short => 'V', format => 'i',
 );
 
-option sql_translator_args => (is => 'ro', isa => HashRef,
+option sql_translator_args => (
+  is => 'ro', isa => HashRef,
   predicate=>'has_sql_translator_args',
   default => sub { +{ quote_identifiers => 1 }},
   format => 's%',
 );
 
-option databases => (is => 'ro', isa => ArraySQLTProducers,
+option databases => (
+  is => 'ro', isa => ArraySQLTProducers,
   predicate=>'has_databases',
   short => 'database', format => 's@',
 );
 
-option sandbox_class => (traits => [ 'ENV' ], is => 'ro', isa => Str,
+option sandbox_class => (
+  is => 'ro', isa => Str,
   predicate=>'has_sandbox_class', default=>SANDBOX_SQLITE,
   env_prefix=>ENV_PREFIX,
   short => 'T|sb', format => 's',
 );
 
-option dbic_fixture_class => (is => 'ro', isa => Str,
+option dbic_fixture_class => (
+  is => 'ro', isa => Str,
   predicate=>'has_dbic_fixture_class',
   format => 's',
 );
 
-option dbic_fixtures_extra_args => (is => 'ro', isa => HashRef,
+option dbic_fixtures_extra_args => (
+  is => 'ro', isa => HashRef,
   predicate=>'has_dbic_fixtures_extra_args',
   format => 's%',
 );
 
-option dbic_connect_attrs => (is => 'ro', isa => HashRef,
+option dbic_connect_attrs => (
+  is => 'ro', isa => HashRef,
   predicate=>'has_dbic_connect_attrs',
   format => 's%',
 );
 
-option dbi_connect_attrs => (is => 'ro', isa => HashRef,
+option dbi_connect_attrs => (
+  is => 'ro', isa => HashRef,
   predicate=>'has_dbi_connect_attrs',
   format => 's%',
 );
 
-option extra_schemaloader_args => (is => 'ro', isa => HashRef,
+option extra_schemaloader_args => (
+  is => 'ro', isa => HashRef,
   predicate=>'has_extra_schemaloader_args',
   format => 's%',
 );
@@ -153,9 +170,9 @@ option migration_sandbox_builder_class => (
 );
 
 has migration => (
-  is => 'ro',
-  lazy_build => 1,
-  handles => { _delegated_commands });
+  is => 'lazy',
+  handles => { _delegated_commands },
+);
 
   sub _prepare_schema_args {
     my $self = shift;
@@ -382,7 +399,7 @@ This is the schema we use as the basic for creating, managing and running your
 deployments.  This should be the full package namespace defining your subclass
 of L<DBIx::Class::Schema>.  For example C<MyApp::Schema>.
 
-Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+Uses L<MooX::Attribute::ENV> to let you populate values from %ENV.  Uses key
 DBIC_MIGRATION_SCHEMA_CLASS
 
 If the L</schema_class> cannot be loaded, a hard exception will be thrown.
@@ -401,7 +418,7 @@ considered a community practice in regards to where to store your distribution
 non code files.  Please see L<File::ShareDir::ProjectDistDir> as well as
 L<File::ShareDir> for more information.
 
-Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+Uses L<MooX::Attribute::ENV> to let you populate values from %ENV.  Uses key
 DBIC_MIGRATION_TARGET_DIR
 
 =head2 sandbox_dir
@@ -420,7 +437,7 @@ Accepts Str.  Not Required
 This should be the username for the database we connect to for deploying
 ddl, ddl changes and fixtures.
 
-Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+Uses L<MooX::Attribute::ENV> to let you populate values from %ENV.  Uses key
 DBIC_MIGRATION_USERNAME
 
 =head2 password
@@ -430,7 +447,7 @@ Accepts Str.  Not Required
 This should be the password for the database we connect to for deploying
 ddl, ddl changes and fixtures.
 
-Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+Uses L<MooX::Attribute::ENV> to let you populate values from %ENV.  Uses key
 DBIC_MIGRATION_PASSWORD
 
 =head2 dsn
@@ -463,7 +480,7 @@ enforce constraints differently it would not be impossible to generate fixtures
 that can be loaded by one database but not another.  Therefore I recommend
 always generated fixtures from a database that is consistent across enviroments.
 
-Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+Uses L<MooX::Attribute::ENV> to let you populate values from %ENV.  Uses key
 DBIC_MIGRATION_DSN
 
 =head2 force_overwrite
@@ -550,7 +567,7 @@ You should review the documenation at L<DBIx::Class::Migration::MySQLSandbox> or
 L<DBIx::Class::Migration::PostgresqlSandbox> because those delegates also build
 some helper scripts, intended to help you use a sandbox.
 
-Uses L<MooseX::Attribute::ENV> to let you populate values from %ENV.  Uses key
+Uses L<MooX::Attribute::ENV> to let you populate values from %ENV.  Uses key
 DBIC_MIGRATION_SANDBOX_CLASS
 
 If you need to create your own custom database sandboxes, please see:
