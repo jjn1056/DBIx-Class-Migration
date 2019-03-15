@@ -32,7 +32,7 @@ DBIx::Class::Migration::Sandbox - DB Sandbox Role
 
     package MyApp::Schema::Sandbox;
 
-    use Moose;
+    use Moo;
     with 'DBIx::Class::Migration::Sandbox';
 
     sub make_sandbox {

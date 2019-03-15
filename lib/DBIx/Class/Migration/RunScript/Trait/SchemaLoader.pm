@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::RunScript::Trait::SchemaLoader;
 
-use Moose::Role;
+use Moo::Role;
 use DBIx::Class::Schema::Loader;
 use DBIx::Class::Migration::SchemaLoader;
 
@@ -39,7 +39,7 @@ DBIx::Class::Migration::RunScript::Trait::SchemaLoader - Give your Run Script a 
 
 =head1 DESCRIPTION
 
-This is a L<Moose::Role> that adds a C<schema> attribute to your 
+This is a L<Moo::Role> that adds a C<schema> attribute to your 
 L<DBIx::Class::Migration::RunScript>.  This C<schema> is generated via
 L<DBIx::Class::Schema::Loader> so it is consistent to your actual deployed
 database structure (it is not dependent on your actual code).

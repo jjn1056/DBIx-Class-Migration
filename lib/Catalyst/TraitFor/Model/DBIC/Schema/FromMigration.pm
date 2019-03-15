@@ -1,6 +1,6 @@
 package Catalyst::TraitFor::Model::DBIC::Schema::FromMigration;
 
-use Moose::Role;
+use Moo::Role;
 use Catalyst::TraitFor::Model::DBIC::Schema::FromMigration::_MigrationHelper;
 
 has 'migration_helper',

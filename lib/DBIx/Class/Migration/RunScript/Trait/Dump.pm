@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::RunScript::Trait::Dump;
 
-use Moose::Role;
+use Moo::Role;
 use File::Spec::Functions 'catdir', 'catfile';
 use File::Path 'mkpath';
 use JSON::MaybeXS;
@@ -49,7 +49,7 @@ DBIx::Class::Migration::RunScript::Trait::Dump - Dump fixtures
 
 =head1 DESCRIPTION
 
-This is a L<Moose::Role> that adds a C<dump> method to your run script.  This
+This is a L<Moo::Role> that adds a C<dump> method to your run script.  This
 will let you dump fixtures from your runscripts, based on previously defined
 fixture configurations.
 

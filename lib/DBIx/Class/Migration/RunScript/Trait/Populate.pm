@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::RunScript::Trait::Populate;
 
-use Moose::Role;
+use Moo::Role;
 use File::Spec::Functions 'catdir', 'catfile';
 use JSON::MaybeXS;
 
@@ -46,7 +46,7 @@ DBIx::Class::Migration::RunScript::Trait::Populate - Populate fixtures
 
 =head1 DESCRIPTION
 
-This is a L<Moose::Role> that adds a C<populate> method to your run script.
+This is a L<Moo::Role> that adds a C<populate> method to your run script.
 This allows you to access any of your previously dumped fixtures.  You might
 find this useful when installing a database that was previously setup.
 

@@ -1,6 +1,6 @@
 package DBIx::Class::Migration::RunScript::Trait::TargetPath;
 
-use Moose::Role;
+use Moo::Role;
 use File::Spec;
 
 sub target_path {

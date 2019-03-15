@@ -4,6 +4,7 @@ Revision history for DBIx-Class-Migration.
         - convert to Type::Tiny
         - convert to MooX::Options
         - convert to MooX::Attribute::ENV
+        - convert to Moo
 
 0.067   2019-03-14
         - zap redundant RE bit that confuses 5.8.9
