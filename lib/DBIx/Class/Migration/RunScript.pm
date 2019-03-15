@@ -1,16 +1,15 @@
 package DBIx::Class::Migration::RunScript;
 
-use Moose;
-use Moose::Exporter;
+use Moo;
 use Text::Brew qw(distance);
 use Log::Any;
 use Carp 'croak';
 use DBIx::Class::Migration::Types -all;
+use Exporter qw(import);
 
-Moose::Exporter->setup_import_methods(
-  as_is => ['builder', 'migrate']);
+with 'MooX::Traits';
 
-with 'MooseX::Traits::Pluggable';
+our @EXPORT = qw(builder migrate);
 
 sub _log_die {
   my ($self, $msg) = @_;
@@ -19,12 +18,13 @@ sub _log_die {
 }
 
 has log => (
-    is  => 'ro',
-    isa => InstanceOf['Log::Any::Proxy'],
-    default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
+  is  => 'ro',
+  isa => InstanceOf['Log::Any::Proxy'],
+  default => sub { Log::Any->get_logger( category => 'DBIx::Class::Migration') },
 );
 
-has '+_trait_namespace' => (default=>'+Trait');
+sub _trait_namespace { 'DBIx::Class::Migration::RunScript::Trait' }
+
 has 'dbh' => (is=>'rw', isa=>Object);
 has 'version_set' => (is=>'rw', isa=>ArrayRef);
 has 'runs' => (
