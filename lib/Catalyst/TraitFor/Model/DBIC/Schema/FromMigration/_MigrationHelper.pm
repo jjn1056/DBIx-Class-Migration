@@ -17,12 +17,11 @@ has 'migration_init_args',
   is => 'ro',
   isa => HashRef,
   default => sub { +{} },
-  auto_deref => 1;
+  ;
 
 has 'default_fixtures',
   is => 'ro',
   isa => ArrayRef,
-  auto_deref => 1,
   predicate => 'has_default_fixtures';
 
 has 'install_if_needed',
@@ -34,12 +33,13 @@ has 'migration',
   is => 'lazy';
 
 sub _build_migration {
-  my %init = (my $self = shift)->migration_init_args;
+  my $self = shift;
+  my %init = %{ $self->migration_init_args };
   return $self->migration_class->new(%init);
 }
 
 sub _build_callback_from_default_fixtures {
-  my @fixtures = shift->default_fixtures;
+  my @fixtures = @{ shift->default_fixtures };
   return sub {
     my ($schema, $migration) = @_;
     $migration->populate(@fixtures)};

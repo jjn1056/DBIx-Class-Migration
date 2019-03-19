@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.069   2019-03-19
+        - Moo has no auto_deref, fix Catalyst helper
+
 0.068   2019-03-15
         - convert to Type::Tiny
         - convert to MooX::Options

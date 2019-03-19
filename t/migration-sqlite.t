@@ -114,4 +114,21 @@ NEW_SCOPE_FOR_SCHEMA: {
     'got some previously inserted data';
 }
 
+CATALYST_HELPER: {
+  require Catalyst::TraitFor::Model::DBIC::Schema::FromMigration::_MigrationHelper;
+  my @warnings;
+  local $SIG{__WARN__} = sub { push @warnings, @_ };
+  my $helper = Catalyst::TraitFor::Model::DBIC::Schema::FromMigration::_MigrationHelper->new(
+     'install_if_needed' => {
+       'default_fixture_sets' => undef
+     },
+     'migration_init_args' => {
+       'schema_class' => 'Local::Schema',
+        target_dir => $dir,
+     }
+  );
+  ok $helper->migration, 'built DBICM object';
+  ok !@warnings, 'no warnings' or diag explain \@warnings;
+}
+
 done_testing;
