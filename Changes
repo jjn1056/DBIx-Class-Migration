@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.070   2019-03-19
+        - use 5.8-10 compatible way of schema with version-object
+
 0.069   2019-03-19
         - Moo has no auto_deref, fix Catalyst helper
 
