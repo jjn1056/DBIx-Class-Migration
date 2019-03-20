@@ -108,7 +108,8 @@ SCHEMA_V2: {
   ## Lets massage the upgrade and downgrade files
   my $upgrade = catfile($target_dir, 'migrations', 'SQLite', 'upgrade', '1-2', '001-auto.sql');
   my $downgrade = catfile($target_dir, 'migrations', 'SQLite', 'downgrade', '2-1', '001-auto.sql');
-  ok -e $upgrade, "found $upgrade";
+  ok -e $upgrade, "found $upgrade"
+    or diag "dbic_dh_args: ", explain $migration->dbic_dh_args;
   ok -e $downgrade, "found $downgrade";
   open(my $upgrade_fh, ">", $upgrade )
     || die "Cannot open: $!";

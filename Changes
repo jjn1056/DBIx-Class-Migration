@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.072   2019-03-20
+        - test-fail to give more info
+
 0.071   2019-03-20
         - fix MooX::Attribute::ENV version dep to avoid type failures
 
