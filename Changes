@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.071   2019-03-20
+        - fix MooX::Attribute::ENV version dep to avoid type failures
+
 0.070   2019-03-19
         - use 5.8-10 compatible way of schema with version-object
 
