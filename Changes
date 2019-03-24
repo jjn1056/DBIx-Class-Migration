@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.073   2019-03-24
+        - test-fail to successfully give more info
+
 0.072   2019-03-20
         - test-fail to give more info
 
