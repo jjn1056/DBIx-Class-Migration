@@ -6,6 +6,7 @@ use Log::Any;
 use Carp 'croak';
 use DBIx::Class::Migration::Types -all;
 use Exporter qw(import);
+use List::Util qw(none);
 
 with 'MooX::Traits';
 
@@ -119,7 +120,8 @@ sub builder(&) {
     if(ref $plugins) {
       %args = (%args, %$plugins);
     } else {
-      push @traits, $plugins;
+      push @traits, $plugins
+        if (none { $_ eq $plugins } @traits) && $plugins !~ /__AND__|__WITH__/;
     }
   }
 
