@@ -114,10 +114,12 @@ sub used_plugins {
 
 sub builder(&) {
   my ($runs, @plugins) = reverse shift->();
-  my (@traits, %args);
+  my (@traits, %args, %seen);
   foreach my $plugins (@plugins) {
     if(ref $plugins) {
       %args = (%args, %$plugins);
+    } elsif ($seen{$plugins}++) {
+      # skip!
     } else {
       push @traits, $plugins;
     }

@@ -41,4 +41,11 @@ SUGAR: {
   $code->($migration->schema, [1,2]);
 }
 
+SUGAR2: {
+  my $code = migrate {
+    $runs->(shift)
+  };
+  $code->($migration->schema, [1,2]);
+}
+
 done_testing;
