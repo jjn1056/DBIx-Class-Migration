@@ -109,8 +109,9 @@ sub used_plugins {
   my $path = 'DBIx/Class/Migration/RunScript/Trait/';
   my $match = "$path(.+).pm";
   my $traits_path = $INC{'MooX/Traits/Util.pm'};
-  return map { m[$match]x }
-    grep { $INC{$_} ne $traits_path and m[$path]x } keys %INC;
+  my @traits = grep { m[$path]x } keys %INC;
+  @traits = grep { $INC{$_} ne $traits_path } @traits if $traits_path;
+  return map { m[$match]x } @traits;
 }
 
 sub builder(&) {

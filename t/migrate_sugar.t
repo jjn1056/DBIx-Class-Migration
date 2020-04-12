@@ -26,12 +26,12 @@ my $runs = sub {
   ok $runscript->schema->resultset('Artist'), 'got Artist RS';
 };
 
-subtest SUGAR2 => sub {
-  my $code = migrate {
-    $runs->(shift)
-  };
-  $code->($migration->schema, [1,2]);
+use DBIx::Class::Migration::RunScript::Trait::Populate;
+my $code = migrate {
+  $runs->(shift)
 };
+$code->($migration->schema, [1,2]);
+
 
 
 done_testing;
