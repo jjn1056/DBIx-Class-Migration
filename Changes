@@ -1,5 +1,8 @@
 Revision history for DBIx-Class-Migration.
 
+0.075   2020-06-02
+        - removed lots of spurious warnings when running migrate (rabbiveesh++)
+
 0.074   2019-06-11
         - remove role-added classes from "used plugins" in migrate - thanks @marlencrabapple for report
 
