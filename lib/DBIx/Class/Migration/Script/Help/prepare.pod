@@ -77,7 +77,7 @@ that default, or to write our migrations for more than one database
 
 You can prepare deployment for any database type that L<SQL::Translator> understands.
 
-    dbic-migration prepare --database SQLite --database MySQL --PostgreSQL
+    dbic-migration prepare --database SQLite --database MySQL --database PostgreSQL
 
 Please note if you choose to manually set this value, you won't automatically
 get the default or inferred type.
