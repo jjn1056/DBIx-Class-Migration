@@ -253,7 +253,7 @@ sub _sets_data_from_sources {
 }
 
 sub _create_all_fixture_config_from_sources {
-  JSON->new->pretty(1)->encode({
+  JSON->new->canonical(1)->pretty(1)->encode({
     "belongs_to" => { "fetch" => 0 },
     "has_many" => { "fetch" => 0 },
     "might_have" => { "fetch" => 0 },
