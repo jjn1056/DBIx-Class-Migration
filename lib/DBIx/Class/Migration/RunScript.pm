@@ -111,23 +111,20 @@ sub used_plugins {
   #We find them by looking for packages loaded in %INC that have
   #the key matching the namespace defined by $path
   my $path = 'DBIx/Class/Migration/RunScript/Trait/';
-  my $match = "$path(.+).pm";
 
-  #however, there's one danger: if there's already been a
-  #migration object created, which will have MANY matches for
-  #$path in it, along with __AND and other things that
-  #Moox::Traits::Util names a package with dynamic roles, we
-  #shouldn't try to include that. Packages made that way get the
-  #same %INC value as MooX::Traits::Util, so let's save that.
-  my $traits_path = $INC{'MooX/Traits/Util.pm'};
+  # there may be entries in %INC for traits that are generated, and not
+  # originals. search our traits, filtering out anything that wasn't sourced
+  # from a regular file.
+  my @traits = grep { m[$path]x && $INC{$_} =~ /\Q$_\E\z/ } keys %INC;
 
-  #so we get the list of packages loaded that match $path
-  my @traits = grep { m[$path]x } keys %INC;
-  #filter out any that were made via MooX::Traits::Util, if it was
-  #loaded at all, yet
-  @traits = grep { $INC{$_} ne $traits_path } @traits if $traits_path;
-  #and return the last part of the path, the name of the plugin
-  return map { m[$match]x } @traits;
+  # and return the last part of the path, the name of the plugin
+  for (@traits) {
+    s/\.pm\z//;
+    s/\A\Q$path//;
+    s{/}{::}g;
+  }
+
+  return @traits;
 }
 
 sub builder(&) {
