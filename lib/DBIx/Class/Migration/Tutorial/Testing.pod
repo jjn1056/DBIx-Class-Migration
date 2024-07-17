@@ -42,7 +42,7 @@ Then open the new files in the editor of choice and enter the following code:
 This creates a basic test case that only runs for version 2 of the schema (this
 is just testing that the version 2 update was correct after all).  It uses
 L<Test::DBIx::Class> to automatically deploy a temporary test database (by
-default it creates a C<SQLite> in-memory database) which reflects the current 
+default it creates a C<SQLite> in-memory database) which reflects the current
 schema and then we populate the C<all_tables> fixtures using the utility class
 L<DBIx::Class::Migration::Population> which is part of the L<DBIx::Class::Migration>
 distribution.  (In this case, since we are using L<Test::DBIx::Class>, we are
@@ -77,8 +77,8 @@ testing modules.  Great, now install the new dependencies:
 Perfect, we are now fully up to date and anyone that checks out our code can
 also be sure to have all the right dependencies.  Let's run the test case:
 
-    $ prove -lv t/upgrade-1to2.t 
-    t/upgrade-1to2.t .. 
+    $ prove -lv t/upgrade-1to2.t
+    t/upgrade-1to2.t ..
     Restored set all_tables to database
     ok 1 - Correct Number of Tests
     ok 2 - Artist has a country
@@ -152,8 +152,8 @@ in the C<all_tables> fixture set that has more than one CD (Michael Jackson).
 Obviously this is a pretty minimal test case, but it at least gets you started.
 let's run it:
 
-    $ prove -lv t/more-than-1.t 
-    t/more-than-1.t .. 
+    $ prove -lv t/more-than-1.t
+    t/more-than-1.t ..
     Restored set all_tables to database
     ok 1 - Got some artists
     ok 2 - Got expected number of artists with more than one CD
