@@ -385,8 +385,8 @@ you might which to 'clean' things up, with something like:
     Reading configurations from ...MusicBase/share/fixtures/2/conf
     Restored set all_tables to database
 
-As you might notice above, even though the schema is version 2, we installed
-fixtures from version one.  The tool will always try to match fixture populates
+As you might notice above, even though the schema is version 3, we installed
+fixtures from version 2.  The tool will always try to match fixture populates
 to the current database version.  And remember, if you don't tell C<populate>
 which fixture set to restore, it will always use the C<all_tables> set.
 
