@@ -607,10 +607,11 @@ Don't forget to delete the C<001-auto.sql> file:
 In order to complete our new requirements, lets create some Perl run files to
 add some new country codes, and one new Artist:
 
-    touch share/migrations/SQLite/upgrade/2-3/005-new_countries.pl
-    touch share/migrations/SQLite/upgrade/2-3/006-new_artist.pl
+    mkdir share/migrations/_common/upgrade/2-3
+    touch share/migrations/_common/upgrade/2-3/005-new_countries.pl
+    touch share/migrations/_common/upgrade/2-3/006-new_artist.pl
 
-Open C<share/migrations/SQLite/upgrade/2-3/005-new_countries.pl> in your editor
+Open C<share/migrations/_common/upgrade/2-3/005-new_countries.pl> in your editor
 and add the following:
 
     use strict;
@@ -628,7 +629,7 @@ and add the following:
       ]);
     }
 
-Finally open C<share/migrations/SQLite/upgrade/2-3/006-new_artist.pl> in
+Finally open C<share/migrations/_common/upgrade/2-3/006-new_artist.pl> in
 your editor and add the following:
 
     use strict;
