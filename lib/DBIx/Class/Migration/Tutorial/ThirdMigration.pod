@@ -60,9 +60,9 @@ And then open that in your text editor, enter the following code:
 
     1;
 
-So if you are familiar with L<DBIx::Class> you'll already know this is a normal 
+So if you are familiar with L<DBIx::Class> you'll already know this is a normal
 pattern.  We have a bridge table where each row points to one Artist and on CD
-row, and no duplications are allowed (the Same Artist can't be linked to the 
+row, and no duplications are allowed (the Same Artist can't be linked to the
 same CD twice, for example).
 
 Now we need to change the Artist and CD Result classes.  Open your editor on
@@ -143,7 +143,7 @@ and make the following change:
     1;
 
 Changes here are a bit deeper.  First we removed the C<artist_fk> column since
-we no longer constrain each Cd to a single Artist.  Then we removed the 
+we no longer constrain each Cd to a single Artist.  Then we removed the
 relationship directly to Artist (since we no longer have that) and replaced it
 with a new relationship C<artist_cd_rs> which connects us to the C<ArtistCD>
 bridge table.  Last, we added another pseudo relationship so that you can
@@ -237,7 +237,7 @@ design (change indexes, storage engines, etc.)
 The real fun begins under C<share/migrations/SQLite/upgrade/2-3/*>.  Again you
 have the C<001-auto.sql> file, which is the first, best guess on how to upgrade
 the database.  We need to poke into that and shape it into something that can
-work for both our database structure and our data.  Let's look at the the 
+work for both our database structure and our data.  Let's look at the the
 suggestion.  Open  C<share/migrations/SQLite/upgrade/2-3/001-auto.sql> in your
 text editor:
 
@@ -301,7 +301,7 @@ C<001-auto.sql>, having to do with creating the new table and indexes over:
     COMMIT;
 
 Feel free to add additional SQL style comments, in order to help anyone down
-the road understand what you are doing! 
+the road understand what you are doing!
 
 Now we need to populate that with existing data.  We will make a separate
 upgrade step for that:
@@ -408,9 +408,9 @@ section:
     Enter SQL statements terminated with a ";"
 
     sqlite> .tables
-    artist                  country                              
+    artist                  country
     artist_cd               dbix_class_deploymenthandler_versions
-    cd                      track  
+    cd                      track
 
     sqlite> select * from artist_cd;
     1|1
@@ -522,7 +522,7 @@ blowing away anything important.  You'd expect some output like so:
     Overwriting existing DDL file - ...
     Your Database version must be lower than than your schema version
     in order to prepare upgrades / downgrades
-    Copying Fixture Confs from .../MusicBase/share/fixtures/2/conf to 
+    Copying Fixture Confs from .../MusicBase/share/fixtures/2/conf to
       .../MusicBase/share/fixtures/3/conf
 
 Output above has been abbreviated a bit to highlight the important information.
@@ -651,7 +651,7 @@ your editor and add the following:
 
 You might notice that the relationship names in C<006-new_artist.pl> don't
 exactly match those in our schema.  As I mentioned before, this is because the
-C<$schema> that is passed as the first (and only) argument to your anonymous 
+C<$schema> that is passed as the first (and only) argument to your anonymous
 subroutinues is NOT the schema that comes from L<MusicBase::Schema> but instead
 it is generated directly from the database using L<DBIx::Class::Schema::Loader>
 This is because your schema is going to change a lot, we can't rely on it always
@@ -682,7 +682,7 @@ As before, let's peek inside the database for a quick sanity check:
     Enter SQL statements terminated with a ";"
 
     sqlite> .tables
-    artist                       country                              
+    artist                       country
     artist_cd                    dbix_class_deploymenthandler_versions
     cd                           track
 
@@ -743,12 +743,12 @@ the new many to many between Artist and Cd works.  Lets run the test suite:
 
 This gives you:
 
-    t/more-than-1.t ... 1/? DBIx::Class::ResultSet::count(): No such relationship cd_rs on Artist 
+    t/more-than-1.t ... 1/? DBIx::Class::ResultSet::count(): No such relationship cd_rs on Artist
     t/more-than-1.t ... Dubious, test returned 9 (wstat 2304, 0x900)
-    All 1 subtests passed 
+    All 1 subtests passed
     t/upgrade-1to2.t .. skipped: not correct schema version
-    t/upgrade-2to3.t .. ok   
-    t/use.t ........... ok   
+    t/upgrade-2to3.t .. ok
+    t/use.t ........... ok
 
     Test Summary Report
     -------------------
@@ -790,10 +790,10 @@ Open C<lib/MusicBase/Schema/ResultSet/Artist.pm> and make the following change:
 We just change the join condition to match the new relationship, and try again:
 
     $prove -l t
-    t/more-than-1.t ... ok   
+    t/more-than-1.t ... ok
     t/upgrade-1to2.t .. skipped: not correct schema version
-    t/upgrade-2to3.t .. ok   
-    t/use.t ........... ok   
+    t/upgrade-2to3.t .. ok
+    t/use.t ........... ok
     All tests successful.
     Files=4, Tests=7,  2 wallclock secs ( ... )
     Result: PASS
