@@ -21,7 +21,7 @@ be located in one of the three following Countries:
     USA
 
 We'll need to seed that data to the database and also track it via some custom
-fixture configurations.  That way if you need to start a new database from go
+fixture configurations.  That way if you need to start a new database from scratch
 you can get both the table structure and the essential running information (in
 this case the list of countries we care about could be considered system /
 domain data, not transactional data).  Let's do it!
@@ -64,7 +64,7 @@ Then open this file in your text editor of choice and add the following code:
 
 This will establish a new Result class with a one to many relationship to
 the Artist Result class.  You probably notice that we are referencing a column
-in the Artist Result class that does not yet exist.  Lets add that as well
+in the Artist Result class that does not yet exist.  Let's add that as well
 
 Open C<lib/MusicBase/Schema/Result/Artist.pm> in your editor and change it to
 look like this:
@@ -144,7 +144,7 @@ files.
 
     dbic-migration -Ilib prepare
 
-That will generate a bunch of new files.  Lets see the directory structure now.
+That will generate a bunch of new files.  Let's see the directory structure now.
 
     /share
       /fixtures
@@ -178,7 +178,7 @@ C<all_tables.json> fixture configuration, which if you peek inside, you will
 see has been updated to include your new Country Result class.
 
 Additionally you can see we have a new version 2 directory under C<deploy>
-which contains the full DDL for you new schema, as well as the special
+which contains the full DDL for your new schema, as well as the special
 metadata table that L<DBIx::Class::DeploymentHandler> uses to manage deployment
 history.  You should take a quick look inside those as well, and see that
 the new country table has been added.
@@ -188,7 +188,7 @@ new C<downgrade> and C<upgrade> directories.  For simplicity I will not deal
 with downgrades for this section of the tutorial, and instead focus on the
 upgrade path.
 
-Lets take a closer look at C</upgrade>:
+Let's take a closer look at C</upgrade>:
 
     /upgrade
       /1-2
@@ -199,7 +199,7 @@ a 1 to 2 upgrade path, which will allow us to get the database in sync with our
 schema.  L<DBIx::Class::DeploymentHandler> will introspect your schema and
 database using L<SQL::Translator> and try to suggest some DDL for this.  You
 should treat this initial C<001-auto.sql> file as a suggestion and as a guide.
-You will need to make changes to it based on your data change need (L<SQL::Translator>
+You will need to make changes to it based on your data change needs (L<SQL::Translator>
 knows about your table structure, but not your data) as well as your performance
 and uptime needs.  For example, when changing a table that has 1 million rows
 you might need to take an alternative approach than what is suggested.
@@ -229,13 +229,13 @@ C<share/migrations/SQLite/upgrade/1-2/001-auto.sql>
     COMMIT;
 
 So the first part of this that adds the C<country> table is pretty straight
-forward.  Lets break that part out into its own upgrade step.  Generally even
+forward.  Let's break that part out into its own upgrade step.  Generally even
 if the DDL change proposed is perfect, I prefer to move the code to a file name
 other than the default C<001-auto.sql> since if I need to prepare the upgrade
 several times (as you might if you are building a new version and realize you
 make a mistake and need to re prepare it, as we'll see in a later step) each
 time you do it will overwrite that file, blowing away any customization you
-made.  So lets bust out the first part:
+made.  So let's bust out the first part:
 
     touch share/migrations/SQLite/upgrade/1-2/001-add_country.sql
 
@@ -260,7 +260,7 @@ of default countries.  For this we will use a Perl script similar to the one
 we did for version 1.  You could do this in SQL if you wanted, just if I can
 use a Perl script I would prefer that since it would be more portable across
 other databases (and eventually you will need something other than SQLite for
-production).  Lets add that now:
+production).  Let's add that now:
 
     mkdir share/migrations/_common/upgrade
     mkdir share/migrations/_common/upgrade/1-2
@@ -276,7 +276,7 @@ sense to do this.  You could have just as easily created a file:
 
 And that would have made a script that would only run on SQLite installs.
 
-Lets edit our Perl run file:
+Let's edit our Perl run file:
 
 C<share/migrations/_common/upgrade/1-2/002-insert_countries.pl>
 
@@ -295,10 +295,10 @@ C<share/migrations/_common/upgrade/1-2/002-insert_countries.pl>
       ]);
     };
 
-Since the C<populate> method uses bulk insertion, its generally my favored way
-to insert rows for migrations.  Its going to be much faster than doing separate
+Since the C<populate> method uses bulk insertion, it's generally my favored way
+to insert rows for migrations.  It's going to be much faster than doing separate
 inserts.  In this case we don't have a lot of data, so it didn't make a big
-difference, just that later on if you data needs are larger it would have an
+difference, just that later on if your data needs are larger it would have an
 impact.
 
 Ok, so let's look at the remaining part of the C<001-auto.sql> file that we
@@ -327,7 +327,7 @@ DDL that we give you in the deploy directory, so that you can understand better
 what the target is.  In this case it is really clear the diff is only getting
 you partway there.
 
-Alright, lets try to fix it.  Lets create a file to hold our code:
+Alright, let's try to fix it.  Let's create a file to hold our code:
 
     touch share/migrations/SQLite/upgrade/1-2/003-change_artist.sql
 
@@ -371,13 +371,13 @@ job.
 
 Notice that when I copy back to the new artist table from the temporary table
 I make all the artists live in the country matching country_id = 1 (Canada).
-I'll leave it this way for the section of the tutorial, just to keep it simple
-but in reality you would probably need to copy things more careful, or maybe
+I'll leave it this way for this section of the tutorial, just to keep it simple
+but in reality you would probably need to copy things more carefully, or maybe
 add an "UNKNOWN" country option to the list of countries.  We'll do an example
 of something like that in a later section.  I just want to point out that when
 you craft your migration code you need to interpret the suggested DDL change
-and keep in mind how you data is put together.  That way you can craft a good
-change set that keeps you database well constrained and organized.
+and keep in mind how your data is put together.  That way you can craft a good
+change set that keeps your database well constrained and organized.
 
 Now that your are done converting the suggested DDL change, you should delete
 the generated auto file, otherwise when later you run the migration, you will
@@ -385,7 +385,7 @@ end up doing more changes and get some errors.
 
     rm share/migrations/SQLite/upgrade/1-2/001-auto.sql
 
-Ok, so now you have a good set of migrations to move from version 1 to 2.  Lets
+Ok, so now you have a good set of migrations to move from version 1 to 2.  Let's
 try that out now.
 
 =head1 Upgrade the database
@@ -411,7 +411,7 @@ Since the schema is version 2 we need to explicitly mention the target version
 we are deploying.  Otherwise L<DBIx::Class::Migration> will want to deploy a
 version that matches the current schema.  We want to do an upgrade, not an
 install, since we need to modify both the tables AND our data, then we can
-build some good new fixtures.  Lets do the upgrade:
+build some good new fixtures.  Let's do the upgrade:
 
     dbic-migration -Ilib upgrade
     dbic-migration -Ilib status
@@ -432,7 +432,7 @@ Should give you:
     cd                      track
     country
 
-So there's our new table.  Lets make sure our data is correct:
+So there's our new table.  Let's make sure our data is correct:
 
     sqlite> select * from country;
     1|Canada
@@ -443,12 +443,12 @@ So there's our new table.  Lets make sure our data is correct:
     1|1|Michael Jackson
     2|1|Eminem
 
-So looks like out migration worked out.  Later on we'll learn how to write
+So it looks like our migration worked out.  Later on we'll learn how to write
 some test cases for our database, and I would highly suggestion that you write
 some tests that make sure your migration worked as expected, rather than doing
-the manual inspect as above
+the manual inspection as above
 
-You are done with the upgrade, lets move on to make new fixtures.  Exit the
+You are done with the upgrade, let's move on to make new fixtures.  Exit the
 C<sqlite> shell:
 
     sqlite> .q
@@ -469,7 +469,7 @@ structure migrations, we also got a new version 2 directory for the fixtures.
 By default we build you a fresh C<all_tables.json> that should reflect any new
 or removed tables.  Additionally, if there were any custom fixture
 configurations, we would have copied those from the version 1.  We didn't have
-any custom files so nothing was copied.  Lets make a custom fixture config now:
+any custom files so nothing was copied.  Let's make a custom fixture config now:
 
     touch share/fixtures/2/conf/countries.json
 
@@ -481,8 +481,8 @@ needed to have a functioning database.  Data that is part of the domain we call
 'seed' data.  You'll need to create fixtures for all types of seed data, such
 as country lists, roles, product names, etc.
 
-So you can use fixtures for a variety of jobs, from created demo databases to
-show clients, databases for developer, fixtures for running tests, and
+So you can use fixtures for a variety of jobs, from creating demo databases to
+show clients, databases for developers, fixtures for running tests, and
 fixtures to preserve necessary domain data.  You can then install a database
 and setup whatever list of fixtures is needed for the job at hand.  Additionally
 since our migrations perform updates on the database data, we can just dump new
@@ -510,11 +510,11 @@ Here's our fixture configuration for C<share/fixtures/2/conf/countries.json>:
 
 This will dump all the countries, and you will be able to load them later.  You
 could review L<DBIx::Class::Fixtures> for a better understanding of the way
-fixture rule sets are creating, but this is basically saying: "Dump everything
+fixture rule sets are created, but this is basically saying: "Dump everything
 in the Country source, and don't follow any relationships from Country or to
 Country."
 
-Now that you have the new, custom fixture, lets dump all the sets:
+Now that you have the new, custom fixture, let's dump all the sets:
 
     dbic-migration -Ilib dump_all_sets
 
@@ -555,7 +555,7 @@ sets!
     Schema is 2
     Deployed database is 2
 
-You've successful crafted a migration to move your database structure and your
+You've successfully crafted a migration to move your database structure and your
 data from version 1 to version 2.  You've also updated your fixtures and
 created a custom fixture configuration for managing your seed data.  You now
 have a good system where a new developer can walk in and run one or two
