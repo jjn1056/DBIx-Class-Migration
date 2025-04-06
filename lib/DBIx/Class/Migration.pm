@@ -426,7 +426,7 @@ sub dump_named_sets {
   (my $self = shift)->dbic_dh->version_storage_is_installed
     || print "Target DB is not versioned.  Dump may not be reliable.\n";
 
-  my $schema = $self->_schema_from_database;
+  my $schema = $self->schema->clone;
 
   $self->build_dbic_fixtures->dump_config_sets({
     schema => $schema,
