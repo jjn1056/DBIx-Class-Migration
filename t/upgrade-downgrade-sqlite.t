@@ -103,7 +103,13 @@ SCHEMA_V2: {
     my $schema = $migration->schema, 'Local::v2::Schema',
    'got a reasonable looking schema');
 
-  $migration->prepare;
+  {
+    my @warns;
+    local $SIG{__WARN__} = sub { push @warns, shift };
+    $migration->prepare;
+
+    ok scalar @warns == 0, "UTF handled correctly. No 'Wide character in print' warning.";
+  }
 
   ## Lets massage the upgrade and downgrade files
   my $upgrade = catfile($target_dir, 'migrations', 'SQLite', 'upgrade', '1-2', '001-auto.sql');
