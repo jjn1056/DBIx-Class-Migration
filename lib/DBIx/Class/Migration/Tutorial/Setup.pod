@@ -94,6 +94,15 @@ context.
 Going forward, when I say 'do something in your project home directory', I mean
 inside this new C<MusicBase> directory which you just made.
 
+If you already do or plan to use a build tool like L<Dist::Zilla> with
+L<Dist::Zilla::Plugin::PkgVersion>, which sets the VERSION of your Schema
+class, you can define your database schema version by overriding its
+schema_version method:
+
+    sub schema_version {
+        return 1;
+    }
+
 Congrats, you have a basic Perl project setup!  If you are using a source
 control tool, you should probably commit.
 
