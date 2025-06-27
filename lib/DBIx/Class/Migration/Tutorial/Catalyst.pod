@@ -7,7 +7,7 @@ DBIx::Class::Migration::Tutorial::Catalyst - Using a web framework
 By the end of this section, you will learn some strategies for using migrations
 with web development and for testing.
 
-This is not a L<Catalyst> tutorial.  You should be familar with the L<Catalyst>
+This is not a L<Catalyst> tutorial.  You should be familiar with the L<Catalyst>
 web development framework, and have read the L<Catalyst::Manual>.  Although
 we will build a minimal L<Catalyst> application we are focused on database
 integration as well as exploring some strategies for testing and would not
@@ -15,11 +15,11 @@ consider this application to represent overall best practices.
 
 Reviewing the documentation for L<Catalyst::Test> would be valuable, as well as
 L<Catalyst::Plugin::ConfigLoader> for a refresher on the idea of localized and
-enviroment specific configurations.
+environment specific configurations.
 
 =head1 Bootstrap a basic Catalyst application
 
-Update you C<dist.ini> file:
+Update your C<dist.ini> file:
 
     name    = DBIx-Class-Migration
     author  = John Napiorkowski <jjnapiork@cpan.org>
@@ -105,7 +105,7 @@ your C<dist.ini> file).  I think this is a bit more forward looking, and since
 we already have the C<share> directory, why not use it?
 
 For your Model, we'll use C<Catalyst::Model::DBIC::Schema> to provide a bit of
-thin glue between you L<Catalyst> web application and your L<MusicBase::Schema>:
+thin glue between your L<Catalyst> web application and your L<MusicBase::Schema>:
 
 C<lib/MusicBase/Web/Model/Schema.pm>
 
@@ -179,14 +179,14 @@ the database and populate some fixtures, if they are missing.
 B<NOTE>: If you use the C<FromMigration> trait, we will automatically start and
 stop the database if needed (and you are using a database like MySQL or Postgresql
 that needs starting and stopping).  This startup and teardown can impact the
-startup time of you application.
+startup time of your application.
 
-B<NOTE>: If you already had a database setup, and are not using the database
+B<NOTE>: If you already had a database set up, and are not using the database
 sandbox feature (as you won't when in a production server, or if you are using
-some shared hosting setups, for example) you should setup your C<connect_info>
+some shared hosting setups, for example) you should set up your C<connect_info>
 as you normally would in a L<Catalyst> configuration.
 
-Let's setup a trivial controller that pulls a few rows out of the database
+Let's set up a trivial controller that pulls a few rows out of the database
 and just outputs this to a web page.
 
     package MusicBase::Web::Controller::Root;
@@ -278,11 +278,11 @@ So now we can start our L<Catalyst> application!
 =head1 Integrating DBIx::Class::Migration and Catalyst.
 
 There's two main places to where L<Catalyst> and L<DBIx::Class::Migration>
-can cooperate: Running migrations and Running Tests.
+can cooperate: Running migrations and running tests.
 
 =head2 Running Migrations
 
-Although you can just use L<dbic-migration> directly with you L<Catalyst>
+Although you can just use L<dbic-migration> directly with your L<Catalyst>
 application, since L<Catalyst> already does a great job of managing
 configuration, let's learn how to subclass L<DBIx::Class::Migration::Script>
 and customize it for your application.  That way you don't need to set C<ENV>
@@ -310,7 +310,7 @@ change it to look like this:
 
 Basically you've made a subclass of L<DBIx::Class::Migration::Script> but you
 are setting the C<schema> to always be whatever L<Catalyst> thinks it is.  Now
-you can use L<Catalyst>s built in configuration management to decide what
+you can use L<Catalyst>'s built in configuration management to decide what
 database you are running migrations on.  For example you can run this straight
 out (remember to remove the ENV var DBIC_MIGRATION_SCHEMA_CLASS, if you have it
 set now for running the tutorial)
@@ -320,22 +320,22 @@ set now for running the tutorial)
     Deployed database is 3
 
 And you can reset the data from fixtures, dump new ones, etc.  Plus, if you
-created an enviroment specific configuration (such as if you have a file
-C<share/etc/musicbase_web_qa.pl> that points to your QA datase) you can leverage
-you L<Catalyst> based configuration to make your life a bit easier.  For
+created an environment specific configuration (such as if you have a file
+C<share/etc/musicbase_web_qa.pl> that points to your QA database) you can leverage
+your L<Catalyst> based configuration to make your life a bit easier.  For
 example:
 
     CATALYST_CONFIG_LOCAL_SUFFIX=qa perl -Ilib \
       lib/MusicBase/Schema/MigrationScript.pm status
 
-Would grab the connected schema for your qa enviroment specific configuration
+This would grab the connected schema for your QA environment specific configuration
 and give you the status on that (assuming you can ping it from your logged
 in terminal).  This integration is very useful since you can use whatever your
 L<Catalyst> application thinks is the current database as the target of the
 migration.  You can use other bits of configuration info as well, such as a
 custom C<target_dir> etc.
 
-B<Alternative>: If subclasing L<DBIx::Class::Migration::Script> seems like an
+B<Alternative>: If subclassing L<DBIx::Class::Migration::Script> seems like an
 overly heavy handed solution, or running the *.pm file like a script just
 weirds you out, you can simply create a script like the following, which would
 work identically:
@@ -372,7 +372,7 @@ want to write tests that check your actual web pages (for example you want to
 test things like if a page shows the correct results and if web forms work)
 you need to manage that a bit differently.  Here's what I do:
 
-First, create a enviroment specific configuration for testing:
+First, create an enviroment specific configuration for testing:
 
     touch share/etc/musicbase_web_test.pl
 
@@ -394,7 +394,7 @@ So what is going to happen here is if you start the application pointing to
 this configuration (with C<CATALYST_CONFIG_LOCAL_SUFFIX>=test) when the application
 runs it will automatically create a clean new database and populate it with
 the C<all_tables> fixture set.  Just for fun, we will create a test instance
-of Mysql.  Please note this will be a temporary sandbox, and will be deleted
+of MySQL.  Please note this will be a temporary sandbox, and will be deleted
 when your L<Catalyst> application exits.  It is not the same as the MySQL
 sandbox we created in C<share/musicbase-schema/*>.
 
@@ -411,7 +411,7 @@ instead of C</share>.  What will happen here is that (similar to the way that
 we saw with L<Test::DBIx::Class>) we build up a database from scratch, populate
 it with known fixtures, run tests, and then tear it down at the end.  This way
 you get clean and repeatable tests.  The downside is that the buildup / teardown
-can add time to the tests, athough you should be able to run your test cases
+can add time to the tests, although you should be able to run your test cases
 in parallel (using C<prove -j9 ...>, to run up to nine tests at once) to offset
 this issue.
 
@@ -440,7 +440,7 @@ Finally run your test:
     CATALYST_CONFIG_LOCAL_SUFFIX=test prove -lvr t/web.t
 
 You know from when we did the original demo data script that "Michael Jackson"
-was one of the artist, so we'd expect to find him in the <$content> from the
+was one of the artists, so we'd expect to find him in the <$content> from the
 Root controller (since that's just a list of all the Artist names).  So you'd
 probably want a bit more testing on this page, but this should give you the
 idea.
