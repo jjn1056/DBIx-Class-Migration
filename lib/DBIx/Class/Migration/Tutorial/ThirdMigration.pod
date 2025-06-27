@@ -7,9 +7,9 @@ DBIx::Class::Migration::Tutorial::ThirdMigration - A more advanced database chan
 In the last version we added a new table C<country> and enforced a one to many
 relationship between C<country> and C<artist> such that every C<artist> belonged
 to a single C<country>.  These types of database changes, when you add a table
-and some columns, tend to be some the easier types of migrations to perform.
+and some columns, tend to be some of the easier types of migrations to perform.
 
-Lets take on a more complicated migration problem, and add some more fixture
+Let's take on a more complicated migration problem, and add some more fixture
 configurations and seed data.  This time we will add a table and change the
 nature of an existing relationship.  Is L<DBIx::Class::Migration> up to the
 job?  Let's find out!
@@ -17,7 +17,7 @@ job?  Let's find out!
 =head1 The New Business Requirement
 
 In version 1 and 2 the relationship between Artist and CD is one to many; for
-each Artist there are zero to many CDs, and for each Cd there is one and only
+each Artist there are zero to many CDs, and for each CD there is one and only
 one artist.  Now we realize that a CD could have a bunch of Artists working
 together as a collaboration.  We need to change our database to reflect this
 need, and we additionally need to migrate our existing data to this new schema.
@@ -60,9 +60,9 @@ And then open that in your text editor, enter the following code:
 
     1;
 
-So if you are familiar with L<DBIx::Class> you'll already know this is a normal 
-pattern.  We have a bridge table where each row points to one Artist and on CD
-row, and no duplications are allowed (the same Artist can't be linked to the
+So if you are familiar with L<DBIx::Class> you'll already know this is a normal
+pattern.  We have a bridge table where each row points to one Artist and one CD
+row, and no duplications are allowed (the Same Artist can't be linked to the
 same CD twice, for example).
 
 Now we need to change the Artist and CD Result classes.  Open your editor on
@@ -106,9 +106,9 @@ C<lib/MusicBase/Schema/Result/Artist.pm>:
 So we didn't change the columns, but we removed the direct relationship to Cd
 and replaced it with a relationship to the new ArtistCd result class.  We also
 created one pseudo 'many to many' relationship across the bridge so that we can
-directly pick up all the Cds for a given Artist.
+directly pick up all the CDs for a given Artist.
 
-Now we need to change the Cd.  Open C<lib/MusicBase/Schema/Result/Cd.pm>
+Now we need to change the CD.  Open C<lib/MusicBase/Schema/Result/Cd.pm>
 and make the following change:
 
     package MusicBase::Schema::Result::Cd;
@@ -142,8 +142,8 @@ and make the following change:
 
     1;
 
-Changes here are a bit deeper.  First we removed the C<artist_fk> column since
-we no longer constrain each Cd to a single Artist.  Then we removed the 
+The changes here are a bit deeper.  First we removed the C<artist_fk> column since
+we no longer constrain each Cd to a single Artist.  Then we removed the
 relationship directly to Artist (since we no longer have that) and replaced it
 with a new relationship C<artist_cd_rs> which connects us to the C<ArtistCD>
 bridge table.  Last, we added another pseudo relationship so that you can
@@ -167,7 +167,7 @@ C<MusicBase::Schema>:
 
     1;
 
-Very good, we've changed the database to reflect our new requirement.  Lets
+Very good, we've changed the database to reflect our new requirement.  Let's
 start working on the migration.
 
 =head2 Prepare the migrations
@@ -237,7 +237,7 @@ design (change indexes, storage engines, etc.)
 The real fun begins under C<share/migrations/SQLite/upgrade/2-3/*>.  Again you
 have the C<001-auto.sql> file, which is the first, best guess on how to upgrade
 the database.  We need to poke into that and shape it into something that can
-work for both our database structure and our data.  Let's look at the the 
+work for both our database structure and our data.  Let's look at the
 suggestion.  Open  C<share/migrations/SQLite/upgrade/2-3/001-auto.sql> in your
 text editor:
 
@@ -276,9 +276,9 @@ text editor:
     COMMIT;
 
 This doesn't look too bad.  From first review it looks to me like we are just
-missing transfering data from the old relationship to the new bridge table.  So
+missing transferring data from the old relationship to the new bridge table.  So
 like last time we will bust this up into a few steps, under new file names but
-under this directory.  Lets handle this in bits.
+under this directory.  Let's handle this in bits.
 
     touch share/migrations/SQLite/upgrade/2-3/001-create_artist_cd.sql
 
@@ -301,7 +301,7 @@ C<001-auto.sql>, having to do with creating the new table and indexes over:
     COMMIT;
 
 Feel free to add additional SQL style comments, in order to help anyone down
-the road understand what you are doing! 
+the road understand what you are doing!
 
 Now we need to populate that with existing data.  We will make a separate
 upgrade step for that:
@@ -321,7 +321,7 @@ here's the SQL to enter:
 Luckily everything we need exists in the current C<cd> table, so this is a
 straightup insert.  In this case I didn't use a Perl deploy run script since
 I felt the performance benefit of a native SQL approach outweighed the
-advantage of database portability.  If I ever needed to make this work on say
+advantage of database portability.  If I ever need to make this work on say
 MySQL or Pg, I'd need to rewrite it, and there's not a lot of SQL so I am
 willing to take that risk.
 
@@ -330,7 +330,7 @@ relationship:
 
     touch share/migrations/SQLite/upgrade/2-3/003-alter_cd.sql
 
-Then open that in your text editor, and lets bring over the last part from
+Then open that in your text editor, and let's bring over the last part from
 C<001-auto.sql>:
 
     BEGIN;
@@ -365,7 +365,7 @@ upgrade script:
 
     rm share/migrations/SQLite/upgrade/2-3/001-auto.sql
 
-And you'd probably wish to commit these files now if you are using an source
+And you'd probably wish to commit these files now if you are using a source
 control system (and if you are not, prepare for pain!)
 
 Next step will be to perform the upgrade.
@@ -397,7 +397,7 @@ Let's go ahead with the upgrade:
     Schema is 3
     Deployed database is 3
 
-Looks good.  Lets peek in the database and do a quick sanity check.  You should
+Looks good.  Let's peek in the database and do a quick sanity check.  You should
 also consider writing some test cases similar to what we did in the previous
 section:
 
@@ -408,9 +408,9 @@ section:
     Enter SQL statements terminated with a ";"
 
     sqlite> .tables
-    artist                  country                              
+    artist                  country
     artist_cd               dbix_class_deploymenthandler_versions
-    cd                      track  
+    cd                      track
 
     sqlite> select * from artist_cd;
     1|1
@@ -435,15 +435,15 @@ good and making sure you made good downgrades (we didn't :) ) or you can force
 install the database to an arbitrary older version and start again with the
 C<prepare> command.  We will take this second option for this tutorial.
 
-So for the purposes of our tutorial, lets say that suddenly we realize our
-design for the C<country> table is terrible wrong.  We've been putting real
+So for the purposes of our tutorial, let's say that suddenly we realize our
+design for the C<country> table is terribly wrong.  We've been putting real
 country names in the table, and in English, but now we want to internationalize
 our site.  That means we should avoid English words in our seed data, and
 instead use normalized codes that our UI layer can use and leverage existing
 internationalization and localization tools against.  So we need to change that
 country table, and do so in a way to make sure we keep our existing country
 information correct.  Lastly, we want to add a few new countries to the list
-as well as one more artist to the system.  Thats a bunch of changes, so lets
+as well as one more artist to the system.  That's a bunch of changes, so let's
 get to it!
 
 Changes to be made:
@@ -522,10 +522,10 @@ blowing away anything important.  You'd expect some output like so:
     Overwriting existing DDL file - ...
     Your Database version must be lower than than your schema version
     in order to prepare upgrades / downgrades
-    Copying Fixture Confs from .../MusicBase/share/fixtures/2/conf to 
+    Copying Fixture Confs from .../MusicBase/share/fixtures/2/conf to
       .../MusicBase/share/fixtures/3/conf
 
-Output above has been abbreviated a bit to highlight the important information.
+The output above has been abbreviated a bit to highlight the important information.
 Don't worry about that "Copying Fixture Confs from ..." overwriting any of your
 custom changes, if there is a file in the target directory matching we just
 skip the copy (we always assume if the file is there that you may have made
@@ -554,7 +554,7 @@ Now, let's look at the new C<share/migrations/SQLite/upgrade/2-3/001-auto.sql>
     DROP TABLE country_temp_alter;
 
 Again, to be brief I've only included above the new statements related to our
-changes to the C<country> table.  This actually seems pretty good.  Lets
+changes to the C<country> table.  This actually seems pretty good.  Let's
 break that out into a separate file, and add some statements to move data
 from the old name to the new code columns:
 
@@ -604,7 +604,7 @@ Don't forget to delete the C<001-auto.sql> file:
 
     rm share/migrations/SQLite/upgrade/2-3/001-auto.sql
 
-In order to complete our new requirements, lets create some Perl run files to
+In order to complete our new requirements, let's create some Perl run files to
 add some new country codes, and one new Artist:
 
     touch share/migrations/SQLite/upgrade/2-3/005-new_countries.pl
@@ -651,13 +651,13 @@ your editor and add the following:
 
 You might notice that the relationship names in C<006-new_artist.pl> don't
 exactly match those in our schema.  As I mentioned before, this is because the
-C<$schema> that is passed as the first (and only) argument to your anonymous 
+C<$schema> that is passed as the first (and only) argument to your anonymous
 subroutinues is NOT the schema that comes from L<MusicBase::Schema> but instead
-it is generated directly from the database using L<DBIx::Class::Schema::Loader>
+it is generated directly from the database using L<DBIx::Class::Schema::Loader>.
 This is because your schema is going to change a lot, we can't rely on it always
 being backwardly compatible with every version of the database.
 
-If you every get confused about what the auto generated schema looks like, you
+If you ever get confused about what the auto generated schema looks like, you
 can always use the C<make_schema> command:
 
     ## example command, don't need to run as part of the tutorial
@@ -670,7 +670,7 @@ dump to STDOUT the generated classes:
     ## example command, don't need to run as part of the tutorial
     export DBIC_MIGRATION_DEBUG=1
 
-Everything is ready to go.  Lets run the upgrade:
+Everything is ready to go.  Let's run the upgrade:
 
     dbic-migration -Ilib upgrade
 
@@ -682,7 +682,7 @@ As before, let's peek inside the database for a quick sanity check:
     Enter SQL statements terminated with a ";"
 
     sqlite> .tables
-    artist                       country                              
+    artist                       country
     artist_cd                    dbix_class_deploymenthandler_versions
     cd                           track
 
@@ -723,7 +723,7 @@ Then open that in you text editor, add the following:
     fixtures_ok ['all_tables'];
 
     is Country->count, 6,
-      'Correct Number of Tests';
+      'Correct Number of Countries';
 
     ok my $artist = Artist->first,
       'Got one artist';
@@ -737,18 +737,18 @@ Then open that in you text editor, add the following:
     done_testing;
 
 So this is just a basic test to see that all the new countries exist and that
-the new many to many between Artist and Cd works.  Lets run the test suite:
+the new many to many between Artist and Cd works.  Let's run the test suite:
 
     prove -l t
 
 This gives you:
 
-    t/more-than-1.t ... 1/? DBIx::Class::ResultSet::count(): No such relationship cd_rs on Artist 
+    t/more-than-1.t ... 1/? DBIx::Class::ResultSet::count(): No such relationship cd_rs on Artist
     t/more-than-1.t ... Dubious, test returned 9 (wstat 2304, 0x900)
-    All 1 subtests passed 
+    All 1 subtests passed
     t/upgrade-1to2.t .. skipped: not correct schema version
-    t/upgrade-2to3.t .. ok   
-    t/use.t ........... ok   
+    t/upgrade-2to3.t .. ok
+    t/use.t ........... ok
 
     Test Summary Report
     -------------------
@@ -790,10 +790,10 @@ Open C<lib/MusicBase/Schema/ResultSet/Artist.pm> and make the following change:
 We just change the join condition to match the new relationship, and try again:
 
     $prove -l t
-    t/more-than-1.t ... ok   
+    t/more-than-1.t ... ok
     t/upgrade-1to2.t .. skipped: not correct schema version
-    t/upgrade-2to3.t .. ok   
-    t/use.t ........... ok   
+    t/upgrade-2to3.t .. ok
+    t/use.t ........... ok
     All tests successful.
     Files=4, Tests=7,  2 wallclock secs ( ... )
     Result: PASS
