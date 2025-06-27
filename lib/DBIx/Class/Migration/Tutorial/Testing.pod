@@ -19,7 +19,7 @@ add a test case now!
 
     touch t/upgrade-1to2.t
 
-Then open the new files in the editor of choice and enter the following code:
+Then open the new files in your editor of choice and enter the following code:
 
     #!/usr/bin/env perl
 
@@ -42,14 +42,14 @@ Then open the new files in the editor of choice and enter the following code:
 This creates a basic test case that only runs for version 2 of the schema (this
 is just testing that the version 2 update was correct after all).  It uses
 L<Test::DBIx::Class> to automatically deploy a temporary test database (by
-default it creates a C<SQLite> in-memory database) which reflects the current 
+default it creates a C<SQLite> in-memory database) which reflects the current
 schema and then we populate the C<all_tables> fixtures using the utility class
 L<DBIx::Class::Migration::Population> which is part of the L<DBIx::Class::Migration>
 distribution.  (In this case, since we are using L<Test::DBIx::Class>, we are
 using the fixture hook L<Test::DBIx::Class::FixtureCommand::Population>).
 
 Before we can run the test case, we need to update our C<dist.ini>
-file.  Open this is a text editor and change it to look like this:
+file.  Open this in a text editor and change it to look like this:
 
     name    = DBIx-Class-Migration
     author  = John Napiorkowski <jjnapiork@cpan.org>
@@ -77,10 +77,10 @@ testing modules.  Great, now install the new dependencies:
 Perfect, we are now fully up to date and anyone that checks out our code can
 also be sure to have all the right dependencies.  Let's run the test case:
 
-    $ prove -lv t/upgrade-1to2.t 
-    t/upgrade-1to2.t .. 
+    $ prove -lv t/upgrade-1to2.t
+    t/upgrade-1to2.t ..
     Restored set all_tables to database
-    ok 1 - Correct Number of Tests
+    ok 1 - Correct Number of Countries
     ok 2 - Artist has a country
     1..2
     ok
@@ -88,7 +88,7 @@ also be sure to have all the right dependencies.  Let's run the test case:
     Files=1, Tests=2,  1 wallclock secs ( ... )
     Result: PASS
 
-So hopefully that was easier database testing than you might be used too. :)
+So hopefully that was easier database testing than you might be used to. :)
 
 =head1 Additional Domain Logic Testing
 
@@ -121,7 +121,7 @@ C<lib/MusicBase/Schema/ResultSet/Artist.pm>
     1;
 
 This is a bit of logic that just returns the set of Artist with more than one
-cd.  This is the kind of custom resultset logic your application may require
+CD.  This is the kind of custom resultset logic your application may require
 and therefore you should have a test case.  Let's build one:
 
     touch t/more-than-1.t
@@ -150,10 +150,10 @@ If you go back to the original fixture data, you'll see we only have one Artist
 in the C<all_tables> fixture set that has more than one CD (Michael Jackson).
 
 Obviously this is a pretty minimal test case, but it at least gets you started.
-let's run it:
+Let's run it:
 
-    $ prove -lv t/more-than-1.t 
-    t/more-than-1.t .. 
+    $ prove -lv t/more-than-1.t
+    t/more-than-1.t ..
     Restored set all_tables to database
     ok 1 - Got some artists
     ok 2 - Got expected number of artists with more than one CD
@@ -163,7 +163,7 @@ let's run it:
     Files=1, Tests=2,  1 wallclock secs ( ... )
     Result: PASS
 
-That's it for Testing!
+That's it for testing!
 
 =head1 SUMMARY
 
