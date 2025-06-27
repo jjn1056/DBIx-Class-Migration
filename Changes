@@ -1,5 +1,7 @@
 Revision history for DBIx-Class-Migration.
 
+        - POD improvements - thanks @abraxxa
+
 0.075   2020-06-02
         - removed lots of spurious warnings when running migrate (rabbiveesh++)
 
@@ -64,7 +66,7 @@ Revision history for DBIx-Class-Migration.
         - Merged in some PRs around typos
         - Merged PR to convert to Test::Postgresql58
         - Use modern versions of dependencies
-        
+
 0.058   2016-01-07
         - https://github.com/jjn1056/DBIx-Class-Migration/pull/61 (doc update)
         - https://github.com/jjn1056/DBIx-Class-Migration/pull/64 (find local perl install better)
@@ -150,7 +152,7 @@ Revision history for DBIx-Class-Migration.
 
 0.041   2013-09-18
         - Changed changes file date spec to match CPAN::Spec.
-        - Fix for changes in how inlined files are loaded, due to upstream 
+        - Fix for changes in how inlined files are loaded, due to upstream
           changes.  This fixes problems in loading the DBICM:Types modules.
         - Updated FAQ.
 
@@ -177,7 +179,7 @@ Revision history for DBIx-Class-Migration.
 
 0.037   2013-01-10
         - Fixed regression introduced in v0.036 where non SQLite databases got
-          deleted on multiple calls to the same migration object.  This is 
+          deleted on multiple calls to the same migration object.  This is
           considered a mandatory upgrade for users of v0.036 and the broken
           version will be eventually deleted from CPAN.
 

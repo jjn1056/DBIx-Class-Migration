@@ -17,18 +17,19 @@ L<DBIx::Class::DeploymentHandler::Manual::Intro>
 From your project home directory (that contains the C<dist.ini> file) run the
 C<dbic-migration> command line tool:
 
-    dbic-migration version --schema_class MusicBase::Schema -Ilib
+    dbic-migration -Ilib version --schema_class MusicBase::Schema
 
 This should return (something similar to):
 
-    Application version is 0.025
+    Application version is 0.075
 
 Let's do a quick review.  C<dbic-migration> is your main gateway to managing
 your migrations.  When using the tool you will give it one command (such as
 C<version> above) and any number of option flags (starting with C<--> or C<->).
 
-B<NOTE:> The version reported might be different from the one mentioned in the
-above documentation.  If you have a much older (or newer) version, please note
+B<NOTE:> The version reported is your installed L<DBIx::Class::Migration>
+version and might be different from the one mentioned in the above
+documentation.  If you have a much older (or newer) version, please note
 this tutorial was written against the one mentioned, and although I will strive
 for backward compatibility feature sets might change.
 
@@ -37,6 +38,10 @@ creating and using migrations for.  Typically this will be your subclass of
 L<DBIx::Class::Schema>, and you'll need to extend the Perl module search path
 with C<I> as above.  This is so that C<perl> will know about your custom application
 libraries.
+
+B<NOTE:> Specifying -I is essential when not specifying the
+L<DBIx::Class::Migration::Script/target_dir> because without it the directories
+and files will be generated in the installed dists share directory.
 
 If you are going to be working with one schema for a bit, you can export
 C<DBIC_MIGRATION_SCHEMA_CLASS> into your current shell, that way you don't need
@@ -113,10 +118,10 @@ In your C<share> directory you now have the following:
       musicbase-schema.db
 
 So let's review.  We created a default fixture configuration that just serializes
-all the database information.  This is probably not great for the long term but
-until you get the hang of creating custom fixture configurations (and for this
-you need to review L<DBIx::Class::Fixtures>) it will serve.  In any case you
-can take a quick peek to get the idea:
+all the database information.  This is probably not what you want for your
+production database but until you get the hang of creating custom fixture
+configurations (and for this you need to review L<DBIx::Class::Fixtures>) it
+will serve as an example.  It will be generated In any case you can take a quick peek to get the idea:
 
 C</share/fixtures/1/conf/all_tables.json>
 
