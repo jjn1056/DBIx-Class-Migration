@@ -1,7 +1,7 @@
 package Local::Schema::Result::ArtistCd;
 use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->table('artist_cd');
+__PACKAGE__->table('artist_cd_not_match');
 __PACKAGE__->add_columns(
   artist_fk => {
     data_type => 'integer',
